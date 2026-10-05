@@ -1,0 +1,740 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Олимпиадная лаборатория 9–11 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@500;800&display=swap">
+<style>
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{display:grid;gap:10px;max-width:68ch}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+/* Макет: тетрадь в клетку, строгие контуры без теней, акцент бирюзовый и оранжевый. Лаборатория логики для 9–11 лет. */
+:root{
+  --bg:#EAF4F1;--surface:#FFFFFF;--surface2:#F2F9F7;--ink:#0F2F2A;--muted:#44625C;
+  --edge:#0F2F2A;--line:#C6DDD7;--line-strong:#86B3A9;--grid:rgba(15,80,70,.07);
+  --accent:#0B7E6F;--on-accent:#FFFFFF;--accent2:#F26B21;--on-accent2:#1A0A00;
+  --good:#18803C;--good-bg:#DFF4E4;--bad:#BF3520;--bad-bg:#FCE7E1;--star:#F5B21B;
+  --field:#FFFFFF;--hint-bg:#FFF0DB;--hint-edge:#EBA45E;--code-inline:#DDEDE9;--focus:#1B62E0;
+  --s1:#F26B21;--s2:#0B7E6F;--s3:#3C6FD8;--s4:#E5A50A;
+  --sock-b:#2F6FE0;--sock-g:#2EA44F;--sock-r:#D93A30;
+  --card-shadow:none;
+  --radius:10px;--radius-lg:16px;--bw:2px;--bw-thin:1.5px;--lift:0px;--fs:17px;--maxw:900px;
+  --f-display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --f-body:'Onest','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}
+
+body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.top h1{font-size:clamp(1.15rem,4.6vw,1.8rem);font-weight:700}
+.task-head h2{font-size:clamp(1.05rem,3.9vw,1.4rem);font-weight:700}
+.num{border-radius:8px}
+.tab{border-radius:8px}
+.intro{border-color:var(--hint-edge);background:var(--hint-bg)}
+.btn.primary{border-color:var(--accent)}
+.bubble .mascot{display:none}
+
+/* пирамида */
+.pyr{--bs:clamp(40px,11.4vw,60px);display:grid;gap:6px;justify-items:center;padding-block:4px}
+.pr{display:flex;gap:6px;justify-content:center}
+.ball{width:var(--bs);height:var(--bs);border-radius:50%;border:2px dashed var(--line-strong);background:var(--field);text-align:center;font-family:var(--f-mono);font-weight:800;font-size:calc(var(--bs)*.36);padding:0;color:var(--ink);-moz-appearance:textfield}
+.ball::-webkit-outer-spin-button,.ball::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ball.given{background:var(--accent);color:var(--on-accent);border:2px solid var(--accent)}
+.ball.ok{border:2px solid var(--good);background:var(--good-bg);color:var(--good)}
+.ball.bad{border:2px solid var(--bad);background:var(--bad-bg);color:var(--bad)}
+.ball.hl{box-shadow:0 0 0 4px var(--accent2)}
+.ball.goal{box-shadow:0 0 0 4px var(--accent2);border-style:solid;border-color:var(--accent2)}
+.counter{text-align:center;font-weight:700}
+
+/* носки */
+.drawer{display:flex;gap:10px;flex-wrap:wrap}
+.dcol{display:flex;align-items:center;gap:8px;padding:.4em .8em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface);font-weight:700}
+.dcol svg{width:28px;height:28px}
+.sockrow{display:flex;gap:8px;flex-wrap:wrap;min-height:76px;align-items:flex-end}
+.sock{display:grid;justify-items:center;gap:0;font-size:.72rem;font-weight:800;font-family:var(--f-mono);animation:pop .25s}
+.sock svg{width:46px;height:46px}
+.sock.pair svg{filter:drop-shadow(0 0 0 var(--accent2));outline:3px solid var(--accent2);outline-offset:2px;border-radius:8px}
+.cb{color:var(--sock-b)}.cg{color:var(--sock-g)}.cr{color:var(--sock-r)}
+.hist{display:grid;gap:6px}
+.hbar{display:grid;grid-template-columns:7.5em 1fr 4.2em;gap:8px;align-items:center;font-size:.92em}
+.hbar .bar{height:18px;background:var(--surface);border:var(--bw-thin) solid var(--line-strong);border-radius:6px;overflow:hidden}
+.hbar .bar i{display:block;height:100%;background:var(--accent)}
+.hbar.zero .bar i{background:var(--bad)}
+.colbtns{display:flex;gap:8px;flex-wrap:wrap}
+.colbtns .btn{display:flex;align-items:center;gap:8px}
+.colbtns .btn svg{width:26px;height:26px}
+.sub-h{font-family:var(--f-display);font-size:.95rem;font-weight:700}
+
+/* фигуры */
+.shg{display:grid;grid-template-columns:repeat(3,var(--cs)) minmax(5.2em,auto);grid-auto-rows:var(--cs);gap:0;--cs:clamp(54px,15.5vw,82px);border:var(--bw) solid var(--edge);width:max-content;max-width:100%;background:var(--surface);margin-inline:auto}
+.shg>div{display:grid;place-items:center;border:1px solid var(--line-strong);padding:4px;text-align:center;line-height:1.15}
+.shg svg{width:72%;height:72%}
+.shg .sum{font-family:var(--f-mono);font-weight:800;font-size:clamp(.95rem,3.4vw,1.15rem)}
+.shg .sum small{display:block;font-weight:700;font-size:.62em;color:var(--muted)}
+.shg .sum.ok{background:var(--good-bg);color:var(--good)}
+.shg .sum.ok small{color:var(--good)}
+.shg .sum.bad{background:var(--bad-bg)}
+.shg .sum.q{background:var(--hint-bg)}
+.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.box{display:grid;gap:10px}
+.val{display:flex;align-items:center;gap:8px;padding:.4em .6em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.val svg{width:34px;height:34px;flex:none}
+.trick{display:grid;gap:6px;font-family:var(--f-mono);font-size:.95em}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+</style>
+<div id="app"></div>
+<script>
+window.PAGE_ID = 'b';
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+/* ===== Средняя группа 9–11 лет ===== */
+(function () {
+  const { h, s, rnd, pick, shuffle, onEnter, plural } = K;
+
+  function numAnswer(host, onCheck, label) {
+    const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': label || 'Твой ответ', id: 'in-' + Math.random().toString(36).slice(2, 7) });
+    const btn = h('button', { class: 'btn primary', type: 'button' }, 'Проверить');
+    const run = () => { if (inp.value.trim() === '') return; onCheck(Number(inp.value), inp, btn); };
+    btn.onclick = run; onEnter(inp, run);
+    host.append(h('div', { class: 'answer-row' }, inp, btn));
+    return inp;
+  }
+  const mark = (inp, ok) => { inp.classList.remove('ok', 'bad', 'shake'); inp.classList.add(ok ? 'ok' : 'bad'); if (!ok) { void inp.offsetWidth; inp.classList.add('shake'); } };
+
+  /* ---------- Задача 1: Снежки ---------- */
+  const SOL = [[112], [51, 61], [23, 28, 33], [10, 13, 15, 18], [4, 6, 7, 8, 10], [2, 2, 4, 3, 5, 5]];
+  const GIVEN = ['3,0', '3,2', '4,2', '4,4', '5,1', '5,2', '5,3'];
+
+  function deduce(rows, known) {
+    for (let r = rows - 1; r >= 0; r--) for (let c = 0; c <= r; c++) {
+      if (known.has(r + ',' + c)) continue;
+      if (r < rows - 1 && known.has((r + 1) + ',' + c) && known.has((r + 1) + ',' + (c + 1))) return { cell: [r, c], parts: [[r + 1, c], [r + 1, c + 1]], kind: 'sum' };
+      if (r > 0) {
+        if (c > 0 && known.has((r - 1) + ',' + (c - 1)) && known.has(r + ',' + (c - 1))) return { cell: [r, c], parts: [[r - 1, c - 1], [r, c - 1]], kind: 'diff' };
+        if (c < r && known.has((r - 1) + ',' + c) && known.has(r + ',' + (c + 1))) return { cell: [r, c], parts: [[r - 1, c], [r, c + 1]], kind: 'diff' };
+      }
+    }
+    return null;
+  }
+  function solvable(rows, given) {
+    const known = new Set(given); let d;
+    while ((d = deduce(rows, known))) known.add(d.cell.join(','));
+    return known.size === rows * (rows + 1) / 2;
+  }
+
+  function pyramid(host, sol, given, onSolved, onWrong) {
+    const rows = sol.length, givenSet = new Set(given);
+    const inputs = {}, typed = {};
+    const pyr = h('div', { class: 'pyr' });
+    const counter = h('div', { class: 'counter', 'aria-live': 'polite' });
+    const msg = h('div', { class: 'fb', role: 'status' });
+    for (let r = 0; r < rows; r++) {
+      const row = h('div', { class: 'pr' });
+      for (let c = 0; c <= r; c++) {
+        const key = r + ',' + c, isG = givenSet.has(key);
+        const inp = h('input', { class: 'ball' + (isG ? ' given' : ''), type: 'text', inputmode: 'numeric', maxlength: 4, id: 'ball-' + Math.random().toString(36).slice(2, 8), 'aria-label': `Снежок, ряд ${r + 1} сверху, номер ${c + 1}` + (isG ? ', дано' : ''), value: isG ? sol[r][c] : '' });
+        if (isG) inp.readOnly = true;
+        else inp.addEventListener('input', () => {
+          inp.value = inp.value.replace(/\D/g, '');
+          inp.classList.remove('ok', 'bad', 'hl', 'goal');
+          const v = inp.value;
+          if (v === '') { delete typed[key]; }
+          else if (Number(v) === sol[r][c]) { typed[key] = true; inp.classList.add('ok'); }
+          else { delete typed[key]; inp.classList.add('bad'); onWrong && onWrong(); }
+          update(true);
+        });
+        inputs[key] = inp; row.append(inp);
+      }
+      pyr.append(row);
+    }
+    function known() { return new Set([...givenSet, ...Object.keys(typed)]); }
+    function update(fromUser) {
+      const left = rows * (rows + 1) / 2 - known().size;
+      counter.textContent = left ? `Осталось найти: ${left}` : 'Все снежки заполнены!';
+      if (!left && fromUser) onSolved && onSolved();
+    }
+    const clearHl = () => Object.values(inputs).forEach(i => i.classList.remove('hl', 'goal'));
+    function hint() {
+      clearHl();
+      const d = deduce(rows, known());
+      if (!d) { msg.className = 'fb bad'; msg.textContent = 'Проверь красные снежки: в них где-то ошибка.'; return; }
+      d.parts.forEach(p => inputs[p.join(',')].classList.add('hl'));
+      inputs[d.cell.join(',')].classList.add('goal');
+      const [a, b] = d.parts.map(p => sol[p[0]][p[1]]);
+      msg.className = 'fb info';
+      msg.textContent = d.kind === 'sum'
+        ? `Оранжевые снежки внизу известны: ${a} и ${b}. Верхний равен их сумме. Сколько получится?`
+        : `Известны два оранжевых снежка: верхний ${a} и один из нижних ${b}. Чтобы найти второй нижний, вычти: ${a} − ${b}.`;
+    }
+    host.append(pyr, counter, h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: hint }, 'Подскажи следующий ход')), msg);
+    update(false);
+    return { reset() { } };
+  }
+
+  const task1 = {
+    id: 'b1', num: 1, title: 'Снежки',
+    story: '<p>Даша играла с друзьями в снежки и сложила их в пирамиду. На снежках написаны числа по правилу: <b>верхний снежок равен сумме двух нижних</b> (например, 7 = 4 + 3). Впиши числа во все пустые снежки.</p>',
+    hints: [
+      'Ищи место, где уже известны <b>два нижних</b> снежка: тогда верхний — это их сумма. В нижнем ряду это 2 + 4, 4 + 3.',
+      'Можно двигаться и вниз! Если известны верхний снежок и <b>один</b> нижний, второй нижний равен разности.',
+      'Нажми «Подскажи следующий ход»: подсветятся нужные снежки. Решать они не будут, считать придётся тебе.'
+    ],
+    build(play, api) {
+      const host = h('div', { class: 'play' }); play.append(host);
+      pyramid(host, SOL, GIVEN, () => api.solve('Пирамида собрана! Сверху получилось 112.'), () => api.attempt());
+    },
+    explain: `<ol>
+      <li>Во втором снизу ряду рядом стоят 4, 6, 7, 8, 10. Известны только 7 и 10, остальное найдём.</li>
+      <li>Нижний ряд: 2 + 4 = <b>6</b> (шестёрка стоит над этой парой).</li>
+      <li>В следующем ряду слева 10 = ? + 6, значит там <b>4</b>. А 4 = ? + 2, значит левый нижний снежок равен <b>2</b>.</li>
+      <li>Над числом 7 в ряду выше стоит 15 = 7 + ?, значит справа от семёрки <b>8</b>. Тогда 8 = 3 + ?, и нижний снежок <b>5</b>.</li>
+      <li>Последний справа: 10 = 5 + ?, значит <b>5</b>. Нижний ряд: 2, 2, 4, 3, 5, 5.</li>
+      <li>Дальше только сложение вверх: 6 + 7 = 13, 8 + 10 = 18, затем 23, 28, 33, потом 51 и 61 и в вершине <b>112</b>.</li></ol>
+      <p>Главная мысль: в каждой «тройке» (верхний снежок и два нижних) известны два числа, значит третье можно найти: сложить или вычесть.</p>`,
+    practice(box) {
+      const holder = h('div', { class: 'play' });
+      const bar = h('div', { class: 'row' });
+      function gen() {
+        holder.replaceChildren();
+        const rows = pick([4, 4, 5]);
+        const sol = []; sol[rows - 1] = Array.from({ length: rows }, () => rnd(1, 9));
+        for (let r = rows - 2; r >= 0; r--) sol[r] = Array.from({ length: r + 1 }, (_, c) => sol[r + 1][c] + sol[r + 1][c + 1]);
+        let given = []; for (let r = 0; r < rows; r++) for (let c = 0; c <= r; c++) given.push(r + ',' + c);
+        const total = rows * (rows + 1) / 2, blanks = rows === 4 ? 5 : 8;
+        for (const k of shuffle(given.slice())) { if (total - given.length >= blanks) break; const g2 = given.filter(x => x !== k); if (solvable(rows, g2)) given = g2; }
+        pyramid(holder, sol, given, () => { const m = h('p', { class: 'fb ok' }, 'Верно! Хочешь ещё одну?'); holder.append(m); K.burst(m); });
+      }
+      bar.append(h('button', { class: 'btn primary', type: 'button', onclick: gen }, 'Новая пирамида'));
+      box.append(h('p', null, 'Новая пирамида с другими числами. Правило то же.'), holder, bar);
+      gen();
+    }
+  };
+
+  /* ---------- Задача 2: Носочки ---------- */
+  const sockSvg = (cls) => s('svg', { viewBox: '0 0 48 48', class: cls, 'aria-hidden': 'true' }, s('path', { d: 'M13 4h16v20l13 8c3 2 4 6 2 9-2 4-6 4-9 3L12 34c-3-1-4-3-4-6V9c0-3 2-5 5-5z', fill: 'currentColor', stroke: 'var(--ink)', 'stroke-width': 2.2, 'stroke-linejoin': 'round' }), s('path', { d: 'M13 10h16', stroke: 'var(--ink)', 'stroke-width': 2.2, opacity: .45 }));
+  const COLS = { b: { name: 'синий', cls: 'cb', short: 'С' }, g: { name: 'зелёный', cls: 'cg', short: 'З' }, r: { name: 'красный', cls: 'cr', short: 'К' } };
+  const START = { b: 10, g: 6, r: 5 };
+
+  function drawUntilPair(counts) {
+    const bag = []; for (const c in counts) for (let i = 0; i < counts[c]; i++) bag.push(c);
+    const seq = [], seen = new Set();
+    while (bag.length) { const i = rnd(0, bag.length - 1), c = bag.splice(i, 1)[0]; seq.push(c); if (seen.has(c)) return seq; seen.add(c); }
+    return seq;
+  }
+  const sockEl = (c, pair) => h('div', { class: 'sock ' + COLS[c].cls }, sockSvg(pair ? 'pair' : ''), COLS[c].short);
+
+  function sockLab(host) {
+    // Часть 1: достаём наугад
+    const row1 = h('div', { class: 'sockrow', 'aria-live': 'polite' }), msg1 = h('div', { class: 'fb', role: 'status' });
+    let bag, seq, done, tries = 0, best = null, worst = null;
+    function newRound() { seq = []; done = false; bag = []; for (const c in START) for (let i = 0; i < START[c]; i++) bag.push(c); row1.replaceChildren(); msg1.textContent = ''; msg1.className = 'fb'; }
+    function pull() {
+      if (done) newRound();
+      const c = bag.splice(rnd(0, bag.length - 1), 1)[0];
+      const had = seq.includes(c); seq.push(c);
+      row1.append(sockEl(c, false));
+      if (had) {
+        done = true; tries++; best = best == null ? seq.length : Math.min(best, seq.length); worst = worst == null ? seq.length : Math.max(worst, seq.length);
+        const kids = row1.children;
+        const first = seq.indexOf(c); kids[first].replaceWith(sockEl(c, true)); kids[seq.length - 1].replaceWith(sockEl(c, true));
+        msg1.className = 'fb ok';
+        msg1.textContent = `Пара нашлась! Достали ${seq.length} ${plural(seq.length, 'носок', 'носка', 'носков')}. Попыток: ${tries}, меньше всего ${best}, больше всего ${worst}.`;
+      } else { msg1.className = 'fb info'; msg1.textContent = `Достали ${seq.length}. Пары пока нет.`; }
+    }
+    const hist = h('div', { class: 'hist' });
+    function many() {
+      const cnt = { 2: 0, 3: 0, 4: 0, big: 0 }, N = 2000;
+      for (let i = 0; i < N; i++) { const L = drawUntilPair(START).length; if (L >= 5) cnt.big++; else cnt[L]++; }
+      const mk = (label, n, zero) => h('div', { class: 'hbar' + (zero ? ' zero' : '') }, h('span', null, label), h('div', { class: 'bar' }, h('i', { style: { width: (n / N * 100) + '%' } })), h('span', { class: 'mono' }, n));
+      hist.replaceChildren(h('p', { class: 'muted small' }, `Результаты ${N} опытов: сколько носков понадобилось, чтобы появилась пара`), mk('2 носка', cnt[2]), mk('3 носка', cnt[3]), mk('4 носка', cnt[4]), mk('5 и больше', cnt.big, true));
+    }
+    newRound();
+    host.append(
+      h('div', { class: 'box' },
+        h('h3', { class: 'sub-h' }, 'Опыт 1. Достаём не глядя'),
+        h('div', { class: 'drawer' }, ...Object.keys(START).map(c => h('div', { class: 'dcol ' + COLS[c].cls }, sockSvg(''), h('span', { style: { color: 'var(--ink)' } }, `${COLS[c].name}: ${START[c]}`)))),
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: pull }, 'Достать носок'), h('button', { class: 'btn', type: 'button', onclick: many }, 'Повторить 2000 раз')),
+        row1, msg1, hist
+      )
+    );
+    // Часть 2: роль невезения
+    const row2 = h('div', { class: 'sockrow' }), msg2 = h('div', { class: 'fb', role: 'status' });
+    let drawn = [], bestRun = 0;
+    function unlucky(c) {
+      if (drawn.includes(c)) {
+        drawn.push(c); row2.append(sockEl(c, false));
+        bestRun = Math.max(bestRun, drawn.length - 1);
+        msg2.className = 'fb bad'; msg2.textContent = `Получилась пара! Без пары удалось достать ${drawn.length - 1} ${plural(drawn.length - 1, 'носок', 'носка', 'носков')}. Лучший результат: ${bestRun}. Сможешь больше?`;
+        drawn = [];
+        setTimeout(() => { row2.replaceChildren(); }, 1800);
+        return;
+      }
+      drawn.push(c); row2.append(sockEl(c, false)); bestRun = Math.max(bestRun, drawn.length);
+      msg2.className = 'fb info';
+      msg2.textContent = drawn.length === 3 ? 'Три носка трёх разных цветов, пары нет! А что будет с четвёртым?' : `Достали ${drawn.length}, пары нет.`;
+    }
+    host.append(
+      h('div', { class: 'box' },
+        h('h3', { class: 'sub-h' }, 'Опыт 2. Стань «невезением»'),
+        h('p', null, 'Теперь ты решаешь, какой носок попадётся Паше. Выбирай цвета так, чтобы пары как можно дольше не было. Сколько носков удастся достать?'),
+        h('div', { class: 'colbtns' }, ...Object.keys(START).map(c => h('button', { class: 'btn ' + COLS[c].cls, type: 'button', onclick: () => unlucky(c) }, sockSvg(''), h('span', { style: { color: 'var(--ink)' } }, COLS[c].name)))),
+        row2, msg2
+      )
+    );
+  }
+
+  const task2 = {
+    id: 'b2', num: 2, title: 'Носочки',
+    story: '<p>У Паши в комоде лежат <b>10 синих</b>, <b>6 зелёных</b> и <b>5 красных</b> носков. Какое <b>наименьшее</b> количество носков ему нужно достать не глядя, чтобы <b>наверняка</b> получилась пара одного цвета?</p>',
+    hints: [
+      'Слово «наверняка» значит: даже если Паше очень не повезёт. Представь самый невезучий случай.',
+      'Какое самое большое число носков можно достать так, чтобы пары ещё не было? Проверь в «Опыте 2».',
+      'Три носка могут быть разного цвета: синий, зелёный, красный. А четвёртый какого бы цвета ни был, он совпадёт с одним из трёх.'
+    ],
+    build(play, api) {
+      sockLab(play);
+      const ask = h('div', { class: 'box' }, h('p', { style: { fontWeight: 700, marginBottom: '8px' } }, 'Твой ответ: сколько носков нужно достать, чтобы пара была наверняка?'));
+      numAnswer(ask, (v, inp, btn) => {
+        api.attempt();
+        if (v === 4) { mark(inp, true); api.solve('Верно! Достаточно 4 носков.', btn); }
+        else {
+          mark(inp, false);
+          api.say(v < 4 ? (v <= 2 ? 'Два носка могут оказаться разного цвета.' : 'Три носка могут быть разного цвета: синий, зелёный и красный. Тогда пары нет.')
+            : v === 11 || v === 12 ? 'Это слишком много. Мы ищем наименьшее число, которое всегда даёт пару.' : 'С таким количеством пара точно будет, но можно меньше. Ищем наименьшее число.', 'bad');
+        }
+      }, 'Сколько носков');
+      play.append(ask);
+    },
+    explain: `<ul>
+      <li>Цветов три. Самый невезучий случай: Паша достал три носка трёх <b>разных</b> цветов, пары ещё нет.</li>
+      <li>Четвёртый носок обязательно будет одного из этих трёх цветов, то есть <b>совпадёт</b> с каким-то из первых трёх. Пара есть.</li>
+      <li>Ответ: <b>4 носка</b>. Числа 10, 6 и 5 в этой задаче ничего не решают, важно только число <b>цветов</b>.</li></ul>
+      <p>Это идея «ящиков и кроликов» (принцип Дирихле): если предметов больше, чем ящиков, в каком-то ящике окажется два предмета.</p>`,
+    practice(box) {
+      let cur;
+      const q = h('p'), why = h('div', { class: 'fb', role: 'status' }), holder = h('div');
+      function gen() {
+        const t = rnd(1, 4);
+        if (t === 1) { const k = rnd(3, 7); cur = { text: `В ящике лежат носки ${k} разных цветов, каждого цвета много. Сколько носков нужно достать не глядя, чтобы наверняка получилась пара одного цвета?`, ans: k + 1, why: `Худший случай: первые ${k} носков все разного цвета. Следующий уже совпадёт: ${k} + 1 = ${k + 1}.` }; }
+        else if (t === 2) { const b = rnd(8, 12), g = rnd(4, 7), r = rnd(3, 6); cur = { text: `В ящике ${b} синих, ${g} зелёных и ${r} красных носков. Паше нужна пара именно <b>синих</b> носков. Сколько носков надо достать, чтобы наверняка её получить?`, ans: g + r + 2, why: `Худший случай: сначала достаются все не синие (${g} + ${r} = ${g + r}). Потом нужны ещё 2 синих: ${g + r} + 2 = ${g + r + 2}.` }; }
+        else if (t === 3) { const c = rnd(2, 4); cur = { text: `В ящике носки ${c} цветов, каждого очень много. Сколько носков надо достать, чтобы наверняка получилось <b>три</b> носка одного цвета?`, ans: 2 * c + 1, why: `Худший случай: по 2 носка каждого цвета, это ${2 * c} носков и ещё нет трёх одинаковых. Следующий даст три: ${2 * c} + 1 = ${2 * c + 1}.` }; }
+        else { const b = rnd(8, 12), g = rnd(4, 7), r = rnd(3, 6); cur = { text: `В ящике ${b} синих, ${g} зелёных и ${r} красных носков. Сколько носков надо достать, чтобы наверняка получить два носка <b>разных</b> цветов?`, ans: b + 1, why: `Худший случай: достаются только синие, их больше всего (${b}). Следующий носок точно другого цвета: ${b} + 1 = ${b + 1}.` }; }
+        q.innerHTML = cur.text; why.textContent = ''; why.className = 'fb';
+        holder.replaceChildren();
+        numAnswer(holder, (v, inp) => { if (v === cur.ans) { mark(inp, true); why.className = 'fb ok'; why.textContent = 'Верно! ' + cur.why; K.burst(inp); } else { mark(inp, false); why.className = 'fb bad'; why.textContent = 'Нет. Представь самый невезучий случай.'; } });
+      }
+      box.append(q, holder, why, h('button', { class: 'btn', type: 'button', onclick: gen }, 'Другая задача'));
+      gen();
+    }
+  };
+
+  /* ---------- Задача 3: Новая арифметика ---------- */
+  function shape(type, cls) {
+    const col = { T: 'var(--s1)', K: 'var(--s2)', C: 'var(--s3)', H: 'var(--s4)' }[type];
+    const st = { stroke: 'var(--ink)', 'stroke-width': 2.6, 'stroke-linejoin': 'round', fill: col };
+    const el = type === 'T' ? s('path', { d: 'M20 5 L36 34 H4 Z', ...st })
+      : type === 'K' ? s('rect', { x: 6, y: 6, width: 28, height: 28, rx: 1, ...st })
+        : type === 'C' ? s('circle', { cx: 20, cy: 20, r: 15, ...st })
+          : s('polygon', { points: '11,5 29,5 38,20 29,35 11,35 2,20', ...st });
+    return s('svg', { viewBox: '0 0 40 40', class: cls || '', role: 'img', 'aria-label': { T: 'треугольник', K: 'квадрат', C: 'круг', H: 'шестиугольник' }[type] }, el);
+  }
+  const NAME = { T: 'треугольник', K: 'квадрат', C: 'круг', H: 'шестиугольник' };
+  const GRID = [['T', 'K', 'C'], ['K', 'K', 'T'], ['C', 'H', 'H']];
+
+  function shapeGrid(grid, rowT, colT, vals) {
+    // rowT: цели по строкам; colT: цели по столбцам (null = «?»); vals: текущие значения или null
+    const el = h('div', { class: 'shg', role: 'table' });
+    const cell = (c, cls) => h('div', { class: cls || '' }, c);
+    const rs = [0, 1, 2].map(r => vals ? grid[r].reduce((a, t) => a + vals[t], 0) : null);
+    const cs = [0, 1, 2].map(c => vals ? grid.reduce((a, row) => a + vals[row[c]], 0) : null);
+    const sumCell = (target, cur) => {
+      if (target == null) return h('div', { class: 'sum q' }, '= ?', vals ? h('small', null, 'сейчас ' + cur) : null);
+      const ok = vals && cur === target;
+      return h('div', { class: 'sum ' + (vals ? (ok ? 'ok' : 'bad') : '') }, '= ' + target, vals ? h('small', null, ok ? 'верно ✓' : 'сейчас ' + cur) : null);
+    };
+    for (let r = 0; r < 3; r++) { grid[r].forEach(t => el.append(cell(shape(t)))); el.append(sumCell(rowT[r], rs[r])); }
+    // нижняя строка: суммы столбцов
+    for (let c = 0; c < 3; c++) el.append(sumCell(colT[c], cs[c]));
+    el.append(h('div'));
+    el.style.gridTemplateColumns = 'repeat(3,var(--cs)) minmax(5.6em,auto)';
+    // разметка: нижняя строка — сумма-ячейки по ширине фигур
+    return { el, rs, cs };
+  }
+
+  const task3 = {
+    id: 'b3', num: 3, title: 'Новая арифметика',
+    story: '<p>Софа придумала свою арифметику: она складывает <b>геометрические фигуры</b>. Если сложить треугольник, квадрат и круг, получится 14. Если сложить круг и два шестиугольника, получится 19. А сколько получится, если сложить <b>круг, треугольник и шестиугольник</b> (последний столбец)?</p>',
+    hints: [
+      'Подбери числа для четырёх фигур (панель ниже), чтобы все надписи «= …» стали зелёными. Меняй по одной фигуре и смотри, что происходит с суммами.',
+      'Сравни вторую строку (квадрат + квадрат + треугольник = 11) и второй столбец (квадрат + квадрат + шестиугольник = 14). Что можно сказать про шестиугольник и треугольник?',
+      '<b>Хитрый способ.</b> Сумма по всем строкам: 14 + 11 + 19. Та же сумма по всем столбцам: 14 + 14 + «?». Эти две суммы равны, ведь складываются одни и те же фигуры.'
+    ],
+    build(play, api) {
+      const vals = { T: 1, K: 1, C: 1, H: 1 };
+      const gridHost = h('div'), panel = h('div', { class: 'vals' }), status = h('div', { class: 'fb', role: 'status' });
+      const rowT = [14, 11, 19], colT = [14, 14, null];
+      function draw() {
+        const g = shapeGrid(GRID, rowT, colT, vals);
+        gridHost.replaceChildren(g.el);
+        const ok = g.rs.every((v, i) => v === rowT[i]) && g.cs[0] === 14 && g.cs[1] === 14;
+        status.className = 'fb ' + (ok ? 'ok' : 'info');
+        status.textContent = ok ? `Все пять равенств выполнены! Значения: треугольник ${vals.T}, квадрат ${vals.K}, круг ${vals.C}, шестиугольник ${vals.H}. Посчитай последний столбец.` : 'Подбирай числа, пока всё не станет зелёным. Можно сразу воспользоваться подсказкой.';
+      }
+      ['T', 'K', 'C', 'H'].forEach(t => {
+        const st = K.stepper(0, 20, 1, v => { vals[t] = v; draw(); });
+        panel.append(h('div', { class: 'val' }, shape(t), h('span', { class: 'sr' }, NAME[t]), st));
+      });
+      play.append(gridHost, h('p', { class: 'muted small' }, 'Значения фигур (какое число «весит» каждая фигура):'), panel, status);
+      draw();
+      const ask = h('div', { class: 'box' }, h('p', { style: { fontWeight: 700, marginBottom: '8px' } }, 'Круг + треугольник + шестиугольник = ?'));
+      numAnswer(ask, (v, inp, btn) => {
+        api.attempt();
+        if (v === 16) { mark(inp, true); api.solve('Верно! Получится 16.', btn); }
+        else { mark(inp, false); api.say(v === 44 ? '44 — это сумма всех строк. Из неё нужно вычесть что-то ещё.' : 'Пока не то. Проверь: все пять равенств в таблице должны быть зелёными.', 'bad'); }
+      }, 'Ответ');
+      play.append(ask);
+    },
+    explain: (api) => h('div', { class: 'trick' },
+      h('p', { style: { fontFamily: 'var(--f-body)' } }, h('b', null, 'Способ 1. Подбор значений.'), ' Из условия: треугольник = 3, квадрат = 4, круг = 7, шестиугольник = 6. Проверка: 3 + 4 + 7 = 14; 4 + 4 + 3 = 11; 7 + 6 + 6 = 19; 4 + 4 + 6 = 14. Тогда 7 + 3 + 6 = 16.'),
+      h('p', { style: { fontFamily: 'var(--f-body)' } }, h('b', null, 'Способ 2. Хитрый.'), ' Если сложить все суммы строк или все суммы столбцов, получится одно и то же, ведь складываются одни и те же 9 фигур:'),
+      h('p', null, '14 + 11 + 19 = 14 + 14 + ?'), h('p', null, '44 = 28 + ?  →  ? = 16'),
+      h('p', { style: { fontFamily: 'var(--f-body)' } }, 'Ответ: ', h('b', null, '16'), '. Значения каждой фигуры искать вообще не пришлось.')),
+    practice(box) {
+      const holder = h('div'), res = h('div', { class: 'fb', role: 'status' }), ansHost = h('div');
+      let cur;
+      function gen() {
+        const types = ['T', 'K', 'C', 'H'], v = {}; const nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        types.forEach((t, i) => v[t] = nums[i]);
+        let grid;
+        do { grid = Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => pick(types))); } while (new Set(grid.flat()).size < 3);
+        const rows = grid.map(r => r.reduce((a, t) => a + v[t], 0));
+        const cols = [0, 1, 2].map(c => grid.reduce((a, r) => a + v[r[c]], 0));
+        const hide = rnd(0, 2);
+        cur = { ans: cols[hide], total: rows.reduce((a, b) => a + b), others: cols.filter((_, i) => i !== hide), hide, rows };
+        const colT = cols.map((x, i) => i === hide ? null : x);
+        holder.replaceChildren(shapeGrid(grid, rows, colT, null).el);
+        res.textContent = ''; res.className = 'fb'; ansHost.replaceChildren();
+        numAnswer(ansHost, (val, inp) => {
+          if (val === cur.ans) { mark(inp, true); res.className = 'fb ok'; res.textContent = `Верно! ${cur.rows.join(' + ')} = ${cur.others.join(' + ')} + ?, то есть ${cur.total} = ${cur.others.reduce((a, b) => a + b)} + ?, ответ ${cur.ans}.`; K.burst(inp); }
+          else { mark(inp, false); res.className = 'fb bad'; res.textContent = 'Нет. Сложи все суммы строк и все суммы столбцов: они равны.'; }
+        }, 'Что стоит на месте вопроса');
+      }
+      box.append(h('p', null, 'Здесь значения фигур неизвестны, но задачу всё равно можно решить хитрым способом. Найди число на месте «?».'), holder, ansHost, res, h('button', { class: 'btn', type: 'button', onclick: gen }, 'Другая таблица'));
+      gen();
+    }
+  };
+
+  K.App({
+    title: 'Олимпиадная лаборатория',
+    sub: 'Средняя группа, 9–11 лет · неделя 4',
+    intro: '<p><b>Как работать.</b> Решай задачи по порядку. В каждой задаче есть опыты и подсказки: сначала поэкспериментируй, потом отвечай. Внизу каждой задачи есть тренировка с новыми числами.</p>',
+    tasks: [task1, task2, task3]
+  });
+})();
+
+</script>
+
+</body></html>
