@@ -1,0 +1,821 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Неделя 5 для 9–11 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+<style>
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{max-width:68ch}
+.story>*+*{margin-top:10px}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+
+/* Макет: тетрадь в клетку, строгие контуры без теней, акцент бирюзовый и оранжевый. Лаборатория логики для 9–11 лет. */
+:root{
+  --bg:#EAF4F1;--surface:#FFFFFF;--surface2:#F2F9F7;--ink:#0F2F2A;--muted:#44625C;
+  --edge:#0F2F2A;--line:#C6DDD7;--line-strong:#86B3A9;--grid:rgba(15,80,70,.07);
+  --accent:#0B7E6F;--on-accent:#FFFFFF;--accent2:#F26B21;--on-accent2:#1A0A00;
+  --good:#18803C;--good-bg:#DFF4E4;--bad:#BF3520;--bad-bg:#FCE7E1;--star:#F5B21B;
+  --field:#FFFFFF;--hint-bg:#FFF0DB;--hint-edge:#EBA45E;--code-inline:#DDEDE9;--focus:#1B62E0;
+  --s1:#F26B21;--s2:#0B7E6F;--s3:#3C6FD8;--s4:#E5A50A;
+  --sock-b:#2F6FE0;--sock-g:#2EA44F;--sock-r:#D93A30;
+  --card-shadow:none;
+  --radius:10px;--radius-lg:16px;--bw:2px;--bw-thin:1.5px;--lift:0px;--fs:17px;--maxw:900px;
+  --f-display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --f-body:'Onest','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}
+
+body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.top h1{font-size:clamp(1.15rem,4.6vw,1.8rem);font-weight:700}
+.task-head h2{font-size:clamp(1.05rem,3.9vw,1.4rem);font-weight:700}
+.num{border-radius:8px}
+.tab{border-radius:8px}
+.intro{border-color:var(--hint-edge);background:var(--hint-bg)}
+.btn.primary{border-color:var(--accent)}
+.bubble .mascot{display:none}
+
+/* пирамида */
+.pyr{--bs:clamp(40px,11.4vw,60px);display:grid;gap:6px;justify-items:center;padding-block:4px}
+.pr{display:flex;gap:6px;justify-content:center}
+.ball{width:var(--bs);height:var(--bs);border-radius:50%;border:2px dashed var(--line-strong);background:var(--field);text-align:center;font-family:var(--f-mono);font-weight:800;font-size:calc(var(--bs)*.36);padding:0;color:var(--ink);-moz-appearance:textfield}
+.ball::-webkit-outer-spin-button,.ball::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ball.given{background:var(--accent);color:var(--on-accent);border:2px solid var(--accent)}
+.ball.ok{border:2px solid var(--good);background:var(--good-bg);color:var(--good)}
+.ball.bad{border:2px solid var(--bad);background:var(--bad-bg);color:var(--bad)}
+.ball.hl{box-shadow:0 0 0 4px var(--accent2)}
+.ball.goal{box-shadow:0 0 0 4px var(--accent2);border-style:solid;border-color:var(--accent2)}
+.counter{text-align:center;font-weight:700}
+
+/* носки */
+.drawer{display:flex;gap:10px;flex-wrap:wrap}
+.dcol{display:flex;align-items:center;gap:8px;padding:.4em .8em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface);font-weight:700}
+.dcol svg{width:28px;height:28px}
+.sockrow{display:flex;gap:8px;flex-wrap:wrap;min-height:76px;align-items:flex-end}
+.sock{display:grid;justify-items:center;gap:0;font-size:.72rem;font-weight:800;font-family:var(--f-mono);animation:pop .25s}
+.sock svg{width:46px;height:46px}
+.sock.pair svg{filter:drop-shadow(0 0 0 var(--accent2));outline:3px solid var(--accent2);outline-offset:2px;border-radius:8px}
+.cb{color:var(--sock-b)}.cg{color:var(--sock-g)}.cr{color:var(--sock-r)}
+.hist{display:grid;gap:6px}
+.hbar{display:grid;grid-template-columns:7.5em 1fr 4.2em;gap:8px;align-items:center;font-size:.92em}
+.hbar .bar{height:18px;background:var(--surface);border:var(--bw-thin) solid var(--line-strong);border-radius:6px;overflow:hidden}
+.hbar .bar i{display:block;height:100%;background:var(--accent)}
+.hbar.zero .bar i{background:var(--bad)}
+.colbtns{display:flex;gap:8px;flex-wrap:wrap}
+.colbtns .btn{display:flex;align-items:center;gap:8px}
+.colbtns .btn svg{width:26px;height:26px}
+.sub-h{font-family:var(--f-display);font-size:.95rem;font-weight:700}
+
+/* фигуры */
+.shg{display:grid;grid-template-columns:repeat(3,var(--cs)) minmax(5.2em,auto);grid-auto-rows:var(--cs);gap:0;--cs:clamp(54px,15.5vw,82px);border:var(--bw) solid var(--edge);width:max-content;max-width:100%;background:var(--surface);margin-inline:auto}
+.shg>div{display:grid;place-items:center;border:1px solid var(--line-strong);padding:4px;text-align:center;line-height:1.15}
+.shg svg{width:72%;height:72%}
+.shg .sum{font-family:var(--f-mono);font-weight:800;font-size:clamp(.95rem,3.4vw,1.15rem)}
+.shg .sum small{display:block;font-weight:700;font-size:.62em;color:var(--muted)}
+.shg .sum.ok{background:var(--good-bg);color:var(--good)}
+.shg .sum.ok small{color:var(--good)}
+.shg .sum.bad{background:var(--bad-bg)}
+.shg .sum.q{background:var(--hint-bg)}
+.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.box{display:grid;gap:10px}
+.val{display:flex;align-items:center;gap:8px;padding:.4em .6em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.val svg{width:34px;height:34px;flex:none}
+.trick{display:grid;gap:6px;font-family:var(--f-mono);font-size:.95em}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+
+/* ===== неделя 5 ===== */
+.pg{display:grid;width:max-content;max-width:100%;margin-inline:auto;--cs:clamp(34px,10.4vw,56px);background:var(--surface)}
+.pc{width:var(--cs);height:var(--cs);padding:0;margin:0;border-style:solid;border-color:var(--line-strong);background:var(--surface2);cursor:pointer;display:grid;place-items:center;font-size:calc(var(--cs)*.42);font-weight:800;color:var(--on-accent);border-radius:0;font-family:var(--f-body)}
+.pc:hover{filter:brightness(.95)}
+.pc[data-c="1"]{background:var(--s1)}.pc[data-c="2"]{background:var(--s2)}.pc[data-c="3"]{background:var(--s3)}.pc[data-c="4"]{background:var(--s4)}
+.pc[data-c="3"],.pc[data-c="2"]{color:#fff}
+.pc[data-c="1"],.pc[data-c="4"]{color:#1A0A00}
+.pg.static .pc{cursor:default}.pg.static .pc:hover{filter:none}
+.pvoid{width:var(--cs);height:var(--cs)}
+.pal{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pal .btn{display:flex;gap:6px;align-items:center;min-height:44px}
+.pal .btn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.sw{display:inline-grid;place-items:center;width:1.7em;height:1.7em;border-radius:6px;border:2px solid var(--edge);font-weight:800;font-size:.9em}
+.sw[data-c="1"]{background:var(--s1);color:#1A0A00}.sw[data-c="2"]{background:var(--s2);color:#fff}.sw[data-c="3"]{background:var(--s3);color:#fff}.sw[data-c="4"]{background:var(--s4);color:#1A0A00}
+
+.fcw{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.fcw{grid-template-columns:minmax(0,1fr)}}
+svg.flow{width:100%;height:auto;display:block;max-width:420px;margin-inline:auto}
+svg.flow .nd rect,svg.flow .nd polygon,svg.flow .nd ellipse{fill:var(--surface);stroke:var(--edge);stroke-width:1.8}
+svg.flow .nd text{font-family:var(--f-mono);font-weight:800;font-size:13px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+svg.flow .nd.cur rect,svg.flow .nd.cur polygon,svg.flow .nd.cur ellipse{stroke:var(--accent2);stroke-width:3.6;fill:var(--hint-bg)}
+svg.flow .nd.seen rect,svg.flow .nd.seen polygon,svg.flow .nd.seen ellipse{fill:var(--good-bg);stroke:var(--good)}
+svg.flow .ed{fill:none;stroke:var(--line-strong);stroke-width:1.8}
+svg.flow .lb{font-family:var(--f-mono);font-weight:800;font-size:11px;fill:var(--muted);text-anchor:middle}
+.trace{display:grid;gap:10px}
+.trace table{table-layout:fixed}
+.trace td,.trace th{padding:.3em .3em;font-size:.9em}
+.trace th{font-size:.78em;line-height:1.2}
+.trace td input.field,.trace td select.field{width:100%;min-height:40px;padding:.2em .3em;text-align:center;font-family:var(--f-mono);font-weight:800}
+.trace .ok{border-color:var(--good);background:var(--good-bg)}.trace .bad{border-color:var(--bad);background:var(--bad-bg)}
+.algo{font-family:var(--f-mono);font-size:.92em;display:grid;gap:2px}
+
+.expr{display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center;font-family:var(--f-mono);font-size:clamp(1.05rem,4.4vw,1.5rem);font-weight:800;line-height:1.2;padding:12px;border:var(--bw) dashed var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.expr .op{color:var(--muted)}
+.expr .val{display:inline-grid;place-items:center;min-width:1.6em;height:1.6em;border-radius:6px;background:var(--accent);color:var(--on-accent)}
+.expr .chip{cursor:pointer;font:inherit;border:var(--bw) solid var(--accent2);background:var(--hint-bg);color:var(--ink);border-radius:8px;padding:.1em .45em;min-height:44px;animation:pulse 1.6s infinite}
+.expr .ans{display:inline-flex;gap:4px;align-items:center}
+.expr .ans .btn{min-height:44px;padding:.2em .8em;font-family:var(--f-mono);font-weight:800}
+@keyframes pulse{50%{box-shadow:0 0 0 4px var(--hint-edge)}}
+.hist{display:grid;gap:4px;font-family:var(--f-mono);font-size:.92em;counter-reset:h}
+.hist div::before{counter-increment:h;content:counter(h) ". ";color:var(--muted)}
+.tt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tt table{font-family:var(--f-mono);font-size:.9em}
+.big01{display:flex;gap:10px}.big01 .btn{min-width:64px;font-family:var(--f-mono);font-size:1.3em;font-weight:800}
+.stage{display:grid;gap:12px}
+
+</style>
+<main id="app"></main>
+<script>window.PAGE_ID='w5b';</script>
+<script>
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+
+/* ===== Страница 9–11 лет, неделя 5 ===== */
+(function () {
+  'use strict';
+  const { h, s, rnd, pick, shuffle, onEnter } = K;
+  const num = (str) => { const t = String(str).trim().replace('−', '-'); return /^-?\d+$/.test(t) ? parseInt(t, 10) : NaN; };
+  const SYM = ['', '●', '▲', '■', '◆'];
+
+  /* ================= Задача 1. Одну на три ================= */
+  const parseShape = (rows) => { const out = []; rows.forEach((row, r) => row.split('').forEach((ch, c) => { if (ch === 'X') out.push([r, c]); })); return out; };
+  function canon(cells) {
+    const forms = [];
+    for (let m = 0; m < 2; m++) for (let r = 0; r < 4; r++) {
+      let pts = cells.map(([y, x]) => [y, m ? -x : x]);
+      for (let i = 0; i < r; i++) pts = pts.map(([y, x]) => [x, -y]);
+      const my = Math.min(...pts.map(p => p[0])), mx = Math.min(...pts.map(p => p[1]));
+      forms.push(pts.map(([y, x]) => (y - my) + ',' + (x - mx)).sort().join(';'));
+    }
+    return forms.sort()[0];
+  }
+  function connected(cells) {
+    if (!cells.length) return true;
+    const set = new Set(cells.map(c => c.join(',')));
+    const seen = new Set([cells[0].join(',')]), q = [cells[0]];
+    while (q.length) { const [y, x] = q.pop(); for (const [dy, dx] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const k = (y + dy) + ',' + (x + dx); if (set.has(k) && !seen.has(k)) { seen.add(k); q.push([y + dy, x + dx]); } } }
+    return seen.size === cells.length;
+  }
+  function verifyCut(cells, paint, k) {
+    const miss = cells.filter(c => !paint.get(c.join(','))).length;
+    if (miss) return { ok: false, msg: `Ещё не закрашено клеток: ${miss}. Каждая клетка должна войти в какую-то часть.` };
+    const want = cells.length / k;
+    const parts = [];
+    for (let i = 1; i <= k; i++) parts.push(cells.filter(c => paint.get(c.join(',')) === i));
+    for (let i = 0; i < k; i++) if (parts.length && parts[i].length !== want) return { ok: false, msg: `Часть «${SYM[i + 1]}» состоит из ${parts[i].length} ${K.plural(parts[i].length, 'клетки', 'клеток', 'клеток')}, а должна — из ${want}. Равные части — это и равное число клеток.` };
+    for (let i = 0; i < k; i++) if (!connected(parts[i])) return { ok: false, msg: `Часть «${SYM[i + 1]}» распалась на куски: клетки части должны соприкасаться сторонами.` };
+    const c0 = canon(parts[0]);
+    for (let i = 1; i < k; i++) if (canon(parts[i]) !== c0) return { ok: false, msg: `Части «${SYM[1]}» и «${SYM[i + 1]}» одинаковы по размеру, но разные по форме. Представь, что одну вырезали из бумаги: её можно поворачивать и переворачивать, но можно ли ей закрыть другую часть?` };
+    return { ok: true };
+  }
+  function painter(cfg) {
+    const cells = parseShape(cfg.rows), cols = cfg.rows[0].length, nrows = cfg.rows.length;
+    const key = (r, c) => r + ',' + c;
+    const inShape = new Set(cells.map(c => c.join(',')));
+    const paint = new Map();
+    let tool = 1;
+    const grid = h('div', { class: 'pg' + (cfg.static ? ' static' : ''), style: { gridTemplateColumns: `repeat(${cols}, var(--cs))` }, role: 'group', 'aria-label': 'Фигура из клеток' });
+    const els = new Map();
+    for (let r = 0; r < nrows; r++) for (let c = 0; c < cols; c++) {
+      if (!inShape.has(key(r, c))) { grid.append(h('div', { class: 'pvoid' })); continue; }
+      const b = h('button', { class: 'pc', type: 'button', 'aria-label': `Клетка: строка ${r + 1}, столбец ${c + 1}`, disabled: cfg.static || null });
+      if (!cfg.static) b.onclick = () => { if (tool === 0) paint.delete(key(r, c)); else paint.set(key(r, c), tool); refresh(); cfg.onChange && cfg.onChange(); };
+      els.set(key(r, c), b); grid.append(b);
+    }
+    const T = '3px solid var(--edge)', Th = '1px solid var(--line-strong)';
+    function refresh() {
+      els.forEach((b, k) => {
+        const [r, c] = k.split(',').map(Number), col = paint.get(k) || 0;
+        b.dataset.c = col; b.textContent = SYM[col];
+        const nb = (dr, dc) => { const kk = key(r + dr, c + dc); return inShape.has(kk) ? (paint.get(kk) || 0) : -1; };
+        b.style.borderTop = nb(-1, 0) === -1 || nb(-1, 0) !== col ? T : Th;
+        b.style.borderLeft = nb(0, -1) === -1 || nb(0, -1) !== col ? T : Th;
+        b.style.borderRight = nb(0, 1) === -1 ? T : '0';
+        b.style.borderBottom = nb(1, 0) === -1 ? T : '0';
+        b.setAttribute('aria-label', `Клетка: строка ${r + 1}, столбец ${c + 1}${col ? ', часть ' + SYM[col] : ', не закрашена'}`);
+      });
+    }
+    if (cfg.solution) cfg.solution.forEach((rowStr, r) => rowStr.split('').forEach((ch, c) => { if (ch !== '.' && ch !== ' ') paint.set(key(r, c), +ch); }));
+    refresh();
+    const el = h('div', { class: 'stage' }, grid);
+    const api = { el, paint, cells, verify: () => verifyCut(cells, paint, cfg.k) };
+    if (!cfg.static) {
+      const pal = h('div', { class: 'pal', role: 'group', 'aria-label': 'Выбор части' });
+      const btns = [];
+      for (let i = 1; i <= cfg.k; i++) { const bt = h('button', { class: 'btn', type: 'button', 'aria-pressed': i === 1 ? 'true' : 'false', onclick: () => { tool = i; btns.forEach((x, j) => x.setAttribute('aria-pressed', j === i - 1 || (tool === 0 && false) ? 'true' : 'false')); er.setAttribute('aria-pressed', 'false'); } }, h('span', { class: 'sw', 'data-c': i }, SYM[i]), 'Часть ' + i); btns.push(bt); pal.append(bt); }
+      const er = h('button', { class: 'btn ghost', type: 'button', 'aria-pressed': 'false', onclick: () => { tool = 0; btns.forEach(x => x.setAttribute('aria-pressed', 'false')); er.setAttribute('aria-pressed', 'true'); } }, '⌫ Стереть');
+      pal.append(er, h('button', { class: 'btn ghost', type: 'button', onclick: () => { paint.clear(); refresh(); cfg.onChange && cfg.onChange(); } }, 'Сбросить всё'));
+      el.prepend(pal);
+    }
+    return api;
+  }
+
+  const FIG = ['XX.....', 'XX....X', 'XXXXXXX', 'XXXXXXX', 'XX....X', 'XX.....'];
+  const FIG_SOL = ['11.....', '12....2', '2222222'.replace(/2/g, '2'), '3333333', '33....3', '11.....'];
+  FIG_SOL[0] = '11.....'; FIG_SOL[1] = '12....2'; FIG_SOL[2] = '1222222'; FIG_SOL[3] = '1333333'; FIG_SOL[4] = '13....3'; FIG_SOL[5] = '11.....';
+
+  const t1 = {
+    id: 'cut', num: 1, title: 'Одну на три',
+    story: '<p>Разрежь фигуру <b>по сторонам клеток</b> на <b>три равные части</b> (равные по форме и размеру). Выбери часть и закрашивай клетки по одной — части будут отличаться цветом и значком.</p>',
+    hints: [
+      'Сколько всего клеток в фигуре? Посчитай по рядам. Раз частей три и они равные, сколько клеток в каждой части?',
+      'Найди самый длинный прямой ряд клеток в фигуре. Из чего может состоять часть, у которой в ряду много клеток?',
+      'Левый столбец — это 6 клеток подряд. Сколько клеток нужно добавить, чтобы набралось 8? Посмотри на «ушки» справа на концах столбца.',
+      'Когда одна часть найдена, остаётся симметричная фигура — два длинных горизонтальных ряда, у каждого по два «ушка». Раздели её по горизонтали.'
+    ],
+    build(play, api) {
+      const fb = () => api.say('', 'info');
+      const p = painter({ rows: FIG, k: 3, onChange: fb });
+      const chk = h('button', { class: 'btn primary', type: 'button', onclick: () => {
+        const r = p.verify();
+        if (r.ok) api.solve('Верно! Три одинаковые части — все можно наложить друг на друга.'); else { api.attempt(); api.say(r.msg, 'bad'); }
+      } }, 'Проверить разрезание');
+      play.append(p.el, h('div', { class: 'row', style: { justifyContent: 'center' } }, chk),
+        h('p', { class: 'muted small' }, 'Толстая линия — граница фигуры или разрез между частями.'));
+    },
+    explain() {
+      const p = painter({ rows: FIG, k: 3, static: true, solution: FIG_SOL });
+      return h('div', null, p.el,
+        h('ol', null,
+          h('li', { html: 'Всего клеток 6+6 (два длинных ряда) + 2·2 (ушки) + 2 (углы слева) = <b>24</b>, значит, в каждой части по <b>8</b>.' }),
+          h('li', { html: 'Каждая часть — «скоба»: ряд из <b>6 клеток</b> и два «ушка» по краям с одной стороны.' }),
+          h('li', { html: 'Левая часть — скоба, повёрнутая «ушками» вправо; верхняя — «ушками» вверх; нижняя — «ушками» вниз. Это одна и та же фигура в разных поворотах.' })),
+        h('p', { class: 'small muted', html: 'Типичные ошибки: разрезать на три полосы разного размера; получить части по 8 клеток, но разной формы; забыть, что части можно поворачивать при сравнении. Решение не единственное для проверки, но для этой фигуры оно самое естественное.' }));
+    },
+    practiceTitle: 'Ещё потренироваться: другие фигуры',
+    practice(body) {
+      const P = [
+        { name: 'Буква Г — на две равные части', rows: ['X...', 'X...', 'X...', 'X...', 'XXXX'], k: 2 },
+        { name: 'Ступеньки — на две равные части', rows: ['XXX...', '.XXX..', '..XXX.', '...XXX'], k: 2 },
+        { name: 'Квадрат 4×4 — на четыре равные части', rows: ['XXXX', 'XXXX', 'XXXX', 'XXXX'], k: 4 }
+      ];
+      P.forEach(cfg => {
+        const f = h('p', { class: 'fb' });
+        const pt = painter({ rows: cfg.rows, k: cfg.k, onChange: () => { f.textContent = ''; } });
+        body.append(h('div', { class: 'box' }, h('p', { class: 'sub-h' }, cfg.name), pt.el,
+          h('div', { class: 'row', style: { justifyContent: 'center' } }, h('button', { class: 'btn primary', type: 'button', onclick: () => { const r = pt.verify(); f.className = 'fb ' + (r.ok ? 'ok' : 'bad'); f.textContent = r.ok ? 'Верно!' : r.msg; if (r.ok) K.burst(f); } }, 'Проверить')), f));
+      });
+    }
+  };
+
+  /* ================= Задача 2. Алгоритм с двумя условиями ================= */
+  function sim2(s0, t1, t2, d) {
+    let x = s0; const rows = []; let g = 0;
+    while (g++ < 60) { const x0 = x, g5 = x > t1; x = g5 ? x * x : x + d; const g30 = x > t2; rows.push({ x0, g5, x1: x, g30 }); if (g30) break; }
+    return rows;
+  }
+  function flowSvg() {
+    const uid = 'f' + Math.random().toString(36).slice(2, 6);
+    const svg = s('svg', { class: 'flow', viewBox: '0 0 400 400', role: 'img', 'aria-label': 'Блок-схема: X:=2; если X>5, то X:=X·X, иначе X:=X+2; если X>30, показать X, иначе повторить' },
+      s('defs', null, s('marker', { id: uid, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, s('path', { d: 'M0 0 L10 5 L0 10 z', style: 'fill:var(--line-strong)' }))));
+    const E = [
+      [[200, 34], [200, 56]], [[200, 88], [200, 121]], [[150, 150], [130, 150]], [[250, 150], [270, 150]],
+      [[80, 166], [80, 205], [200, 205]], [[320, 166], [320, 205], [200, 205]], [[200, 205], [200, 221]],
+      [[150, 250], [24, 250], [24, 112], [199, 112]], [[200, 278], [200, 303]], [[200, 336], [200, 372]]
+    ];
+    E.forEach(p => svg.append(s('polyline', { class: 'ed', points: p.map(q => q.join(',')).join(' '), 'marker-end': `url(#${uid})` })));
+    [['Нет', 140, 141], ['Да', 260, 141], ['Нет', 90, 241], ['Да', 218, 294]].forEach(l => svg.append(s('text', { class: 'lb', x: l[1], y: l[2] }, l[0])));
+    const N = {
+      s: { t: 'ell', x: 200, y: 20, w: 110, h: 28, text: 'НАЧАЛО' }, a: { t: 'rect', x: 200, y: 72, w: 110, h: 32, text: 'X := 2' },
+      c1: { t: 'dia', x: 200, y: 150, w: 100, h: 56, text: 'X > 5' }, L: { t: 'rect', x: 80, y: 150, w: 100, h: 32, text: 'X := X + 2' }, R: { t: 'rect', x: 320, y: 150, w: 100, h: 32, text: 'X := X · X' },
+      c2: { t: 'dia', x: 200, y: 250, w: 100, h: 56, text: 'X > 30' }, show: { t: 'rect', x: 200, y: 320, w: 130, h: 32, text: 'Покажи X' }, end: { t: 'ell', x: 200, y: 386, w: 110, h: 28, text: 'КОНЕЦ' }
+    };
+    const el = {};
+    Object.entries(N).forEach(([id, n]) => {
+      const shape = n.t === 'dia' ? s('polygon', { points: `${n.x},${n.y - n.h / 2} ${n.x + n.w / 2},${n.y} ${n.x},${n.y + n.h / 2} ${n.x - n.w / 2},${n.y}` })
+        : n.t === 'ell' ? s('ellipse', { cx: n.x, cy: n.y, rx: n.w / 2, ry: n.h / 2 }) : s('rect', { x: n.x - n.w / 2, y: n.y - n.h / 2, width: n.w, height: n.h, rx: 3 });
+      const g = s('g', { class: 'nd' }, shape, s('text', { x: n.x, y: n.y }, n.text)); el[id] = g; svg.append(g);
+    });
+    return { svg, el };
+  }
+  const t2 = {
+    id: 'algo', num: 2, title: 'Алгоритм с двумя условиями',
+    story: '<p>Запиши результат выполнения алгоритма. Он повторяется по кругу, пока не выполнится второе условие.</p><p class="muted">Заполни таблицу по проходам — каждая строка проверяется сразу. А потом впиши ответ.</p>',
+    hints: [
+      'Начни с «X := 2». Первый проход: X = 2. Выполняется ли X > 5? Нет — значит, идём по стрелке «Нет» влево.',
+      'После X := X + 2 получилось 4. Теперь второе условие: 4 > 30? Нет — стрелка возвращает нас наверх, ко второму проходу.',
+      'Второй проход: X = 4. X > 5? Всё ещё нет, снова прибавляем 2.',
+      'Третий проход: X = 6. Теперь 6 > 5 — да! Тогда выполняется X := X · X (а не X + 2).',
+      'После умножения проверь второе условие: X > 30? Если да — алгоритм заканчивается и показывает X.'
+    ],
+    build(play, api) {
+      const { svg, el } = flowSvg();
+      let last = [];
+      const S = sim2(2, 5, 30, 2);
+      const mkNum = () => h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'число' });
+      const mkYN = (lbl) => h('select', { class: 'field', 'aria-label': lbl }, h('option', { value: '' }, '—'), h('option', { value: 'Да' }, 'Да'), h('option', { value: 'Нет' }, 'Нет'));
+      const user = [];
+      const tb = h('tbody');
+      const addRow = () => {
+        if (user.length >= 8) return;
+        const r = [mkNum(), mkYN('X > 5?'), mkNum(), mkYN('X > 30?')];
+        r[0].setAttribute('aria-label', 'X в начале прохода'); r[2].setAttribute('aria-label', 'X после действия');
+        user.push(r);
+        tb.append(h('tr', null, h('td', { class: 'mono' }, user.length), ...r.map(e => h('td', null, e))));
+      };
+      addRow(); addRow();
+      const mark = (e, ok) => { e.classList.remove('ok', 'bad'); if (ok !== null) e.classList.add(ok ? 'ok' : 'bad'); };
+      const flash = (i) => {
+        Object.values(el).forEach(g => { g.classList.remove('cur'); });
+        last.forEach(g => g.classList.add('seen'));
+        const row = S[i]; const ids = (i === 0 ? ['a'] : []).concat(['c1', row.g5 ? 'R' : 'L', 'c2']).concat(row.g30 ? ['show', 'end'] : []);
+        last = ids.map(id => el[id]); last.forEach(g => { g.classList.remove('seen'); g.classList.add('cur'); });
+      };
+      const check = () => {
+        let msg = '', err = false, count = 0, blank = false;
+        user.forEach((r, i) => {
+          const v = [r[0].value, r[1].value, r[2].value, r[3].value];
+          if (v.every(x => x === '')) { r.forEach(e => mark(e, null)); blank = true; return; }
+          if (blank && !err) { err = true; msg = 'Не пропускай строки: заполняй проходы по порядку.'; }
+          const exp = S[i];
+          if (!exp) { r.forEach(e => mark(e, false)); if (!err) { err = true; msg = `Алгоритм закончился уже после прохода ${S.length}: в той строке X > 30 — «Да». Лишние строки очисти.`; } return; }
+          const got = [num(v[0]), v[1], num(v[2]), v[3]], want = [exp.x0, exp.g5 ? 'Да' : 'Нет', exp.x1, exp.g30 ? 'Да' : 'Нет'];
+          const names = ['X в начале', 'условие X > 5', 'X после действия', 'условие X > 30'];
+          got.forEach((g, j) => {
+            const empty = v[j] === '', ok = !empty && g === want[j]; mark(r[j], ok);
+            if (!ok && !err) {
+              err = true; api.attempt();
+              if (empty) msg = `В строке ${i + 1} не заполнено: ${names[j]}.`;
+              else if (j === 0) msg = `Строка ${i + 1}: «X в начале» берётся из «X после действия» предыдущего прохода${i === 0 ? ' (в начале X := 2)' : ''}.`;
+              else if (j === 1) msg = `Строка ${i + 1}: при X = ${exp.x0} условие X > 5 — ${exp.g5 ? 'выполняется («Да»)' : 'не выполняется («Нет»)'}.`;
+              else if (j === 2) msg = `Строка ${i + 1}: при X > 5 «${exp.g5 ? 'да' : 'нет'}» выполняется ${exp.g5 ? 'X := X · X' : 'X := X + 2'}. Посчитай: ${exp.x0} ${exp.g5 ? '·' : '+'} ${exp.g5 ? exp.x0 : 2}.`;
+              else msg = `Строка ${i + 1}: после действия X = ${exp.x1}. Он больше 30? ${exp.g30 ? 'Да' : 'Нет'}.`;
+            }
+          });
+          if (!err) { count = i + 1; flash(i); }
+        });
+        if (err) { api.say(msg, 'bad'); return; }
+        if (count === 0) { api.say('Заполни хотя бы первую строку таблицы.', 'info'); return; }
+        if (count === S.length) api.say('Таблица верна — алгоритм закончился: в последней строке X > 30. Что он покажет? Впиши ответ ниже.', 'ok');
+        else api.say(`Пока всё верно (проходов: ${count}). Алгоритм ещё не закончился — добавь следующую строку.`, 'info');
+      };
+      const ans = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Ответ' });
+      const sendAns = () => {
+        const v = num(ans.value);
+        if (Number.isNaN(v)) { api.say('Впиши число.', 'bad'); return; }
+        if (v === 36) { ans.className = 'field ok'; api.solve('Верно! Алгоритм покажет 36.'); return; }
+        ans.className = 'field bad'; api.attempt();
+        if ([4, 6].includes(v)) api.say(`${v} — это промежуточное значение. Алгоритм на этом не остановился: условие X > 30 ещё не выполнено.`, 'bad');
+        else if (v > 30) api.say(`${v} больше 30, но в какой момент получается число, после которого проверка «X > 30» даёт «Да»? Проверь умножение X · X.`, 'bad');
+        else api.say('Не совпало. Заполни таблицу — она покажет, как меняется X.', 'bad');
+      };
+      onEnter(ans, sendAns);
+      play.append(h('div', { class: 'fcw' }, svg,
+        h('div', { class: 'trace' },
+          h('div', { class: 'hscroll' }, h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', null, '№'), h('th', null, 'X в начале'), h('th', null, 'X > 5 ?'), h('th', null, 'X после'), h('th', null, 'X > 30 ?'))), tb)),
+          h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: check }, 'Проверить таблицу'), h('button', { class: 'btn ghost', type: 'button', onclick: addRow }, '＋ строка')),
+          h('p', { class: 'sub-h' }, 'Что покажет алгоритм?'),
+          h('div', { class: 'answer-row' }, h('span', { class: 'mono' }, 'X ='), ans, h('button', { class: 'btn primary', type: 'button', onclick: sendAns }, 'Ответить')))));
+    },
+    explain() {
+      const S = sim2(2, 5, 30, 2);
+      return h('div', null,
+        h('div', { class: 'hscroll' }, h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', null, '№'), h('th', null, 'X в начале'), h('th', null, 'X > 5 ?'), h('th', null, 'действие'), h('th', null, 'X после'), h('th', null, 'X > 30 ?'))),
+          h('tbody', null, ...S.map((r, i) => h('tr', null, h('td', null, i + 1), h('td', null, r.x0), h('td', null, r.g5 ? 'Да' : 'Нет'), h('td', null, r.g5 ? 'X·X' : 'X+2'), h('td', null, r.x1), h('td', null, r.g30 ? 'Да' : 'Нет')))))),
+        h('p', { html: 'Ответ: <b>36</b>. Значение X менялось так: 2 → 4 → 6 → 36.' }),
+        h('p', { class: 'small muted', html: 'Типичные ошибки: остановиться, как только X стало больше 5 (останавливает только условие X > 30); после умножения не проверить второе условие; считать X · X как 2·X; забыть, что стрелка «Нет» второго условия ведёт назад к первому.' }));
+    },
+    practiceTitle: 'Ещё потренироваться: новые алгоритмы',
+    practice(body) {
+      const mount = h('div', { class: 'box' }), f = h('p', { class: 'fb' });
+      let cur;
+      const gen = () => {
+        let p;
+        do { p = { s0: rnd(2, 5), t1: rnd(4, 8), t2: rnd(20, 60), d: rnd(1, 3) }; p.rows = sim2(p.s0, p.t1, p.t2, p.d); } while (p.rows.length < 3 || p.rows.length > 9);
+        cur = p;
+        const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Ответ' });
+        const sub = () => {
+          const v = num(inp.value); if (Number.isNaN(v)) { f.className = 'fb bad'; f.textContent = 'Впиши число.'; return; }
+          const want = p.rows[p.rows.length - 1].x1;
+          const path = [p.s0].concat(p.rows.map(r => r.x1)).join(' → ');
+          inp.className = 'field ' + (v === want ? 'ok' : 'bad'); f.className = 'fb ' + (v === want ? 'ok' : 'bad');
+          f.textContent = v === want ? `Верно! X менялось так: ${path}.` : `Пока не так. Проходи по шагам: условие X > ${p.t1} — если да, X := X · X, если нет, X := X + ${p.d}; и после каждого шага проверяй X > ${p.t2}.`;
+        };
+        onEnter(inp, sub);
+        mount.replaceChildren(h('div', { class: 'algo' },
+          h('div', null, `1) X := ${p.s0}`), h('div', null, `2) если X > ${p.t1}, то X := X · X, иначе X := X + ${p.d}`),
+          h('div', null, `3) если X > ${p.t2} — перейти к п. 4, иначе вернуться к п. 2`), h('div', null, '4) показать X')),
+          h('div', { class: 'answer-row' }, h('span', { class: 'mono' }, 'X ='), inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить')));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другой алгоритм')); gen();
+    }
+  };
+
+  /* ================= Задача 3. Алгебра логики ================= */
+  const L = (v) => ({ v });
+  const AND = (a, b) => ({ op: 'и', a, b }), OR = (a, b) => ({ op: 'или', a, b }), NOT = (a) => ({ op: '!', a });
+  const val = (n) => n.val !== undefined ? n.val : n.v;
+  const calc = (n) => n.op === '!' ? 1 - val(n.a) : n.op === 'и' ? val(n.a) & val(n.b) : val(n.a) | val(n.b);
+  const ready = (n) => n.op && n.val === undefined && val(n.a) !== undefined && (n.op === '!' || val(n.b) !== undefined);
+  const textOf = (n, top) => {
+    if (n.v !== undefined || n.val !== undefined) return String(val(n));
+    if (n.op === '!') return '!' + (val(n.a) !== undefined ? textOf(n.a) : textOf(n.a));
+    const t = `${textOf(n.a)} ${n.op} ${textOf(n.b)}`;
+    return top ? t : `(${t})`;
+  };
+  const clone = (n) => n.op ? { op: n.op, a: clone(n.a), b: n.b ? clone(n.b) : undefined } : { v: n.v };
+  const hintFor = (n) => n.op === '!' ? 'Отрицание «!» меняет значение: !0 = 1, !1 = 0.' : n.op === 'и' ? 'Операция «и» даёт 1 только тогда, когда оба значения равны 1.' : 'Операция «или» даёт 0 только тогда, когда оба значения равны 0.';
+  function exprWidget(root, cb) {
+    const box = h('div', { class: 'expr', 'aria-live': 'polite' });
+    const hist = h('div', { class: 'hist' });
+    let asking = null;
+    function view(n, top) {
+      if (n.v !== undefined) return [h('span', { class: 'val' }, n.v)];
+      if (n.val !== undefined) return [h('span', { class: 'val' }, n.val)];
+      if (ready(n)) {
+        const inner = n.op === '!' ? `!${val(n.a)}` : `(${val(n.a)} ${n.op} ${val(n.b)})`;
+        if (asking === n) return [h('span', { class: 'op' }, inner, ' ='), h('span', { class: 'ans' }, [0, 1].map(v => h('button', { class: 'btn', type: 'button', onclick: () => pickVal(n, v) }, v)))];
+        return [h('button', { class: 'chip', type: 'button', 'aria-label': 'Вычислить ' + inner, onclick: () => { asking = n; draw(); } }, inner)];
+      }
+      if (n.op === '!') return [h('span', { class: 'op' }, '!'), ...view(n.a)];
+      return [h('span', { class: 'op' }, top ? '' : '('), ...view(n.a), h('span', { class: 'op' }, ' ' + n.op + ' '), ...view(n.b), h('span', { class: 'op' }, top ? '' : ')')];
+    }
+    function draw() { box.replaceChildren(...view(root, true)); }
+    function pickVal(n, v) {
+      const want = calc(n);
+      if (v === want) { n.val = want; asking = null; hist.append(h('div', null, textOf(root, true))); draw(); if (root.val !== undefined) cb.done(root.val); else cb.say('Верно! Ищи следующую подсвеченную часть.', 'ok'); }
+      else { cb.attempt(); cb.say(`Не так. ${hintFor(n)}`, 'bad'); }
+    }
+    draw();
+    return h('div', { class: 'stage' }, box, h('div', null, h('p', { class: 'sub-h' }, 'Шаги решения'), hist));
+  }
+  const truthTables = () => h('div', { class: 'tt' },
+    h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', null, 'a'), h('th', null, 'b'), h('th', null, 'a и b'))), h('tbody', null, [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, 1, 1]].map(r => h('tr', null, r.map(x => h('td', null, x)))))),
+    h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', null, 'a'), h('th', null, 'b'), h('th', null, 'a или b'))), h('tbody', null, [[0, 0, 0], [0, 1, 1], [1, 0, 1], [1, 1, 1]].map(r => h('tr', null, r.map(x => h('td', null, x)))))),
+    h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', null, 'a'), h('th', null, '!a'))), h('tbody', null, [[0, 1], [1, 0]].map(r => h('tr', null, r.map(x => h('td', null, x)))))));
+  const t3 = {
+    id: 'logic', num: 3, title: 'Алгебра логики',
+    story: '<p>Дано: «и» даёт 1 только для 1 и 1; «или» даёт 0 только для 0 и 0; «!» меняет 0 на 1 и наоборот.</p><p>Чему равно <b class="mono">((0 или 1) и 1) и ((1 и 1) и !0)</b> ?</p><p class="muted">Нажимай на подсвеченные скобки, у которых внутри уже только 0 и 1, и выбирай значение. Так выражение будет «сворачиваться».</p>',
+    hints: [
+      'Всегда начинай с самых внутренних скобок. Сначала считаются операции, у которых внутри только 0 и 1.',
+      '(0 или 1): «или» даёт 1, если хотя бы одно из значений — единица. Значит, результат — 1.',
+      '!0 — это «не ноль», то есть 1. А (1 и 1) = 1, потому что «и» требует двух единиц.',
+      'После упрощения остаётся цепочка «и» из одних единиц: 1 и 1 и 1. Она равна 1.'
+    ],
+    build(play, api) {
+      const root = AND(AND(OR(L(0), L(1)), L(1)), AND(AND(L(1), L(1)), NOT(L(0))));
+      play.append(h('details', { open: true }, h('summary', { class: 'sub-h' }, 'Таблицы истинности'), truthTables()),
+        exprWidget(root, { say: api.say, attempt: api.attempt, done: v => api.solve(`Верно! Всё выражение равно ${v}.`) }));
+    },
+    explain() {
+      return h('div', null, h('ol', null,
+        h('li', { html: '<code>(0 или 1)</code> = 1. Выражение: <code>(1 и 1) и ((1 и 1) и !0)</code>.' }),
+        h('li', { html: '<code>(1 и 1)</code> = 1 (слева) → <code>1 и ((1 и 1) и !0)</code>.' }),
+        h('li', { html: '<code>(1 и 1)</code> = 1 и <code>!0</code> = 1 → <code>1 и (1 и 1)</code>.' }),
+        h('li', { html: '<code>(1 и 1)</code> = 1 → <code>1 и 1</code> = <b>1</b>.' })),
+        h('p', { class: 'small muted', html: 'Идея: цепочка «и» равна 1 только если <b>все</b> звенья равны 1. Типичные ошибки: забыть про «!» и посчитать !0 как 0; перепутать «и» с «или»; считать выражение слева направо, не обращая внимания на скобки.' }));
+    },
+    practiceTitle: 'Ещё потренироваться: новые выражения',
+    practice(body) {
+      const mount = h('div', { class: 'box' }), f = h('p', { class: 'fb' });
+      const rb = () => L(rnd(0, 1));
+      const rnode = (d) => {
+        if (d === 0) return Math.random() < .25 ? NOT(rb()) : rb();
+        const r = Math.random();
+        if (r < .15) return NOT(rnode(d - 1));
+        return (Math.random() < .5 ? AND : OR)(rnode(d - 1), rnode(d - 1));
+      };
+      const gen = () => {
+        let e; do { e = Math.random() < .5 ? rnode(2) : rnode(3); } while (!e.op || e.op === '!' || textOf(e, true).length < 12 || textOf(e, true).length > 40);
+        const w = clone(e);
+        const solve = (n) => { if (n.op) { n.a.val === undefined && solve(n.a); if (n.b && n.b.val === undefined) solve(n.b); n.val = calc(n); } };
+        // вычисляем результат и шаги на копии
+        const steps = []; const cp = clone(e);
+        const red = (n) => { if (!n.op) return; red(n.a); if (n.b) red(n.b); n.val = calc(n); steps.push(textOf(cp, true)); };
+        red(cp);
+        const want = val(cp);
+        mount.replaceChildren(h('div', { class: 'expr', 'aria-label': 'Выражение' }, textOf(e, true)),
+          h('div', { class: 'row' }, h('span', null, 'Чему равно значение?'), h('span', { class: 'big01' }, [0, 1].map(v => h('button', { class: 'btn', type: 'button', onclick: () => {
+            f.className = 'fb ' + (v === want ? 'ok' : 'bad');
+            f.textContent = v === want ? `Верно! Шаги: ${steps.join(' → ')}.` : `Нет. Свёртывай изнутри наружу. Вот как это выглядит: ${steps.join(' → ')}.`;
+            if (v === want) K.burst(f);
+          } }, v)))));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другое выражение')); gen();
+    }
+  };
+
+  K.App({
+    title: 'Олимпиада KIBERone · неделя 5',
+    sub: 'Средняя группа, 9–11 лет',
+    intro: 'Три задачи: разрезание фигуры, работа алгоритма с двумя условиями и алгебра логики. У каждой есть подсказки (открывай по одной), мгновенная проверка и разбор. Решённые задачи отмечаются звёздочкой на вкладке.',
+    tasks: [t1, t2, t3]
+  });
+})();
+
+</script>
+
+</body></html>

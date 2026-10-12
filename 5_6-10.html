@@ -1,0 +1,746 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Неделя 5 для 6–10 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{max-width:68ch}
+.story>*+*{margin-top:10px}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+
+/* Макет: яркий «игровой» стиль, толстые контуры, объёмные кнопки. Синий и жёлтый акценты. 6–10 лет. */
+:root{
+  --bg:#E8F0FF;--surface:#FFFFFF;--surface2:#F2F6FF;--ink:#1A2848;--muted:#4F5E80;
+  --edge:#1A2848;--line:#CBD8F2;--line-strong:#8EA5D6;
+  --accent:#2F6BFF;--on-accent:#FFFFFF;--accent2:#FFC21A;--on-accent2:#2A1E00;
+  --good:#12803F;--good-bg:#DCF5E5;--bad:#C4372A;--bad-bg:#FDE7E3;--star:#FFC21A;
+  --field:#FFFFFF;--hint-bg:#FFF4CC;--hint-edge:#E5B312;--code-inline:#E1E9FB;--focus:#2F6BFF;
+  --card-shadow:0 6px 0 rgba(26,40,72,.16);
+  --radius:16px;--radius-lg:26px;--bw:3px;--bw-thin:2px;--lift:4px;--fs:18px;--maxw:820px;
+  --f-display:'Rubik','Arial Rounded MT Bold',system-ui,sans-serif;
+  --f-body:'Nunito','Segoe UI',system-ui,sans-serif;
+  --f-mono:ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1630;--surface:#17224A;--surface2:#1D2A58;--ink:#EDF1FF;--muted:#A9B7DE;
+  --edge:#8FB0FF;--line:#2B3B72;--line-strong:#4F67B0;
+  --accent:#6C9BFF;--on-accent:#06143A;--accent2:#FFCB3D;--on-accent2:#2A1E00;
+  --good:#6CE29A;--good-bg:#12392A;--bad:#FF9183;--bad-bg:#47201C;--star:#FFCB3D;
+  --field:#0E1630;--hint-bg:#3B3216;--hint-edge:#A98A25;--code-inline:#26376F;--focus:#9DBBFF;
+  --card-shadow:0 6px 0 rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1630;--surface:#17224A;--surface2:#1D2A58;--ink:#EDF1FF;--muted:#A9B7DE;
+  --edge:#8FB0FF;--line:#2B3B72;--line-strong:#4F67B0;
+  --accent:#6C9BFF;--on-accent:#06143A;--accent2:#FFCB3D;--on-accent2:#2A1E00;
+  --good:#6CE29A;--good-bg:#12392A;--bad:#FF9183;--bad-bg:#47201C;--star:#FFCB3D;
+  --field:#0E1630;--hint-bg:#3B3216;--hint-edge:#A98A25;--code-inline:#26376F;--focus:#9DBBFF;
+  --card-shadow:0 6px 0 rgba(0,0,0,.35);color-scheme:dark}
+
+.top h1{font-size:clamp(1.35rem,6vw,2.1rem);font-weight:800}
+.task-head h2{font-weight:800}
+.tab{font-family:var(--f-display);font-weight:700}
+.intro{background:var(--hint-bg);border-color:var(--hint-edge)}
+.stage{display:grid;gap:14px}
+
+/* крест */
+.cr{width:100%;max-width:340px;height:auto;display:block;margin-inline:auto}
+.cr .sh{fill:var(--surface2);stroke:var(--edge);stroke-width:4;stroke-linejoin:round}
+.cr text{font-family:var(--f-display);font-weight:800;font-size:30px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.cr .q{fill:var(--accent)}
+.cr .cn circle{fill:var(--surface);stroke:var(--line-strong);stroke-width:3}
+.cr .cn.hl circle{fill:var(--accent2);stroke:var(--edge)}
+.cr .cn.hl text{fill:var(--on-accent2)}
+.cr .sd.hl text{fill:var(--accent)}
+.ops{display:flex;gap:10px;flex-wrap:wrap}
+.ops .btn{min-width:56px;font-size:1.4em;font-family:var(--f-display);padding:.15em .6em}
+.ops .btn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.eqs{display:grid;gap:8px;list-style:none;margin:0;padding:0}
+.eqs li{display:flex;gap:10px;align-items:center;padding:.5em .8em;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface);font-family:var(--f-display);font-weight:700;font-size:1.05em;flex-wrap:wrap}
+.eqs li.ok{background:var(--good-bg);border-color:var(--good)}
+.eqs li.bad{background:var(--bad-bg);border-color:var(--bad)}
+.eqs li i{font-style:normal;margin-left:auto}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.answer-row .lbl{font-family:var(--f-display);font-weight:800}
+
+/* блок-схема из слотов */
+.sf{position:relative;max-width:430px;margin-inline:auto;width:100%;height:500px}
+.sf .col{position:absolute;left:0;top:0;width:76%;height:100%}
+.slot{position:absolute;left:0;width:100%;height:54px;display:grid;place-items:center;text-align:center;padding:2px 10px;cursor:pointer;background:var(--surface);border:var(--bw) dashed var(--line-strong);border-radius:12px;font-weight:700;font-size:.82rem;line-height:1.15;color:var(--ink);transition:background .15s}
+.slot:hover{background:var(--surface2)}
+.slot.full{border-style:solid;border-color:var(--edge);background:var(--surface2)}
+.slot.bad{border-color:var(--bad);background:var(--bad-bg)}
+.slot.ok{border-color:var(--good);background:var(--good-bg)}
+.slot.run{background:var(--accent2);color:var(--on-accent2);border-color:var(--edge);transform:scale(1.03)}
+.slot .ph{color:var(--muted);font-weight:700}
+.slot.dia{height:120px;border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);border:0;background:var(--line-strong);padding:0}
+.slot.dia>span{display:grid;place-items:center;width:calc(100% - 6px);height:calc(100% - 6px);margin:3px;background:var(--surface);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);padding:0 22%}
+.slot.dia.full>span{background:var(--surface2)}
+.slot.dia.bad{background:var(--bad)}.slot.dia.ok{background:var(--good)}.slot.dia.run{background:var(--accent2)}
+.slot.dia.bad>span{background:var(--bad-bg)}.slot.dia.ok>span{background:var(--good-bg)}.slot.dia.run>span{background:var(--accent2)}
+.slot.dia.full{background:var(--edge)}
+.slot.dia{transform:none}
+.arr{position:absolute;left:50%;width:0;height:22px;border-left:var(--bw) solid var(--edge);transform:translateX(-50%)}
+.arr::after{content:"";position:absolute;left:-8px;bottom:-2px;border:7px solid transparent;border-top:9px solid var(--edge);border-bottom:0}
+.sf .lbl2{position:absolute;font-family:var(--f-display);font-weight:800;font-size:.85rem;color:var(--muted)}
+.loop{position:absolute;left:76%;width:17%;border:var(--bw) solid var(--edge);border-left:0;border-radius:0 14px 14px 0}
+.loop::before{content:"";position:absolute;left:-2px;top:-8px;border:7px solid transparent;border-right:9px solid var(--edge);border-left:0}
+.bank{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chipb{cursor:pointer;font:inherit;font-weight:700;font-size:.9rem;padding:.4em .9em;border-radius:999px;border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 3px 0 var(--edge);min-height:44px}
+.chipb[aria-pressed="true"]{background:var(--accent2);color:var(--on-accent2)}
+.chipb:disabled{opacity:.35;box-shadow:none;cursor:default}
+.plates{font-weight:800;font-family:var(--f-display)}
+
+/* шифр */
+.ciph{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.tile{display:grid;place-items:center;width:clamp(36px,10.4vw,52px);height:clamp(44px,12vw,60px);border-radius:10px;border:var(--bw) solid var(--edge);background:var(--surface);font-family:var(--f-display);font-weight:800;font-size:clamp(1.1rem,5vw,1.6rem);position:relative}
+.tile small{position:absolute;bottom:-1.4em;font-size:.55em;font-family:var(--f-body);color:var(--muted);font-weight:700}
+.ciph{padding-bottom:1.4em}
+.tile.hl{background:var(--accent2);color:var(--on-accent2)}
+.tile.ltr{background:var(--surface2)}
+.wcards{display:grid;gap:10px}
+.wcard{cursor:pointer;text-align:left;display:grid;gap:6px;padding:.7em .9em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);box-shadow:0 var(--lift) 0 var(--edge);font:inherit;color:var(--ink)}
+.wcard:hover{background:var(--surface2)}
+.wcard .wd{font-family:var(--f-display);font-weight:800;font-size:1.15rem}
+.wcard .letters{display:flex;gap:4px;flex-wrap:wrap;padding-bottom:1.3em}
+.wcard .letters .tile{width:clamp(30px,9vw,40px);height:clamp(36px,10vw,46px);font-size:1.05rem;border-width:2px}
+.wcard .note{font-size:.85em;color:var(--muted);font-weight:700;min-height:1.2em}
+.wcard.out{opacity:.45;background:var(--surface2)}
+.wcard.out .wd{text-decoration:line-through}
+.wcard.good{border-color:var(--good);background:var(--good-bg)}
+.wcard.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.lupe{display:flex;gap:10px;flex-wrap:wrap}
+
+</style>
+<main id="app"></main>
+<script>window.PAGE_ID='w5a';</script>
+<script>
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+
+/* ===== Страница 6–10 лет, неделя 5 ===== */
+(function () {
+  'use strict';
+  const { h, s, rnd, pick, shuffle, onEnter, sleep } = K;
+  const num = (str) => { const t = String(str).trim().replace('−', '-'); return /^-?\d+$/.test(t) ? parseInt(t, 10) : NaN; };
+
+  /* ================= Задача 1. Загадочное число ================= */
+  const SIDE_PAIRS = { top: [0, 1], left: [0, 2], right: [1, 3], bottom: [2, 3] };
+  function crossSVG(corners, sides, hidden) {
+    const P = { tl: [55, 55], tr: [245, 55], bl: [55, 245], br: [245, 245], top: [150, 55], left: [55, 150], right: [245, 150], bottom: [150, 245] };
+    const svg = s('svg', { class: 'cr', viewBox: '0 0 300 300', role: 'img', 'aria-label': `Фигура-крест. Углы: ${corners.join(', ')}. Стороны: сверху ${sides.top}, слева ${sides.left}, справа ${sides.right}, снизу ${sides.bottom}.` });
+    svg.append(s('path', { class: 'sh', d: 'M90 20 H210 V90 H280 V210 H210 V280 H90 V210 H20 V90 H90 Z' }));
+    const cn = {}, sd = {};
+    ['tl', 'tr', 'bl', 'br'].forEach((k, i) => { const g = s('g', { class: 'cn' }, s('circle', { cx: P[k][0], cy: P[k][1], r: 27 }), s('text', { x: P[k][0], y: P[k][1] }, corners[i])); cn[i] = g; svg.append(g); });
+    ['top', 'left', 'right', 'bottom'].forEach(k => { const isQ = hidden === k; const g = s('g', { class: 'sd' }, s('text', { class: isQ ? 'q' : '', x: P[k][0], y: P[k][1] }, isQ ? '?' : sides[k])); sd[k] = g; svg.append(g); });
+    const hl = (side) => { Object.values(cn).forEach(g => g.classList.remove('hl')); Object.values(sd).forEach(g => g.classList.remove('hl')); if (side) { SIDE_PAIRS[side].forEach(i => cn[i].classList.add('hl')); sd[side].classList.add('hl'); } };
+    return { svg, hl };
+  }
+  const OPS = { '+': (a, b) => a + b, '−': (a, b) => a - b, '×': (a, b) => a * b, '÷': (a, b) => Math.round(a / b * 100) / 100 };
+  const SIDE_NAME = { top: 'сверху', left: 'слева', right: 'справа', bottom: 'снизу' };
+
+  const t1 = {
+    id: 'cross', num: 1, title: 'Загадочное число',
+    story: '<p>Какое число нужно поставить вместо знака <b>«?»</b>?</p><p class="muted">Числа в углах и на сторонах связаны одним и тем же правилом. Найди его! Проверялка поможет попробовать разные действия.</p>',
+    hints: [
+      'Посмотри на число 40 сверху. Рядом с ним, в углах, стоят 5 и 8. Как из 5 и 8 получить 40?',
+      'Проверь свою мысль на другой стороне: слева 30, а в соседних углах 5 и 6. Подходит ли то же действие?',
+      'Правило: два соседних угла надо перемножить — получится число на стороне между ними.',
+      'Внизу «?» стоит между углами 6 и 3. Что получится, если их перемножить?'
+    ],
+    build(play, api) {
+      const corners = [5, 8, 6, 3], sides = { top: 40, left: 30, right: 24, bottom: 18 };
+      const { svg, hl } = crossSVG(corners, sides, 'bottom');
+      const eqs = h('ul', { class: 'eqs', 'aria-live': 'polite' });
+      let op = null;
+      const draw = () => {
+        eqs.replaceChildren();
+        if (!op) { eqs.append(h('li', null, h('span', { class: 'muted' }, 'Выбери действие выше — я проверю его на сторонах 40, 30 и 24.'))); return; }
+        let okc = 0;
+        ['top', 'left', 'right'].forEach(k => {
+          const [i, j] = SIDE_PAIRS[k], a = corners[i], b = corners[j], r = OPS[op](a, b), ok = r === sides[k]; okc += ok;
+          const li = h('li', { class: ok ? 'ok' : 'bad', tabindex: 0 }, `${a} ${op} ${b} = ${String(r).replace('.', ',')}`, h('span', { class: 'muted' }, ok ? `= ${sides[k]}` : `≠ ${sides[k]}`), h('i', null, ok ? '✓' : '✗'));
+          li.onmouseenter = li.onfocus = () => hl(k); li.onmouseleave = li.onblur = () => hl(null);
+          eqs.append(li);
+        });
+        if (okc === 3) api.say('Это действие подходит ко всем трём сторонам! Теперь примени его к низу.', 'ok');
+        else api.say(`Подходит сторон: ${okc} из 3. Должны подойти все три — попробуй другое действие.`, 'info');
+      };
+      const btns = Object.keys(OPS).map(k => h('button', { class: 'btn', type: 'button', 'aria-pressed': 'false', 'aria-label': 'действие ' + k, onclick: () => { op = k; btns.forEach(b => b.setAttribute('aria-pressed', b.textContent === k ? 'true' : 'false')); draw(); } }, k));
+      const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Число вместо вопроса' });
+      const sub = () => {
+        const v = num(inp.value);
+        if (Number.isNaN(v)) { api.say('Впиши число.', 'bad'); return; }
+        if (v === 18) { inp.className = 'field ok'; api.solve('Верно! 6 × 3 = 18.'); return; }
+        inp.className = 'field bad'; api.attempt();
+        if (v === 9) api.say('9 — это 6 + 3. Но проверь: сложение подходит к числам 40, 30, 24? Попробуй проверялку.', 'bad');
+        else api.say('Пока не то. Найди действие, которое работает на всех трёх сторонах, и примени его к 6 и 3.', 'bad');
+      };
+      onEnter(inp, sub);
+      draw();
+      play.append(svg, h('p', { class: 'sub-h', style: { fontFamily: 'var(--f-display)' } }, '🔎 Проверялка: какое действие делаем с двумя углами?'), h('div', { class: 'ops', role: 'group', 'aria-label': 'Действия' }, btns), eqs,
+        h('div', { class: 'answer-row' }, h('span', { class: 'lbl' }, '? ='), inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить')));
+    },
+    explain() {
+      return h('div', null,
+        h('ul', null,
+          h('li', { html: 'Сверху: 5 × 8 = <b>40</b>' }), h('li', { html: 'Слева: 5 × 6 = <b>30</b>' }), h('li', { html: 'Справа: 8 × 3 = <b>24</b>' }),
+          h('li', { html: 'Снизу: 6 × 3 = <b>18</b> — это и есть ответ.' })),
+        h('p', { class: 'small muted', html: 'Правило: число на стороне — это <b>произведение двух соседних угловых чисел</b>. Если бы мы сложили (5 + 8 = 13), то не получили бы 40 — так проверяют, подходит ли правило. Хорошая привычка: проверять догадку на нескольких примерах.' }));
+    },
+    practiceTitle: 'Ещё потренироваться: новые кресты',
+    practice(body) {
+      const mount = h('div', { class: 'stage' }), f = h('p', { class: 'fb' });
+      const gen = () => {
+        const op = Math.random() < .6 ? '×' : '+';
+        const c = [rnd(2, 9), rnd(2, 9), rnd(2, 9), rnd(2, 9)];
+        const sides = {}; Object.keys(SIDE_PAIRS).forEach(k => { const [i, j] = SIDE_PAIRS[k]; sides[k] = OPS[op](c[i], c[j]); });
+        const hidden = pick(['top', 'left', 'right', 'bottom']);
+        const { svg } = crossSVG(c, sides, hidden);
+        const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Ответ' });
+        const sub = () => {
+          const v = num(inp.value);
+          inp.className = 'field ' + (v === sides[hidden] ? 'ok' : 'bad'); f.className = 'fb ' + (v === sides[hidden] ? 'ok' : 'bad');
+          if (v === sides[hidden]) { f.textContent = `Верно! Правило здесь: «${op}».`; K.burst(inp); }
+          else f.textContent = 'Не так. Сначала найди правило по известным сторонам: что делают с двумя углами, чтобы получить число между ними?';
+        };
+        onEnter(inp, sub);
+        mount.replaceChildren(svg, h('div', { class: 'answer-row' }, h('span', { class: 'lbl' }, '? ='), inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить')));
+        f.textContent = '';
+      };
+      body.append(h('p', { class: 'muted' }, 'Правило в каждом кресте своё: это может быть сложение или умножение!'), mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другой крест')); gen();
+    }
+  };
+
+  /* ================= Задача 2. Робот-посудомойка ================= */
+  function slotFlow(cfg, api) {
+    // cfg: bank [{id,text}], target [ids for slots 0..5], qId, reasons[6], numbered, yes, no
+    const byId = Object.fromEntries(cfg.bank.map(b => [b.id, b]));
+    const place = Array(6).fill(null);
+    let armed = null;
+    const tops = [0, 76, 152, 228, 304, 446];
+    const col = h('div', { class: 'col' });
+    const sf = h('div', { class: 'sf' }, col);
+    const slotEls = [];
+    const lab = (b) => (cfg.numbered ? b.id + ') ' : '') + b.text;
+    [[54, 76], [130, 152], [206, 228], [282, 304], [424, 446]].forEach(([a, b]) => col.append(h('div', { class: 'arr', style: { top: a - 2 + 'px', height: (b - a + 2) + 'px' } })));
+    for (let i = 0; i < 6; i++) {
+      const dia = i === 4;
+      const inner = dia ? h('span') : null;
+      const el = h('button', { class: 'slot' + (dia ? ' dia' : ''), type: 'button', style: { top: tops[i] + 'px' }, 'aria-label': `Место ${i + 1}${dia ? ' (ромб-вопрос)' : ''}`, onclick: () => clickSlot(i) }, inner);
+      slotEls.push({ el, inner: inner || el }); col.append(el);
+    }
+    sf.append(h('div', { class: 'loop', style: { top: '103px', height: '261px' } }),
+      h('span', { class: 'lbl2', style: { left: '78%', top: '338px' } }, cfg.yes || 'да'),
+      h('span', { class: 'lbl2', style: { left: '53%', top: '424px' } }, cfg.no || 'нет'));
+    const chips = {};
+    const bank = h('div', { class: 'bank', role: 'group', 'aria-label': 'Действия' });
+    shuffle(cfg.bank).forEach(b => {
+      const c = h('button', { class: 'chipb', type: 'button', 'aria-pressed': 'false', onclick: () => { armed = armed === b.id ? null : b.id; refresh(); } }, lab(b));
+      chips[b.id] = c; bank.append(c);
+    });
+    function refresh() {
+      slotEls.forEach(({ el, inner }, i) => {
+        const id = place[i];
+        el.classList.toggle('full', !!id); el.classList.remove('bad', 'ok');
+        inner.replaceChildren(id ? lab(byId[id]) : h('span', { class: 'ph' }, i === 4 ? 'вопрос' : 'блок ' + (i + 1)));
+      });
+      Object.entries(chips).forEach(([id, c]) => { const used = place.includes(id); c.disabled = used; c.setAttribute('aria-pressed', armed === id ? 'true' : 'false'); });
+    }
+    function clickSlot(i) {
+      if (armed) {
+        const old = place[i]; place[i] = armed; armed = null; if (old) { /* вернётся в банк автоматически */ }
+        refresh(); api.say('', 'info');
+      } else if (place[i]) { place[i] = null; refresh(); }
+      else api.say('Сначала нажми на действие внизу, потом — на пустой блок.', 'info');
+    }
+    refresh();
+    const check = () => {
+      if (place.some(x => !x)) { api.say(`Пока заполнено блоков: ${place.filter(Boolean).length} из 6.`, 'info'); return false; }
+      let first = -1;
+      slotEls.forEach(({ el }, i) => { const ok = place[i] === cfg.target[i]; el.classList.add(ok ? 'ok' : 'bad'); if (!ok && first < 0) first = i; });
+      slotEls.forEach(({ el }, i) => { if (place[i] === cfg.target[i]) el.classList.remove('ok'); });
+      if (first < 0) { slotEls.forEach(({ el }) => el.classList.add('ok')); return true; }
+      api.attempt();
+      if (place[4] !== cfg.qId) api.say('Ромб — это вопрос с ответами «да» и «нет». Какой из блоков — вопрос? Его место в ромбе.', 'bad');
+      else if (place.indexOf(cfg.qId) !== 4) api.say('В ромб можно ставить только вопрос.', 'bad');
+      else api.say(`Красным помечены блоки не на своих местах. Подумай про блок ${first + 1}: ${cfg.reasons[first]}`, 'bad');
+      return false;
+    }
+    const reset = () => { place.fill(null); armed = null; refresh(); };
+    return { sf, bank, check, reset, slotEls, byId, place };
+  }
+
+  async function runRobot(widget, log, plates) {
+    const fast = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const d = fast ? 10 : 650;
+    const say = (t) => log.append(h('div', null, t));
+    log.replaceChildren(); let left = plates;
+    const step = async (i, t) => { widget.slotEls.forEach(x => x.el.classList.remove('run')); widget.slotEls[i].el.classList.add('run'); say(t); await sleep(d); };
+    await step(0, 'Робот: ' + widget.byId[widget.place[0]].text);
+    while (true) {
+      await step(1, 'Робот: ' + widget.byId[widget.place[1]].text);
+      await step(2, 'Робот: ' + widget.byId[widget.place[2]].text);
+      await step(3, 'Робот: ' + widget.byId[widget.place[3]].text);
+      left--; await step(4, `Вопрос: ${widget.byId[widget.place[4]].text} Осталось: ${left} → ${left > 0 ? 'да' : 'нет'}`);
+      if (left <= 0) break;
+    }
+    await step(5, 'Робот: ' + widget.byId[widget.place[5]].text);
+    widget.slotEls.forEach(x => x.el.classList.remove('run'));
+    say('Готово! Вся посуда чистая.');
+  }
+
+  const DISH = {
+    bank: [{ id: 1, text: 'Выключи воду' }, { id: 2, text: 'Нанеси чистящее средство на мокрую посуду' }, { id: 3, text: 'Помой посуду в чистой воде' }, { id: 4, text: 'Очисти посуду от мусора и остатков пищи' }, { id: 5, text: 'Есть ещё грязная посуда?' }, { id: 6, text: 'Включи воду' }],
+    target: [6, 4, 2, 3, 5, 1], qId: 5, numbered: true,
+    reasons: ['сначала включают воду: без неё нечем мыть. Это делают один раз, до повторения.', 'сначала убирают мусор и остатки еды — иначе моющее средство смоется вместе с грязью.', 'потом наносят чистящее средство на мокрую посуду.', 'после этого посуду моют в чистой воде.', 'после мытья спрашивают: «Есть ещё грязная посуда?» — так робот решает, повторять ли.', 'когда посуды больше нет, воду выключают. Это последнее действие.']
+  };
+
+  const t2 = {
+    id: 'robot', num: 2, title: 'Робот-посудомойка',
+    story: '<p>Каждая мама мечтает о помощнике — Роботе-посудомойке! <b>Запрограммируй такого робота:</b> расставь действия в блок-схеме в правильном порядке.</p><p class="muted">Нажми на действие внизу, потом на блок схемы. Нажми на заполненный блок — действие вернётся вниз. Ромб — это вопрос; стрелка «да» возвращает робота наверх.</p>',
+    hints: [
+      'Что робот должен сделать самым первым — ещё до того, как возьмётся за посуду? Подумай про воду.',
+      'Ромб — это вопрос. Какое из действий — вопрос с ответом «да» или «нет»?',
+      'Стрелка «да» ведёт к блоку номер 2 (под самым первым). Значит, «включи воду» стоит выше цикла и выполняется один раз.',
+      'Внутри цикла по порядку: убрать мусор → нанести средство → помыть → спросить «есть ещё?».',
+      'Последним, когда посуды больше нет, робот выключает воду.'
+    ],
+    build(play, api) {
+      const w = slotFlow(DISH, api);
+      const log = h('div', { class: 'box small', 'aria-live': 'polite', hidden: true });
+      const runBtn = h('button', { class: 'btn', type: 'button', hidden: true, onclick: async () => { runBtn.disabled = true; log.hidden = false; await runRobot(w, log, 3); runBtn.disabled = false; } }, '▶ Запустить робота (3 тарелки)');
+      play.append(w.sf, h('p', { class: 'sub-h', style: { fontFamily: 'var(--f-display)' } }, 'Действия:'), w.bank,
+        h('div', { class: 'row', style: { justifyContent: 'center' } },
+          h('button', { class: 'btn primary', type: 'button', onclick: () => { if (w.check()) { api.solve('Верно! Робот-посудомойка запрограммирован.'); runBtn.hidden = false; } } }, 'Проверить'),
+          h('button', { class: 'btn ghost', type: 'button', onclick: () => { w.reset(); api.say('', 'info'); } }, 'Начать заново'), runBtn), log);
+    },
+    explain() {
+      return h('div', null,
+        h('ol', null, ...[6, 4, 2, 3, 5, 1].map(id => h('li', null, h('b', null, id + ') '), DISH.bank.find(b => b.id === id).text, id === 5 ? ' — ромб, ответ «да» ведёт наверх к блоку 4, ответ «нет» — вниз к блоку 1' : ''))),
+        h('p', { class: 'small muted', html: 'Это <b>цикл</b>: робот повторяет «убрать мусор → средство → помыть», пока есть грязная посуда. Типичные ошибки: поставить «включи воду» внутрь цикла; поставить вопрос не в ромб; забыть, что воду выключают в самом конце.' }));
+    },
+    practiceTitle: 'Ещё потренироваться: другие роботы',
+    practice(body) {
+      const SC = [
+        { name: 'Робот-садовник', ids: ['Возьми лейку', 'Налей воды в лейку', 'Полей грядку', 'Перейди к следующей грядке', 'Остались сухие грядки?', 'Убери лейку'],
+          reasons: ['сначала берут лейку — без неё поливать нечем (один раз).', 'потом в лейку наливают воду.', 'затем поливают грядку.', 'после полива переходят к следующей грядке.', 'после этого проверяют: остались ли сухие грядки? Это вопрос — место ромба.', 'когда сухих грядок нет, лейку убирают.'] },
+        { name: 'Робот-повар', ids: ['Достань хлеб и сыр', 'Отрежь ломтик хлеба', 'Положи на ломтик сыр', 'Положи бутерброд на тарелку', 'Остался хлеб?', 'Подай тарелку со всеми бутербродами'],
+          reasons: ['сначала достают продукты (один раз).', 'потом отрезают ломтик хлеба.', 'на ломтик кладут сыр.', 'готовый бутерброд кладут на тарелку.', 'проверяют, остался ли хлеб: вопрос — место ромба.', 'когда хлеб закончился, подают все бутерброды.'] }
+      ];
+      SC.forEach(sc => {
+        const bank = sc.ids.map((t, i) => ({ id: i + 1, text: t }));
+        const f = h('p', { class: 'fb' });
+        const api2 = { say: (m, k) => { f.className = 'fb ' + (k || 'info'); f.textContent = m; }, attempt() { } };
+        const w = slotFlow({ bank, target: [1, 2, 3, 4, 5, 6], qId: 5, reasons: sc.reasons, numbered: false }, api2);
+        body.append(h('div', { class: 'box' }, h('p', { class: 'sub-h', style: { fontFamily: 'var(--f-display)' } }, sc.name), w.sf, w.bank,
+          h('div', { class: 'row', style: { justifyContent: 'center' } }, h('button', { class: 'btn primary', type: 'button', onclick: () => { if (w.check()) { f.className = 'fb ok'; f.textContent = 'Верно!'; K.burst(f); } } }, 'Проверить'), h('button', { class: 'btn ghost', type: 'button', onclick: () => { w.reset(); f.textContent = ''; } }, 'Заново')), f));
+      });
+    }
+  };
+
+  /* ================= Задача 3. Кодовое слово ================= */
+  const pattern = (arr) => { const m = new Map(); return arr.map(x => { if (!m.has(x)) m.set(x, m.size); return m.get(x); }).join(','); };
+  function whyNot(word, cipher) {
+    const w = Array.from(word), c = Array.from(cipher);
+    if (w.length !== c.length) return `В слове «${word}» ${w.length} ${K.plural(w.length, 'буква', 'буквы', 'букв')}, а в шифре ${c.length} ${K.plural(c.length, 'знак', 'знака', 'знаков')}. Не подходит.`;
+    for (let i = 0; i < c.length; i++) for (let j = i + 1; j < c.length; j++) {
+      if (c[i] === c[j] && w[i] !== w[j]) return `В шифре знаки на местах ${i + 1} и ${j + 1} одинаковые (${c[i]}), значит, и буквы должны быть одинаковые. В слове «${word}» там «${w[i]}» и «${w[j]}» — разные.`;
+      if (c[i] !== c[j] && w[i] === w[j]) return `В шифре знаки на местах ${i + 1} и ${j + 1} разные, а в слове «${word}» на этих местах одна и та же буква «${w[i]}». Разные знаки — разные буквы.`;
+    }
+    return '';
+  }
+  function cipherWidget(cipher, options, answer, cb) {
+    const cs = Array.from(cipher);
+    const tiles = cs.map((ch, i) => h('div', { class: 'tile' }, ch, h('small', null, i + 1)));
+    const pat = pattern(cs);
+    const cards = options.map(word => {
+      const letters = Array.from(word);
+      const note = h('div', { class: 'note' });
+      const lt = h('div', { class: 'letters' });
+      const card = h('button', { class: 'wcard', type: 'button', onclick: () => pickWord(word, card) }, h('div', { class: 'wd' }, word), lt, note);
+      lt.append(...letters.map((ch, i) => h('div', { class: 'tile' }, ch, h('small', null, i + 1))));
+      return { word, letters, card, note, lt };
+    });
+    let counted = false, matched = false;
+    const lupe1 = h('button', { class: 'btn', type: 'button', onclick: () => {
+      counted = true; cards.forEach(c => { const ok = c.letters.length === cs.length; c.card.classList.toggle('out', !ok); c.note.textContent = `${c.letters.length} ${K.plural(c.letters.length, 'буква', 'буквы', 'букв')}${ok ? ' — как знаков' : ' ≠ ' + cs.length}`; });
+      cb.say(`В шифре ${cs.length} ${K.plural(cs.length, 'знак', 'знака', 'знаков')}. Слова другой длины зачёркнуты.`, 'info');
+    } }, '🔢 Посчитать буквы');
+    const lupe2 = h('button', { class: 'btn', type: 'button', onclick: () => {
+      matched = true;
+      const reps = []; for (let i = 0; i < cs.length; i++) for (let j = i + 1; j < cs.length; j++) if (cs[i] === cs[j]) reps.push([i, j]);
+      tiles.forEach((t, i) => t.classList.toggle('hl', reps.some(r => r.includes(i))));
+      cards.forEach(c => {
+        c.lt.replaceChildren(...c.letters.map((ch, i) => h('div', { class: 'tile' + (reps.some(r => r.includes(i)) ? ' hl' : ''), style: { width: '' } }, ch, h('small', null, i + 1))));
+        if (c.letters.length !== cs.length) { c.note.textContent = 'длина не подходит'; return; }
+        const bad = whyNot(c.word, cipher);
+        c.note.textContent = bad ? 'буквы на отмеченных местах не сходятся ✗' : 'всё сходится ✓';
+      });
+      cb.say(reps.length ? `Одинаковые знаки стоят на местах ${reps.map(r => r.map(x => x + 1).join(' и ')).join('; ')}. В нужном слове на этих местах — одинаковые буквы.` : 'В шифре нет одинаковых знаков — значит, в слове не должно быть повторяющихся букв.', 'info');
+    } }, '🔍 Найти одинаковые знаки');
+    function pickWord(word, card) {
+      cards.forEach(c => c.card.classList.remove('wrong'));
+      if (word === answer) { card.classList.add('good'); cb.ok(word); return; }
+      card.classList.add('wrong'); cb.bad(whyNot(word, cipher) || 'Не подходит.');
+    }
+    return h('div', { class: 'stage' }, h('div', { class: 'ciph', role: 'img', 'aria-label': 'Шифр: ' + cs.join(' ') }, tiles),
+      h('div', { class: 'lupe' }, lupe1, lupe2), h('div', { class: 'wcards' }, cards.map(c => c.card)));
+  }
+  const WORDS = ['монитор', 'ноутбук', 'принтер', 'сканер', 'модем', 'мышка', 'экран', 'диск', 'файл', 'папка', 'пароль', 'сервер', 'программа', 'робот', 'пиксель', 'сайт', 'браузер', 'значок', 'кнопка', 'символ', 'память', 'процессор', 'интернет', 'картинка', 'принтер', 'клавиши'];
+  function genCipher() {
+    for (let t = 0; t < 400; t++) {
+      const target = pick(WORDS);
+      const same = WORDS.filter(w => w !== target && w.length === target.length);
+      if (!same.length) continue;
+      const opts = [target, pick(same)];
+      while (opts.length < 4) { const w = pick(WORDS); if (!opts.includes(w)) opts.push(w); }
+      const tl = Array.from(target), pt = pattern(tl);
+      const matching = opts.filter(w => w.length === target.length && pattern(Array.from(w)) === pt);
+      if (matching.length !== 1) continue;
+      const syms = shuffle(['@', '#', '$', '%', '&', '*', '№', '!', '?', '+', '=', '~', '§']);
+      const map = new Map(); [...new Set(tl)].forEach((l, i) => map.set(l, syms[i]));
+      return { cipher: tl.map(l => map.get(l)).join(''), options: shuffle(opts), answer: target };
+    }
+    return { cipher: '%#№@$#&', options: ['модем', 'монитор', 'ноутбук', 'принтер', 'сканер'], answer: 'монитор' };
+  }
+
+  const t3 = {
+    id: 'code', num: 3, title: 'Кодовое слово',
+    story: '<p>Какое слово здесь закодировано? Шифр нам неизвестен, но мы можем догадаться!</p><p class="mono" style="font-size:1.4em;font-weight:800;letter-spacing:.15em">%#№@$#&amp;</p><p class="muted">Воспользуйся лупами 🔢 и 🔍, потом нажми на слово, которое подходит.</p>',
+    hints: [
+      'Сколько знаков в шифре? Посчитай. Теперь посчитай буквы в каждом слове — нажми на лупу «Посчитать буквы».',
+      'Какие слова не подходят по длине? Они зачеркнутся. Из оставшихся выбирай.',
+      'Посмотри на шифр: один знак повторяется. На каких местах он стоит? Нажми «Найти одинаковые знаки».',
+      'Если знаки одинаковые, то и буквы на этих местах должны быть одинаковыми. В каком слове на этих местах одна и та же буква?'
+    ],
+    build(play, api) {
+      play.append(cipherWidget('%#№@$#&', ['модем', 'монитор', 'ноутбук', 'принтер', 'сканер'], 'монитор', {
+        say: api.say, ok: () => api.solve('Верно! Это слово «монитор».'), bad: (m) => { api.attempt(); api.say(m, 'bad'); }
+      }));
+    },
+    explain() {
+      return h('div', null,
+        h('ol', null,
+          h('li', { html: '<b>Считаем знаки.</b> В шифре их 7. В словах: модем — 5, сканер — 6; а монитор, ноутбук, принтер — по 7.' }),
+          h('li', { html: '<b>Ищем одинаковые знаки.</b> «#» стоит на 2-м и 6-м местах. Значит, и в слове на 2-м и 6-м местах — одна и та же буква.' }),
+          h('li', { html: 'мОнитОр — на 2-м и 6-м местах «о» и «о» ✓. ноутбук: «о» и «у» ✗. принтер: «р» и «е» ✗.' }),
+          h('li', { html: 'Ответ: <b>монитор</b>.' })),
+        h('p', { class: 'small muted', html: 'Идея шифрования: одна и та же буква всегда превращается в один и тот же знак, а разные буквы — в разные.' }));
+    },
+    practiceTitle: 'Ещё потренироваться: новые шифры',
+    practice(body) {
+      const mount = h('div'), f = h('p', { class: 'fb' });
+      const gen = () => {
+        const g = genCipher();
+        mount.replaceChildren(cipherWidget(g.cipher, g.options, g.answer, {
+          say: (m, k) => { f.className = 'fb ' + k; f.textContent = m; },
+          ok: (w) => { f.className = 'fb ok'; f.textContent = `Верно! Это «${w}».`; K.burst(f); },
+          bad: (m) => { f.className = 'fb bad'; f.textContent = m; }
+        }));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Новый шифр')); gen();
+    }
+  };
+
+  K.App({
+    title: 'Олимпиада KIBERone · неделя 5',
+    sub: 'Младшая группа, 6–10 лет',
+    intro: 'Привет! Сегодня три задачи: загадочное число, робот-посудомойка и кодовое слово. Если трудно — нажимай «Подсказка». Когда решишь, на вкладке появится звёздочка ⭐',
+    tasks: [t1, t2, t3]
+  });
+})();
+
+</script>
+
+</body></html>
