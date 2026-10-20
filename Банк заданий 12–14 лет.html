@@ -1,0 +1,1858 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Банк заданий 12–14 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{max-width:68ch}
+.story>*+*{margin-top:10px}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+
+/* Макет: рабочее место участника контеста, светлая бумага и тёмные панели кода, синий акцент и янтарная подсветка. 12–14 лет. */
+:root{
+  --bg:#EDF0F6;--surface:#FFFFFF;--surface2:#F4F6FB;--ink:#16202E;--muted:#536074;
+  --edge:#16202E;--line:#D2D9E6;--line-strong:#97A6BF;
+  --accent:#2457E6;--on-accent:#FFFFFF;--accent2:#F0A81C;--on-accent2:#1B1300;
+  --good:#11803E;--good-bg:#DDF3E4;--bad:#BE321D;--bad-bg:#FCE6E1;--star:#F0A81C;
+  --field:#FFFFFF;--hint-bg:#E9EFFF;--hint-edge:#8AA5F0;--code-inline:#E1E7F3;--focus:#2457E6;
+  --code-bg:#0F1624;--code-ink:#DCE6F7;--code-muted:#7D8BA6;--code-hl:rgba(240,168,28,.22);--code-line:#26324A;
+  --card-shadow:none;
+  --radius:7px;--radius-lg:12px;--bw:1.5px;--bw-thin:1px;--lift:0px;--fs:16.5px;--maxw:940px;
+  --f-display:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --f-body:'Manrope','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D121A;--surface:#151C27;--surface2:#1B2433;--ink:#E5EBF5;--muted:#9AA8BF;
+  --edge:#42536E;--line:#26324A;--line-strong:#4B5C78;
+  --accent:#7399FF;--on-accent:#0A142C;--accent2:#F5B73A;--on-accent2:#1B1300;
+  --good:#5BD58A;--good-bg:#123221;--bad:#FF8E7A;--bad-bg:#42201A;--star:#F5B73A;
+  --field:#0D121A;--hint-bg:#1B2849;--hint-edge:#4E69B8;--code-inline:#26324A;--focus:#8FB0FF;
+  --code-bg:#080C13;--code-ink:#DCE6F7;--code-muted:#7D8BA6;--code-hl:rgba(245,183,58,.2);--code-line:#26324A;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D121A;--surface:#151C27;--surface2:#1B2433;--ink:#E5EBF5;--muted:#9AA8BF;
+  --edge:#42536E;--line:#26324A;--line-strong:#4B5C78;
+  --accent:#7399FF;--on-accent:#0A142C;--accent2:#F5B73A;--on-accent2:#1B1300;
+  --good:#5BD58A;--good-bg:#123221;--bad:#FF8E7A;--bad-bg:#42201A;--star:#F5B73A;
+  --field:#0D121A;--hint-bg:#1B2849;--hint-edge:#4E69B8;--code-inline:#26324A;--focus:#8FB0FF;
+  --code-bg:#080C13;--code-ink:#DCE6F7;--code-muted:#7D8BA6;--code-hl:rgba(245,183,58,.2);--code-line:#26324A;color-scheme:dark}
+
+.top .mascot,.bubble .mascot{display:none}
+.top h1{font-size:clamp(1.2rem,4.8vw,1.9rem);font-weight:800;letter-spacing:-.02em}
+.top h1::before{content:"> ";color:var(--accent)}
+.task-head h2{font-size:clamp(1.05rem,3.8vw,1.4rem);font-weight:800}
+.num{border-radius:6px;font-family:var(--f-mono)}
+.tab{font-family:var(--f-mono);font-size:.9em}
+.bubble .say{border-radius:var(--radius)}
+.btn{box-shadow:none}
+.btn.primary{border-color:var(--accent)}
+.intro{background:var(--hint-bg);border-color:var(--hint-edge)}
+.box{display:grid;gap:10px}
+.sub-h{font-family:var(--f-mono);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+
+/* код */
+.code{background:var(--code-bg);color:var(--code-ink);font-family:var(--f-mono);font-size:.88rem;line-height:1.75;border-radius:var(--radius);padding:10px 0;overflow-x:auto;max-width:100%}
+.code .ln{display:block;padding:0 14px;white-space:pre;min-height:1.75em}
+.code .ln.on{background:var(--code-hl);box-shadow:inset 3px 0 0 var(--accent2)}
+.code .kw{color:#8DB4FF;font-weight:700}
+.code .cm{color:var(--code-muted)}
+.tabs-s{display:flex;gap:6px;flex-wrap:wrap}
+.pill{cursor:pointer;border:var(--bw-thin) solid var(--line-strong);background:var(--surface);color:var(--ink);padding:.3em .8em;border-radius:999px;font-weight:700;font-size:.88em;min-height:36px}
+.pill[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.vars{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--f-mono)}
+.vars span{background:var(--surface);border:var(--bw-thin) solid var(--line-strong);border-radius:6px;padding:.15em .6em;font-weight:800}
+.vars span b{color:var(--accent)}
+table.tbl td input.field{width:5.5em;min-height:38px;padding:.2em .4em;text-align:center}
+table.tbl td.mono,table.tbl th{font-family:var(--f-mono)}
+table.tbl tr.cur td{background:var(--hint-bg)}
+table.tbl td.okc{background:var(--good-bg);color:var(--good);font-weight:800}
+.stepx{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stepx label{display:grid;gap:4px;font-size:.88em;font-weight:700;color:var(--muted)}
+
+/* диаграмма Венна */
+.vwrap{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(220px,1fr);gap:18px;align-items:start}
+@media (max-width:700px){.vwrap{grid-template-columns:minmax(0,1fr)}}
+.vd{position:relative;width:100%;max-width:440px;aspect-ratio:320/300;margin-inline:auto}
+.vd svg{position:absolute;inset:0;width:100%;height:100%}
+.vd text{font-family:var(--f-body);font-weight:800;font-size:11.5px;fill:var(--ink)}
+input.rg{position:absolute;transform:translate(-50%,-50%);width:3.1em;height:2.2em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:clamp(.85rem,3.3vw,1.05rem);border:var(--bw) solid var(--line-strong);border-radius:6px;background:var(--surface);padding:0;color:var(--ink)}
+input.rg:focus{border-color:var(--accent)}
+.clues{display:grid;gap:8px;list-style:none;margin:0;padding:0}
+.clues li{display:grid;grid-template-columns:1.6em 1fr;gap:6px;align-items:start;padding:.45em .6em;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.clues li i{font-style:normal;font-weight:800;font-family:var(--f-mono);text-align:center}
+.clues li.ok{background:var(--good-bg);border-color:var(--good)}.clues li.ok i{color:var(--good)}
+.clues li.bad{background:var(--bad-bg);border-color:var(--bad)}.clues li.bad i{color:var(--bad)}
+.vtotal{font-family:var(--f-mono);font-weight:800}
+
+/* проверка */
+.ed{width:100%;min-height:220px;resize:vertical;background:var(--code-bg);color:var(--code-ink);border:var(--bw) solid var(--code-line);border-radius:var(--radius);padding:12px 14px;font-family:var(--f-mono);font-size:.9rem;line-height:1.65;tab-size:4;white-space:pre;overflow:auto}
+.ed:focus{border-color:var(--accent)}
+.io{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.io textarea{width:100%;min-height:96px;font-family:var(--f-mono);font-size:.88rem;resize:vertical}
+.console{background:var(--code-bg);color:var(--code-ink);font-family:var(--f-mono);font-size:.88rem;border-radius:var(--radius);padding:10px 14px;min-height:72px;white-space:pre-wrap;overflow-wrap:anywhere}
+.console.err{color:#FFB4A5}
+.verd{width:100%}
+.verd td,.verd th{font-size:.9em}
+.v-ok{color:var(--good);font-weight:800}.v-bad{color:var(--bad);font-weight:800}
+.parsons{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.plist{display:grid;gap:6px;align-content:start;min-height:60px;padding:8px;border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);background:var(--surface2)}
+.pline{cursor:pointer;text-align:left;font-family:var(--f-mono);font-size:.82rem;background:var(--code-bg);color:var(--code-ink);border:var(--bw-thin) solid var(--code-line);border-radius:6px;padding:.45em .7em;white-space:pre-wrap;overflow-wrap:anywhere;min-height:38px}
+.pline:hover{border-color:var(--accent)}
+.pline .pn{color:var(--code-muted);margin-right:.7em}
+.calc{font-family:var(--f-mono);font-size:.9rem;display:grid;gap:4px}
+.calc div{display:grid;grid-template-columns:minmax(9em,12em) 1fr;gap:10px}
+.calc div span:first-child{color:var(--muted);font-family:var(--f-body);font-weight:700}
+.calc div.total{font-weight:800;color:var(--accent);border-top:var(--bw-thin) solid var(--line-strong);padding-top:6px;margin-top:4px}
+@media (max-width:520px){.calc div{grid-template-columns:1fr;gap:0}}
+.iotable{width:100%;font-family:var(--f-mono);font-size:.88rem}
+.iotable pre{margin:0;font-family:inherit}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+
+/* ===== неделя 5 ===== */
+.fcw{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.fcw{grid-template-columns:minmax(0,1fr)}}
+svg.flow{width:100%;height:auto;display:block;max-width:420px;margin-inline:auto}
+svg.flow .nd rect,svg.flow .nd polygon,svg.flow .nd ellipse,svg.flow .nd path{fill:var(--surface);stroke:var(--edge);stroke-width:1.6}
+svg.flow .nd text{font-family:var(--f-mono);font-weight:700;font-size:13px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+svg.flow .nd.cur rect,svg.flow .nd.cur polygon,svg.flow .nd.cur ellipse{stroke:var(--accent2);stroke-width:3.4;fill:var(--code-hl)}
+svg.flow .nd.seen rect,svg.flow .nd.seen polygon,svg.flow .nd.seen ellipse{fill:var(--good-bg);stroke:var(--good)}
+svg.flow .ed{fill:none;stroke:var(--line-strong);stroke-width:1.8}
+svg.flow .ed.used{stroke:var(--accent2);stroke-width:3}
+svg.flow .lb{font-family:var(--f-mono);font-weight:800;font-size:11px;fill:var(--muted);text-anchor:middle}
+.ctl{display:grid;gap:10px}
+.ctl .q{font-weight:800}
+.vars span.mm b{color:var(--accent2)}
+
+.bt{border-collapse:collapse;width:100%;table-layout:fixed;min-width:0}
+.bt th,.bt td{border:var(--bw-thin) solid var(--line-strong);padding:0;text-align:center}
+.bt th{font-family:var(--f-mono);font-size:.78rem;background:var(--surface2);padding:.35em 0;line-height:1.15}
+.bt th.pn{width:5.9em}
+.bt td.pn{font-weight:800;text-align:left;padding:.3em .5em;font-size:.92em;background:var(--surface2)}
+.bt button.cell{width:100%;min-height:40px;background:var(--field);border:0;cursor:pointer;font-family:var(--f-mono);font-weight:800;font-size:1.05rem;color:var(--muted)}
+.bt button.cell[data-v="1"]{background:var(--good-bg);color:var(--good)}
+.bt button.cell[data-v="-1"]{background:var(--bad-bg);color:var(--bad)}
+.bt button.cell:hover{filter:brightness(.96)}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:4px 14px;font-size:.88em;color:var(--muted)}
+.legend b{font-family:var(--f-mono);color:var(--ink)}
+.clues li.unk i{color:var(--muted)}
+.mini-q{display:grid;gap:8px}
+.chk{display:flex;gap:8px;flex-wrap:wrap}
+.chk label{display:flex;gap:6px;align-items:center;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);padding:.4em .8em;background:var(--surface);cursor:pointer;min-height:40px}
+.chk label:has(input:checked){background:var(--hint-bg);border-color:var(--accent)}
+
+.tl{width:100%;height:auto;display:block}
+.tl .fm{fill:var(--accent)}.tl .ad{fill:var(--accent2)}.tl .gh{fill:none;stroke:var(--accent2);stroke-width:1.5;stroke-dasharray:4 3}
+.tl text{font-family:var(--f-mono);font-size:9px;fill:var(--muted);text-anchor:middle}
+.tl .tk{stroke:var(--line-strong);stroke-width:1}
+.sim{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.sim label{display:grid;gap:4px;font-weight:700;font-size:.9em;color:var(--muted)}
+.chal{display:grid;gap:6px;list-style:none;margin:0;padding:0}
+.chal li{display:flex;gap:8px;align-items:center;padding:.4em .7em;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.chal li.ok{background:var(--good-bg);border-color:var(--good)}
+.chal li i{font-style:normal;font-weight:800;font-family:var(--f-mono);width:1.4em;text-align:center}
+.stage{display:grid;gap:12px}
+.pline.used{opacity:.4}
+.pline.in{border-color:var(--accent)}
+.pline.err{border-color:var(--bad)}
+.verd th,.verd td{padding:.35em .5em;text-align:left;vertical-align:top;font-family:var(--f-mono);font-size:.82rem;overflow-wrap:anywhere}
+.verd td.t,.verd th.t{white-space:nowrap}
+
+/* ===== тест: общая оболочка (цвета — из токенов страницы) ===== */
+.tf{gap:16px}
+.tf-screen{display:grid;gap:16px;min-width:0}
+.tf-test,.tf-res{display:grid;gap:14px;min-width:0}
+.tf-rules{margin:0;padding-left:1.2em;display:grid;gap:8px;max-width:68ch}
+.tf-f{display:grid;gap:4px}
+.tf-l{font-weight:700}
+.tf-in{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tf-in .field{width:8.5em}
+.tf-in .field.txt{width:min(15em,100%)}
+.tf-in select.field{width:auto;min-width:9em}
+.tf-fields{display:grid;gap:12px}
+
+.tf-bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between;background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius);padding:6px 12px}
+.tf-clock{font-weight:800;font-size:1.15em;white-space:nowrap}
+.tf-time{font-weight:800}
+.tf-time.warn,.tf-bar.warn .tf-clock{color:var(--bad)}
+.tf-bar.warn{border-color:var(--bad)}
+.tf-prog{color:var(--muted);font-weight:700;font-size:.92em}
+.tf-dots{display:flex;gap:6px;flex-wrap:wrap}
+.tf-dot{cursor:pointer;min-width:44px;min-height:44px;border-radius:var(--radius);border:var(--bw-thin) solid var(--line-strong);background:var(--surface);font-weight:800;font-family:var(--f-mono)}
+.tf-dot.ans{background:var(--hint-bg);border-color:var(--edge)}
+.tf-dot.ans::after{content:"✓";font-size:.7em;margin-left:2px}
+.tf-dot[aria-current="step"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tf-card{scroll-margin-top:80px}
+.tf-pts{flex:none;font-weight:800;font-size:.85em;color:var(--muted);border:var(--bw-thin) solid var(--line-strong);border-radius:999px;padding:.1em .7em;white-space:nowrap}
+.tf-nav{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.tf-confirm p{margin-bottom:10px;font-weight:700}
+
+.tf-opts{display:grid;gap:8px}
+.tf-opt{cursor:pointer;text-align:left;min-height:44px;padding:.55em 1em;border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--surface);font-weight:700}
+.tf-opt::before{content:"○ ";font-weight:800}
+.tf-opt[aria-checked="true"]{background:var(--accent);color:var(--on-accent)}
+.tf-opt[aria-checked="true"]::before{content:"● "}
+.tf-pool{display:flex;flex-wrap:wrap;gap:8px}
+.tf-chip{cursor:pointer;min-height:44px;padding:.5em .9em;border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--surface);font-weight:700;text-align:left}
+.tf-chip:hover{background:var(--surface2)}
+.tf-seq{margin:0;padding-left:1.8em;display:grid;gap:6px;min-height:2.4em}
+.tf-seq li{padding:.3em .7em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface2);overflow-wrap:anywhere}
+
+.tf-nums{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+.tf-n{min-width:2.3em;padding:.25em .5em;text-align:center;border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--surface2)}
+.tf-n.q{background:var(--accent2);color:var(--on-accent2)}
+.tf-sym{font-size:2.2rem;line-height:1;padding:.2em .3em;border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--surface2)}
+.tf-facts{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.tf-lgrid{border-collapse:collapse;margin-inline:auto}
+.tf-lgrid td{width:clamp(40px,11.5vw,54px);height:clamp(40px,11.5vw,54px);text-align:center;border:var(--bw-thin) solid var(--line-strong);background:var(--surface);font-family:var(--f-display);font-weight:800;font-size:1.15em}
+.tf-lgrid td.c{background:var(--accent2);color:var(--on-accent2)}
+.tf-cards{display:flex;gap:8px;flex-wrap:wrap}
+.tf-cards span{padding:.3em .7em;border:var(--bw) dashed var(--edge);border-radius:var(--radius);font-weight:800;background:var(--surface2);font-family:var(--f-mono)}
+
+svg.tf-flow{width:100%;height:auto;display:block;max-width:380px;margin-inline:auto}
+svg.tf-flow .nd rect,svg.tf-flow .nd polygon,svg.tf-flow .nd ellipse{fill:var(--surface);stroke:var(--edge);stroke-width:1.8}
+svg.tf-flow .nd text{font-family:var(--f-mono);font-weight:700;font-size:13px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+svg.tf-flow .ed{fill:none;stroke:var(--edge);stroke-width:1.8}
+svg.tf-flow .lb{font-family:var(--f-mono);font-weight:800;font-size:11px;fill:var(--muted);text-anchor:middle}
+.tf-code{margin:0;background:var(--code-bg,#10182b);color:var(--code-ink,#e6ecfb);font-family:var(--f-mono);font-size:.9rem;line-height:1.7;border-radius:var(--radius);padding:12px 14px;overflow-x:auto;max-width:100%;white-space:pre}
+.tf-pyr{display:grid;gap:6px;justify-items:center}
+.tf-pyr div{display:flex;gap:6px}
+.tf-pc{width:clamp(48px,14vw,66px);height:clamp(40px,10vw,48px);display:grid;place-items:center;border:var(--bw) solid var(--edge);border-radius:8px;background:var(--surface2);font-family:var(--f-mono);font-weight:800;font-size:1.05em}
+.tf-pc.q{background:var(--accent2);color:var(--on-accent2)}
+.tf-sh{border-collapse:collapse;margin-inline:auto;font-family:var(--f-mono)}
+.tf-sh td,.tf-sh th{border:var(--bw-thin) solid var(--line-strong);width:clamp(44px,12vw,60px);height:clamp(44px,12vw,60px);text-align:center;font-weight:800;font-size:1.3em}
+.tf-sh th{background:var(--surface2);font-size:1em}
+.tf-sh .sum{background:var(--hint-bg)}
+.tf-sh .sum.q{background:var(--accent2);color:var(--on-accent2)}
+
+.tf-score{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.tf-big{font-family:var(--f-display);font-weight:800;font-size:clamp(2rem,9vw,3.2rem);line-height:1.05}
+.tf-level{display:flex;gap:12px;align-items:center;flex:1;min-width:min(100%,280px)}
+.tf-level .mascot{flex:none;width:64px;height:auto}
+.tf-level h2{margin-bottom:4px}
+.tf-skills{display:grid;gap:12px}
+.tf-skill{display:grid;grid-template-columns:minmax(9em,13em) 1fr auto;gap:6px 12px;align-items:center}
+.tf-sn{font-weight:800}
+.tf-sv{font-weight:700;font-size:.9em;white-space:nowrap}
+.tf-meter{display:block;height:16px;border:var(--bw-thin) solid var(--edge);border-radius:999px;background:var(--surface2);overflow:hidden}
+.tf-meter i{display:block;height:100%;background:var(--good)}
+.tf-skill.mid .tf-meter i{background:var(--accent2)}
+.tf-skill.lo .tf-meter i{background:var(--bad)}
+@media (max-width:560px){.tf-skill{grid-template-columns:1fr auto}.tf-meter{grid-column:1/-1;order:3}}
+.tf-recs{margin:0;padding-left:1.2em;display:grid;gap:10px}
+.tf-revs{display:grid;gap:8px}
+.tf-rev{border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.tf-rev>summary{cursor:pointer;display:grid;grid-template-columns:1.6em 1fr auto;gap:8px;align-items:center;padding:.6em .8em;min-height:44px;list-style:none}
+.tf-rev>summary::-webkit-details-marker{display:none}
+.tf-mk{font-weight:800;text-align:center}
+.tf-rev.ok .tf-mk{color:var(--good)}.tf-rev.bad .tf-mk{color:var(--bad)}
+.tf-rt{font-weight:700;min-width:0}
+.tf-rs{font-size:.85em;color:var(--muted);font-weight:700;white-space:nowrap}
+.tf-revbody{display:grid;gap:10px;padding:0 .8em .8em}
+.tf-text{font-family:var(--f-mono);font-size:.88rem;min-height:9em}
+@media (max-width:420px){.tf-rev>summary{grid-template-columns:1.6em 1fr}.tf-rs{grid-column:2}}
+
+/* ===== банк заданий: общие стили ===== */
+.badge-cnt{font-weight:800;font-size:.85em;color:var(--good);border:var(--bw-thin) solid var(--good);border-radius:999px;padding:.1em .7em;white-space:nowrap}
+.badge-cnt:empty{display:none}
+.from{margin-top:-8px}
+.choice .btn[disabled]{opacity:.55}
+.choice .btn.picked{background:var(--accent);color:var(--on-accent)}
+.sub-h{font-family:var(--f-mono);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.ed{box-sizing:border-box;max-width:100%;width:100%;min-height:180px;resize:vertical;background:var(--code-bg,#10182b);color:var(--code-ink,#e6ecfb);border:var(--bw) solid var(--edge);border-radius:var(--radius);padding:12px 14px;font-family:var(--f-mono);font-size:.9rem;line-height:1.65;tab-size:4;white-space:pre;overflow:auto}
+.ed:focus{border-color:var(--accent)}
+.io{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+@media (max-width:520px){.io{grid-template-columns:minmax(0,1fr)}}
+.io textarea{box-sizing:border-box;max-width:100%;width:100%;font-family:var(--f-mono);font-size:.88rem;resize:vertical;min-height:60px}
+.io-btns{display:flex;gap:8px;flex-wrap:wrap}
+.console{box-sizing:border-box;max-width:100%;background:var(--code-bg,#10182b);color:var(--code-ink,#e6ecfb);font-family:var(--f-mono);font-size:.88rem;border-radius:var(--radius);padding:10px 14px;min-height:56px;white-space:pre-wrap;overflow-wrap:anywhere}
+.console.err{color:#FFB4A5}
+.verd{width:100%}
+.verd td,.verd th{font-size:.9em;text-align:left}
+.verd pre.plain{margin:0;font-family:inherit;white-space:pre-wrap}
+.v-ok{color:var(--good);font-weight:800}.v-bad{color:var(--bad);font-weight:800}
+.stage{display:grid;gap:12px}
+.play>*{min-width:0}
+.gridbox{display:grid;gap:4px;justify-content:center}
+
+/* ===== Банк заданий 12–14: стили генераторов ===== */
+.stack{display:grid;gap:10px}
+.stack>*{margin:0}
+.stack .tbl td,.stack .tbl th{text-align:center;padding:.35em .5em}
+.stack .tbl tr.hl td{background:var(--good-bg);font-weight:800}
+.stack .tbl td:first-child{text-align:left}
+.advice{margin:0;padding-left:1.4em;display:grid;gap:6px}
+.rv-cnt{font-weight:800;color:var(--muted);align-self:center}
+.mono-in{font-family:var(--f-mono)}
+
+/* перетасовка */
+.shwrap{display:grid;gap:14px;justify-items:start}
+.shg2{display:grid;gap:4px;--sc:clamp(42px,12vw,56px);width:max-content;max-width:100%}
+.shg2.target .shc{background:var(--surface2);border-style:dashed}
+.shc{height:var(--sc);display:grid;place-items:center;border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--surface);font-family:var(--f-mono);font-weight:800;font-size:1.1rem}
+.shc.corner{border:0;background:none}
+.shh{min-height:44px;min-width:44px;height:var(--sc);border:var(--bw) solid var(--line-strong);border-radius:var(--radius);background:var(--surface2);color:var(--ink);font-family:var(--f-mono);font-weight:800;cursor:pointer}
+.shh.sel{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.shh:disabled{opacity:.6;cursor:default}
+.shg2.live{--sc:clamp(40px,11vw,52px)}
+
+/* дороги */
+.road-svg{display:block;width:100%;max-width:300px;height:auto;margin-inline:auto}
+.road-t{fill:var(--muted);font-size:11px;font-weight:700;font-family:var(--f-mono)}
+
+/* таблица расстояний */
+.mtx td,.mtx th{min-width:2.2em;font-family:var(--f-mono)}
+
+</style>
+<main id="app"></main>
+<script>window.PAGE_ID='g5c';</script>
+<script>
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+
+/* ===== Мини-интерпретатор подмножества Python для олимпиадных задач ===== */
+/* Поддержка: переменные, int/float/str/bool, арифметика (+ - * / // % **), сравнения, and/or/not,
+   input(), print(sep, end), int/float/str/abs/min/max/divmod/round/len, if/elif/else, while, for ... in range(...) */
+const PyRun = (function () {
+  'use strict';
+  class PyErr extends Error { constructor(kind, msg, line) { super(msg); this.kind = kind; this.line = line; } }
+  class Flt { constructor(v) { this.v = v; } }
+  const isInt = (v) => typeof v === 'bigint';
+  const isNum = (v) => typeof v === 'bigint' || v instanceof Flt;
+  const nv = (v) => v instanceof Flt ? v.v : Number(v);
+  const syn = (no, msg) => new PyErr('SyntaxError', msg, no);
+
+  function fmtFloat(x) {
+    if (Number.isNaN(x)) return 'nan';
+    if (!Number.isFinite(x)) return x > 0 ? 'inf' : '-inf';
+    if (Number.isInteger(x) && Math.abs(x) < 1e16) return x.toFixed(1);
+    return String(x);
+  }
+  function str(v) {
+    if (typeof v === 'string') return v;
+    if (v instanceof Flt) return fmtFloat(v.v);
+    if (typeof v === 'boolean') return v ? 'True' : 'False';
+    if (Array.isArray(v)) return '(' + v.map(repr).join(', ') + (v.length === 1 ? ',' : '') + ')';
+    return String(v);
+  }
+  const repr = (v) => typeof v === 'string' ? "'" + v + "'" : str(v);
+
+  /* ---------- лексер ---------- */
+  function stripComment(line) {
+    let q = null;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (q) { if (c === '\\') i++; else if (c === q) q = null; }
+      else if (c === '"' || c === "'") q = c;
+      else if (c === '#') return line.slice(0, i);
+    }
+    return line;
+  }
+  const OPS3 = ['**=', '//='], OPS2 = ['**', '//', '==', '!=', '<=', '>=', '+=', '-=', '*=', '%=', '/='], OPS1 = '+-*/%<>=(),';
+  function tokenize(text, no) {
+    const toks = []; let i = 0;
+    while (i < text.length) {
+      const ch = text[i];
+      if (/\s/.test(ch)) { i++; continue; }
+      if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(text[i + 1] || ''))) {
+        const m = /^(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/.exec(text.slice(i));
+        toks.push({ t: 'num', v: m[0], f: /[.eE]/.test(m[0]) }); i += m[0].length; continue;
+      }
+      if (/[A-Za-z_А-Яа-яЁё]/.test(ch)) {
+        const m = /^[A-Za-z_0-9А-Яа-яЁё]+/.exec(text.slice(i));
+        toks.push({ t: 'name', v: m[0] }); i += m[0].length; continue;
+      }
+      if (ch === '"' || ch === "'") {
+        let j = i + 1, s = '';
+        while (j < text.length && text[j] !== ch) {
+          if (text[j] === '\\') { const n = text[j + 1]; s += n === 'n' ? '\n' : n === 't' ? '\t' : n; j += 2; } else s += text[j++];
+        }
+        if (j >= text.length) throw syn(no, 'не закрыта кавычка');
+        toks.push({ t: 'str', v: s }); i = j + 1; continue;
+      }
+      const t3 = text.slice(i, i + 3), t2 = text.slice(i, i + 2);
+      if (OPS3.includes(t3)) { toks.push({ t: 'op', v: t3 }); i += 3; continue; }
+      if (OPS2.includes(t2)) { toks.push({ t: 'op', v: t2 }); i += 2; continue; }
+      if (OPS1.includes(ch)) { toks.push({ t: 'op', v: ch }); i++; continue; }
+      throw syn(no, `неожиданный символ «${ch}»`);
+    }
+    return toks;
+  }
+
+  /* ---------- парсер выражений ---------- */
+  function ExprParser(toks, no) {
+    let p = 0;
+    const peek = () => toks[p], isOp = (v) => toks[p] && toks[p].t === 'op' && toks[p].v === v, isKw = (v) => toks[p] && toks[p].t === 'name' && toks[p].v === v;
+    const eat = (v) => { if (!isOp(v)) throw syn(no, `ожидалось «${v}»`); p++; };
+    function exprList() {
+      const first = expr();
+      if (!isOp(',')) return first;
+      const items = [first];
+      while (isOp(',')) { p++; if (p >= toks.length) break; items.push(expr()); }
+      return { k: 'tuple', items };
+    }
+    function expr() { let l = andE(); while (isKw('or')) { p++; l = { k: 'or', l, r: andE() }; } return l; }
+    function andE() { let l = notE(); while (isKw('and')) { p++; l = { k: 'and', l, r: notE() }; } return l; }
+    function notE() { if (isKw('not')) { p++; return { k: 'not', e: notE() }; } return cmp(); }
+    function cmp() {
+      const first = arith(), ops = [];
+      while (peek() && peek().t === 'op' && ['==', '!=', '<', '>', '<=', '>='].includes(peek().v)) { const op = toks[p++].v; ops.push([op, arith()]); }
+      return ops.length ? { k: 'cmp', first, ops, no } : first;
+    }
+    function arith() { let l = term(); while (isOp('+') || isOp('-')) { const op = toks[p++].v; l = { k: 'bin', op, l, r: term(), no }; } return l; }
+    function term() { let l = factor(); while (isOp('*') || isOp('/') || isOp('//') || isOp('%')) { const op = toks[p++].v; l = { k: 'bin', op, l, r: factor(), no }; } return l; }
+    function factor() { if (isOp('-') || isOp('+')) { const op = toks[p++].v; return { k: 'un', op, e: factor(), no }; } return power(); }
+    function power() { const b = atom(); if (isOp('**')) { p++; return { k: 'bin', op: '**', l: b, r: factor(), no }; } return b; }
+    function atom() {
+      const t = toks[p];
+      if (!t) throw syn(no, 'выражение оборвано');
+      if (t.t === 'num') { p++; return { k: 'num', v: t.f ? new Flt(parseFloat(t.v)) : BigInt(t.v) }; }
+      if (t.t === 'str') { p++; return { k: 'str', v: t.v }; }
+      if (t.t === 'name') {
+        p++;
+        if (t.v === 'True') return { k: 'num', v: true };
+        if (t.v === 'False') return { k: 'num', v: false };
+        if (isOp('(')) {
+          p++; const args = [], kw = {};
+          while (!isOp(')')) {
+            if (p >= toks.length) throw syn(no, 'не закрыта скобка');
+            if (toks[p].t === 'name' && toks[p + 1] && toks[p + 1].t === 'op' && toks[p + 1].v === '=') { const key = toks[p].v; p += 2; kw[key] = expr(); }
+            else args.push(expr());
+            if (isOp(',')) p++; else break;
+          }
+          eat(')');
+          return { k: 'call', name: t.v, args, kw, no };
+        }
+        return { k: 'name', v: t.v, no };
+      }
+      if (isOp('(')) {
+        p++;
+        if (isOp(')')) { p++; return { k: 'tuple', items: [] }; }
+        const e = exprList(); eat(')'); return e;
+      }
+      throw syn(no, `неожиданное «${t.v}»`);
+    }
+    return { exprList, expr, done: () => p >= toks.length, rest: () => toks[p] };
+  }
+  function parseExprAll(toks, no) {
+    const P = ExprParser(toks, no), e = P.exprList();
+    if (!P.done()) throw syn(no, `лишнее «${P.rest().v}»`);
+    return e;
+  }
+
+  /* ---------- парсер программы ---------- */
+  function parse(src) {
+    const lines = [];
+    src.replace(/\r/g, '').split('\n').forEach((ln, i) => {
+      const t = stripComment(ln);
+      if (!t.trim()) return;
+      lines.push({ ind: t.match(/^[ \t]*/)[0].replace(/\t/g, '    ').length, text: t.trim(), no: i + 1 });
+    });
+    let pos = 0;
+    function block(ind) {
+      const out = [];
+      while (pos < lines.length) {
+        const L = lines[pos];
+        if (L.ind < ind) break;
+        if (L.ind > ind) throw syn(L.no, 'лишний отступ');
+        out.push(stmt(L, ind));
+      }
+      return out;
+    }
+    function body(L, ind) {
+      const n = lines[pos];
+      if (!n || n.ind <= ind) throw syn(L.no, 'после «:» нужен блок с отступом');
+      return block(n.ind);
+    }
+    function condToks(text, kw, L) {
+      const rest = text.slice(kw.length, -1).trim();
+      if (!rest) throw syn(L.no, `после «${kw}» нужно условие`);
+      return parseExprAll(tokenize(rest, L.no), L.no);
+    }
+    function stmt(L, ind) {
+      pos++;
+      const text = L.text;
+      let m;
+      if (/^if\s/.test(text) && text.endsWith(':')) {
+        const node = { k: 'if', branches: [{ c: condToks(text, 'if', L), b: body(L, ind) }], els: null, no: L.no };
+        while (pos < lines.length && lines[pos].ind === ind && /^(elif\s.*:|else\s*:)$/.test(lines[pos].text)) {
+          const E = lines[pos++];
+          if (E.text.startsWith('elif')) node.branches.push({ c: condToks(E.text, 'elif', E), b: body(E, ind) });
+          else { node.els = body(E, ind); break; }
+        }
+        return node;
+      }
+      if (/^while\s/.test(text) && text.endsWith(':')) return { k: 'while', c: condToks(text, 'while', L), b: body(L, ind), no: L.no };
+      if ((m = /^for\s+([A-Za-z_А-Яа-яЁё][\wА-Яа-яЁё]*)\s+in\s+range\s*\((.*)\)\s*:$/.exec(text))) {
+        const args = ExprParser(tokenize(m[2], L.no), L.no);
+        const list = args.exprList(); const items = list.k === 'tuple' ? list.items : [list];
+        if (!items.length || items.length > 3) throw syn(L.no, 'range принимает от 1 до 3 аргументов');
+        return { k: 'for', v: m[1], items, b: body(L, ind), no: L.no };
+      }
+      if (/^(if|while|for|elif|else)\b.*$/.test(text) && !text.endsWith(':')) throw syn(L.no, 'в конце строки должно быть «:»');
+      if (/^(def|class|import|from|try|with|lambda|return)\b/.test(text)) throw new PyErr('Unsupported', `«${text.split(/\s/)[0]}» не поддерживается в этой мини-среде`, L.no);
+      if (text === 'pass') return { k: 'pass' };
+      const toks = tokenize(text, L.no);
+      // присваивания
+      let depth = 0; const eqs = []; let aug = -1;
+      toks.forEach((t, i) => {
+        if (t.t !== 'op') return;
+        if (t.v === '(') depth++; else if (t.v === ')') depth--;
+        else if (depth === 0 && t.v === '=') eqs.push(i);
+        else if (depth === 0 && ['+=', '-=', '*=', '/=', '//=', '%=', '**='].includes(t.v)) aug = i;
+      });
+      if (aug >= 0) {
+        if (aug !== 1 || toks[0].t !== 'name') throw syn(L.no, 'слева от «' + toks[aug].v + '» должно быть имя переменной');
+        return { k: 'aug', name: toks[0].v, op: toks[aug].v.slice(0, -1), e: parseExprAll(toks.slice(aug + 1), L.no), no: L.no };
+      }
+      if (eqs.length) {
+        const segs = []; let prev = 0;
+        eqs.forEach(i => { segs.push(toks.slice(prev, i)); prev = i + 1; });
+        const valToks = toks.slice(prev);
+        if (!valToks.length) throw syn(L.no, 'справа от «=» нет значения');
+        const targets = segs.map(sg => {
+          const names = []; let ok = true;
+          sg.forEach((t, i) => { if (i % 2 === 0) { if (t.t === 'name') names.push(t.v); else ok = false; } else if (!(t.t === 'op' && t.v === ',')) ok = false; });
+          if (!ok || !names.length) throw syn(L.no, 'слева от «=» должны стоять имена переменных');
+          return names;
+        });
+        return { k: 'assign', targets, e: parseExprAll(valToks, L.no), no: L.no };
+      }
+      const e = parseExprAll(toks, L.no);
+      if (e.k !== 'call') throw new PyErr('Unsupported', 'строка ничего не делает; ожидалась команда, например print(...)', L.no);
+      return { k: 'expr', e, no: L.no };
+    }
+    const prog = block(lines.length ? lines[0].ind : 0);
+    if (pos < lines.length) throw syn(lines[pos].no, 'лишний отступ');
+    return prog;
+  }
+
+  /* ---------- вычисление ---------- */
+  function bigFloorDiv(a, b) { let q = a / b; if ((a % b !== 0n) && ((a < 0n) !== (b < 0n))) q -= 1n; return q; }
+  function bigMod(a, b) { let r = a % b; if (r !== 0n && ((r < 0n) !== (b < 0n))) r += b; return r; }
+  function pyMod(a, b) { return ((a % b) + b) % b; }
+  function binop(op, a, b, no) {
+    if (op === '+' && typeof a === 'string' && typeof b === 'string') return a + b;
+    if (op === '*' && typeof a === 'string' && isInt(b)) return a.repeat(Math.max(0, Number(b)));
+    if (op === '*' && isInt(a) && typeof b === 'string') return b.repeat(Math.max(0, Number(a)));
+    if (typeof a === 'boolean') a = BigInt(+a); if (typeof b === 'boolean') b = BigInt(+b);
+    if (!isNum(a) || !isNum(b)) throw new PyErr('TypeError', `нельзя применить «${op}» к значениям разных типов (например, число и текст)`, no);
+    if (isInt(a) && isInt(b)) {
+      switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': if (b === 0n) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(Number(a) / Number(b));
+        case '//': if (b === 0n) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return bigFloorDiv(a, b);
+        case '%': if (b === 0n) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return bigMod(a, b);
+        case '**':
+          if (b < 0n) return new Flt(Math.pow(Number(a), Number(b)));
+          if (b > 5000n) throw new PyErr('OverflowError', 'слишком большая степень', no);
+          return a ** b;
+      }
+    }
+    const x = nv(a), y = nv(b);
+    switch (op) {
+      case '+': return new Flt(x + y);
+      case '-': return new Flt(x - y);
+      case '*': return new Flt(x * y);
+      case '/': if (y === 0) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(x / y);
+      case '//': if (y === 0) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(Math.floor(x / y));
+      case '%': if (y === 0) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(pyMod(x, y));
+      case '**': return new Flt(Math.pow(x, y));
+    }
+  }
+  function cmpVals(op, x, y) {
+    switch (op) { case '==': return x === y; case '!=': return x !== y; case '<': return x < y; case '>': return x > y; case '<=': return x <= y; case '>=': return x >= y; }
+  }
+  function compare(op, a, b, no) {
+    if (typeof a === 'boolean') a = BigInt(+a); if (typeof b === 'boolean') b = BigInt(+b);
+    if (isInt(a) && isInt(b)) return cmpVals(op, a, b);
+    if (isNum(a) && isNum(b)) return cmpVals(op, nv(a), nv(b));
+    if (typeof a === 'string' && typeof b === 'string') return cmpVals(op, a, b);
+    if (op === '==') return false; if (op === '!=') return true;
+    throw new PyErr('TypeError', 'нельзя сравнивать число и текст', no);
+  }
+  const truthy = (v) => v instanceof Flt ? v.v !== 0 : Array.isArray(v) ? v.length > 0 : isInt(v) ? v !== 0n : !!v;
+  function roundHalfEven(x) { const f = Math.floor(x), d = x - f; if (d < 0.5) return f; if (d > 0.5) return f + 1; return f % 2 === 0 ? f : f + 1; }
+
+  function run(src, stdin, opts) {
+    const limit = (opts && opts.limit) || 400000;
+    let out = '', steps = 0;
+    const inLines = String(stdin == null ? '' : stdin).replace(/\r/g, '').split('\n');
+    if (inLines.length && inLines[inLines.length - 1] === '') inLines.pop();
+    let ip = 0;
+    const env = new Map();
+    const tick = (no) => { if (++steps > limit) throw new PyErr('TimeoutError', 'программа работает слишком долго (возможно, бесконечный цикл)', no); };
+
+    const BUILTINS = {
+      input(args, kw, no) { if (args.length) out += str(args[0]); if (ip >= inLines.length) throw new PyErr('EOFError', 'функция input() вызвана, но входных данных больше нет', no); return inLines[ip++]; },
+      int(args, kw, no) {
+        const v = args[0];
+        if (typeof v === 'string') { const tt = v.trim(); if (!/^[+-]?\d+$/.test(tt)) throw new PyErr('ValueError', `нельзя превратить «${v}» в целое число`, no); return BigInt(tt); }
+        if (typeof v === 'boolean') return BigInt(+v);
+        if (v instanceof Flt) { if (!Number.isFinite(v.v)) throw new PyErr('ValueError', 'нельзя превратить бесконечность или nan в целое число', no); return BigInt(Math.trunc(v.v)); }
+        if (isInt(v)) return v;
+        throw new PyErr('TypeError', 'int() не умеет работать с таким значением', no);
+      },
+      float(args, kw, no) {
+        const v = args[0];
+        if (typeof v === 'string') { const tt = v.trim(); if (!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(tt)) throw new PyErr('ValueError', `нельзя превратить «${v}» в дробное число`, no); return new Flt(parseFloat(tt)); }
+        if (typeof v === 'boolean') return new Flt(+v);
+        return new Flt(nv(v));
+      },
+      str(args) { return str(args[0]); },
+      abs(args) { const v = args[0]; return v instanceof Flt ? new Flt(Math.abs(v.v)) : (isInt(v) ? (v < 0n ? -v : v) : v); },
+      min(args, kw, no) { return extreme(args, no, (a, b) => nv(a) < nv(b)); },
+      max(args, kw, no) { return extreme(args, no, (a, b) => nv(a) > nv(b)); },
+      divmod(args, kw, no) { return [binop('//', args[0], args[1], no), binop('%', args[0], args[1], no)]; },
+      round(args) { const v = nv(args[0]); if (args.length > 1) { const k = Math.pow(10, Number(args[1])); return new Flt(roundHalfEven(v * k) / k); } return BigInt(roundHalfEven(v)); },
+      len(args, kw, no) { if (typeof args[0] === 'string' || Array.isArray(args[0])) return BigInt(args[0].length); throw new PyErr('TypeError', 'len() работает с текстом', no); },
+      print(args, kw) { const sep = 'sep' in kw ? str(kw.sep) : ' ', end = 'end' in kw ? str(kw.end) : '\n'; out += args.map(str).join(sep) + end; return null; }
+    };
+    function extreme(args, no, better) {
+      const list = args.length === 1 && Array.isArray(args[0]) ? args[0] : args;
+      if (!list.length) throw new PyErr('ValueError', 'нет значений для сравнения', no);
+      let b = list[0]; for (const v of list) if (better(v, b)) b = v; return b;
+    }
+
+    function ev(n) {
+      switch (n.k) {
+        case 'num': case 'str': return n.v;
+        case 'name': if (!env.has(n.v)) throw new PyErr('NameError', `переменная «${n.v}» не определена (проверь, что её значение задано выше)`, n.no); return env.get(n.v);
+        case 'tuple': return n.items.map(ev);
+        case 'un': { let v = ev(n.e); if (typeof v === 'boolean') v = BigInt(+v); if (!isNum(v)) throw new PyErr('TypeError', 'унарный минус нельзя применить к тексту', n.no); return n.op === '-' ? (v instanceof Flt ? new Flt(-v.v) : -v) : v; }
+        case 'bin': return binop(n.op, ev(n.l), ev(n.r), n.no);
+        case 'cmp': { let a = ev(n.first); for (const [op, rn] of n.ops) { const b = ev(rn); if (!compare(op, a, b, n.no)) return false; a = b; } return true; }
+        case 'and': { const l = ev(n.l); return truthy(l) ? ev(n.r) : l; }
+        case 'or': { const l = ev(n.l); return truthy(l) ? l : ev(n.r); }
+        case 'not': return !truthy(ev(n.e));
+        case 'call': {
+          const f = BUILTINS[n.name];
+          if (!f) throw new PyErr('NameError', `функция «${n.name}» не поддерживается в этой мини-среде`, n.no);
+          const kw = {}; for (const k in n.kw) kw[k] = ev(n.kw[k]);
+          return f(n.args.map(ev), kw, n.no);
+        }
+      }
+      throw new PyErr('Error', 'внутренняя ошибка', n.no);
+    }
+    function assign(names, val, no) {
+      if (names.length === 1) { env.set(names[0], val); return; }
+      if (!Array.isArray(val)) throw new PyErr('TypeError', 'справа должно быть столько же значений, сколько переменных слева', no);
+      if (val.length !== names.length) throw new PyErr('ValueError', `слева ${names.length} переменных, а справа значений: ${val.length}`, no);
+      names.forEach((nm, i) => env.set(nm, val[i]));
+    }
+    function exec(list) {
+      for (const s of list) {
+        tick(s.no);
+        switch (s.k) {
+          case 'pass': break;
+          case 'expr': ev(s.e); break;
+          case 'assign': { const v = ev(s.e); s.targets.forEach(t => assign(t, v, s.no)); break; }
+          case 'aug': { if (!env.has(s.name)) throw new PyErr('NameError', `переменная «${s.name}» не определена`, s.no); env.set(s.name, binop(s.op, env.get(s.name), ev(s.e), s.no)); break; }
+          case 'if': { let done = false; for (const br of s.branches) { if (truthy(ev(br.c))) { exec(br.b); done = true; break; } } if (!done && s.els) exec(s.els); break; }
+          case 'while': while (truthy(ev(s.c))) { tick(s.no); exec(s.b); } break;
+          case 'for': {
+            const a = s.items.map(ev);
+            if (!a.every(isInt)) throw new PyErr('TypeError', 'range принимает только целые числа', s.no);
+            let [lo, hi, st] = a.length === 1 ? [0n, a[0], 1n] : a.length === 2 ? [a[0], a[1], 1n] : a;
+            if (st === 0n) throw new PyErr('ValueError', 'шаг range не может быть нулём', s.no);
+            for (let i = lo; st > 0n ? i < hi : i > hi; i += st) { tick(s.no); env.set(s.v, i); exec(s.b); }
+            break;
+          }
+        }
+      }
+    }
+    try { exec(parse(src)); return { out, err: null, env }; }
+    catch (e) {
+      if (e instanceof PyErr) return { out, err: { kind: e.kind, msg: e.message, line: e.line }, env };
+      return { out, err: { kind: 'Error', msg: 'внутренняя ошибка: ' + e.message, line: null }, env };
+    }
+  }
+  function describe(err) {
+    if (!err) return '';
+    const names = { SyntaxError: 'Синтаксическая ошибка', NameError: 'Неизвестное имя', ValueError: 'Неверное значение', ZeroDivisionError: 'Деление на ноль', EOFError: 'Не хватает входных данных', TypeError: 'Неверный тип', TimeoutError: 'Слишком долго', OverflowError: 'Слишком большое число', Unsupported: 'Не поддерживается' };
+    return `${names[err.kind] || 'Ошибка'}${err.line ? ' (строка ' + err.line + ')' : ''}: ${err.msg}`;
+  }
+  return { run, describe, parse };
+})();
+/*if (typeof module !== 'undefined') module.exports = PyRun;*/
+
+
+/* ===== Банк заданий: оболочка «генератор вариантов» ===== */
+/* Каждое задание — генератор: make() создаёт новый случайный вариант P, draw() строит поле ответа,
+   проверка делается через api.ok(...) / api.bad(...). Решено вариантов хранится в localStorage (с try/catch). */
+const B = (function () {
+  'use strict';
+  const { h, s, Store, burst, mascot, rnd, pick, shuffle, onEnter, plural } = K;
+
+  const num = (str) => { const t = String(str).trim().replace(/[−–—]/g, '-').replace(/\s+/g, ''); return /^-?\d+$/.test(t) ? parseInt(t, 10) : NaN; };
+  const norm = (v) => String(v == null ? '' : v).trim().toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ');
+  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  const field = (cfg) => h('input', Object.assign({ class: 'field', type: 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', inputmode: 'numeric' }, cfg || {}));
+  /* строка «поле + кнопка Проверить»; onCheck() вызывается по клику и Enter */
+  function checkRow(inputs, onCheck, label) {
+    const btn = h('button', { class: 'btn primary', type: 'button', onclick: onCheck }, label || 'Проверить');
+    [].concat(inputs).forEach(i => i && i.addEventListener && onEnter(i, onCheck));
+    return h('div', { class: 'row' }, [].concat(inputs), btn);
+  }
+  /* выбор одного варианта кнопками; onPick(index) */
+  function choiceRow(options, onPick) {
+    const btns = options.map((o, i) => h('button', { class: 'btn', type: 'button', onclick: () => onPick(i, btns[i]) }, o));
+    return h('div', { class: 'row choice' }, btns);
+  }
+  /* набор в нужном порядке: нажимай блоки по очереди. get() -> массив индексов */
+  function orderPick(items, onChange) {
+    const seq = [];
+    const pool = h('div', { class: 'tf-pool' });
+    const list = h('ol', { class: 'tf-seq' });
+    const undo = h('button', { class: 'btn sm', type: 'button', onclick: () => { seq.pop(); render(); } }, '↶ Убрать последний');
+    const reset = h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { seq.length = 0; render(); } }, 'Сбросить');
+    function render() {
+      pool.replaceChildren(...items.map((t, i) => seq.includes(i) ? null : h('button', { class: 'tf-chip', type: 'button', onclick: () => { seq.push(i); render(); } }, t)).filter(Boolean));
+      list.replaceChildren(...seq.map(i => h('li', null, items[i])));
+      undo.disabled = reset.disabled = !seq.length;
+      onChange && onChange(seq.slice());
+    }
+    render();
+    return { el: h('div', { class: 'stage' }, pool, list, h('div', { class: 'row' }, undo, reset)), get: () => seq.slice() };
+  }
+
+  /* ---------- задание-генератор ---------- */
+  const last = {};
+  function Gen(cfg) {
+    const countKey = 'n:' + cfg.id;
+    let P = null, solved = false, attempts = 0, hintN = 0, hints = [];
+    const counter = h('span', { class: 'badge-cnt' });
+    const showCount = () => { const n = Store.get(countKey, 0); counter.textContent = n ? 'Решено вариантов: ' + n : ''; };
+    const story = h('div', { class: 'story' });
+    const play = h('div', { class: 'play' });
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div', { class: 'row' });
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button', hidden: true }, 'Показать разбор');
+    const otherBtn = h('button', { class: 'btn sm ghost', type: 'button', onclick: () => fresh() }, '↻ Другой вариант');
+    const updHint = () => {
+      hintBtn.hidden = !hints.length;
+      hintBtn.textContent = hintN < hints.length ? `Подсказка (${hintN}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = hintN >= hints.length;
+      revealBtn.hidden = solved || explainBox.firstChild || attempts < 2;
+    };
+    hintBtn.onclick = () => {
+      if (hintN >= hints.length) return;
+      hintsBox.append(h('div', { class: 'bubble' }, mascot('think'), h('div', { class: 'say', html: `<b>Подсказка ${hintN + 1}.</b> ` + hints[hintN] })));
+      hintN++; updHint();
+    };
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = cfg.explain(P);
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), typeof body === 'string' ? h('div', { html: body }) : body));
+      updHint();
+    }
+    revealBtn.onclick = showExplain;
+
+    const api = {
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      bad(msg) { attempts++; api.say(msg, 'bad'); updHint(); },
+      ok(msg, anchor) {
+        api.say(msg || 'Верно!', 'ok');
+        if (solved) return;
+        solved = true; root.classList.add('solved');
+        Store.set(countKey, Store.get(countKey, 0) + 1); showCount();
+        if (tab) tab.classList.add('done');
+        burst(anchor && anchor.getBoundingClientRect ? anchor : fb);
+        showExplain();
+        nextBox.replaceChildren(h('button', { class: 'btn primary', type: 'button', onclick: () => fresh() }, 'Следующий вариант →'));
+        updHint();
+      },
+      get attempts() { return attempts; },
+      get solved() { return solved; }
+    };
+
+    function fresh() {
+      solved = false; attempts = 0; hintN = 0;
+      root.classList.remove('solved');
+      P = cfg.make(); last[cfg.id] = P;
+      hints = cfg.hints ? cfg.hints(P) : [];
+      const st = cfg.story(P);
+      story.replaceChildren(); if (typeof st === 'string') story.innerHTML = st; else story.append(st);
+      play.replaceChildren(); fb.textContent = ''; fb.className = 'fb';
+      hintsBox.replaceChildren(); explainBox.replaceChildren(); nextBox.replaceChildren();
+      cfg.draw(play, P, api);
+      updHint();
+    }
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('h2', { id: 'h-' + cfg.id }, cfg.title), counter),
+      cfg.from ? h('p', { class: 'muted small from' }, 'По мотивам: ' + cfg.from) : null,
+      story, play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn, otherBtn),
+      hintsBox, explainBox, nextBox);
+    let tab = null;
+    showCount();
+    return { id: cfg.id, title: cfg.title, tabLabel: cfg.tab || cfg.title, el: root, start: fresh, setTab(t) { tab = t; } };
+  }
+
+  /* ---------- страница ---------- */
+  function Bank(cfg) {
+    const root = K.$('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Типы заданий' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl);
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const gens = cfg.gens.map(g => Gen(g));
+    let started = new Set();
+    function show(g) {
+      gens.forEach(x => { const on = x === g; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      if (!started.has(g.id)) { started.add(g.id); g.start(); }
+      Store.set('tab', g.id);
+    }
+    gens.forEach(g => {
+      const tab = h('button', { class: 'tab' + (Store.get('n:' + g.id, 0) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + g.id, onclick: () => show(g) }, star(), g.tabLabel);
+      g.tab = tab; g.setTab(tab); tabsEl.append(tab); wrap.append(g.el);
+    });
+    const saved = Store.get('tab', null);
+    show(gens.find(g => g.id === saved) || gens[0]);
+  }
+
+  /* ---------- редактор кода с автопроверкой (нужен PyRun) ---------- */
+  /* cfg: {starter, sample:{input}, tests:[{input, expected, note}]}; вызывает api.ok / api.bad */
+  function codeBox(play, cfg, api) {
+    const ed = h('textarea', { class: 'ed', spellcheck: 'false', autocapitalize: 'off', rows: cfg.rows || 9, 'aria-label': 'Текст программы' });
+    ed.value = cfg.starter || '';
+    ed.addEventListener('keydown', (e) => { if (e.key === 'Tab') { e.preventDefault(); ed.setRangeText('    ', ed.selectionStart, ed.selectionEnd, 'end'); } });
+    const inp = h('textarea', { class: 'field io-in', rows: 2, 'aria-label': 'Входные данные для запуска' });
+    inp.value = (cfg.sample && cfg.sample.input) || '';
+    const out = h('div', { class: 'console', role: 'status', 'aria-live': 'polite' });
+    const verd = h('div');
+    const run = h('button', { class: 'btn sm', type: 'button', onclick: () => {
+      const r = PyRun.run(ed.value, inp.value);
+      out.classList.toggle('err', !!r.err);
+      out.textContent = r.err ? PyRun.describe(r.err) : (r.out === '' ? '(программа ничего не вывела)' : r.out);
+    } }, '▶ Запустить на этом вводе');
+    const judge = h('button', { class: 'btn primary', type: 'button', onclick: () => {
+      const res = cfg.tests.map(t => { const r = PyRun.run(ed.value, t.input); const got = r.err ? null : r.out.trim(); return { t, got, err: r.err, ok: !r.err && got === String(t.expected).trim() }; });
+      verd.replaceChildren(h('div', { class: 'hscroll' }, h('table', { class: 'tbl verd' },
+        h('thead', null, h('tr', null, h('th', null, '№'), h('th', null, 'Ввод'), h('th', null, 'Ожидалось'), h('th', null, 'Получено'), h('th', null, ''))),
+        h('tbody', null, res.map((r, i) => h('tr', null,
+          h('td', null, i + 1),
+          h('td', { class: 'mono' }, h('pre', { class: 'plain' }, r.t.input), r.t.note ? h('div', { class: 'muted small' }, r.t.note) : null),
+          h('td', { class: 'mono' }, String(r.t.expected)),
+          h('td', { class: 'mono' }, r.err ? PyRun.describe(r.err) : (r.got === '' ? '(пусто)' : r.got)),
+          h('td', { class: r.ok ? 'v-ok' : 'v-bad' }, r.ok ? '✓' : '✗')))))));
+      const k = res.filter(r => r.ok).length;
+      if (k === res.length) api.ok(`Все тесты пройдены: ${k} из ${res.length}!`, judge);
+      else api.bad(`Пройдено тестов: ${k} из ${res.length}. Посмотри, на каких вводах программа ошибается.`);
+    } }, 'Проверить решение');
+    play.append(ed, h('div', { class: 'io' }, h('label', { class: 'tf-f' }, h('span', { class: 'tf-l' }, 'Ввод для запуска'), inp), h('div', { class: 'io-btns' }, run, judge)),
+      h('div', { class: 'sub-h' }, 'Вывод'), out, verd);
+    return { ed };
+  }
+
+  return { last, Gen, Bank, num, norm, cap, field, checkRow, choiceRow, orderPick, codeBox, rnd, pick, shuffle };
+})();
+
+/* ===== Банк заданий 12–14 лет ===== */
+(function () {
+  'use strict';
+  const { h, s, rnd, pick, shuffle, plural } = K;
+  const { num, norm, cap, field, checkRow, choiceRow, codeBox } = B;
+  const G = [];
+
+  /* ---------- общие помощники ---------- */
+  const code = (text) => h('pre', { class: 'tf-code' }, text);
+  const para = (html) => h('p', { html });
+  const wrap = (...kids) => h('div', { class: 'stack' }, ...kids.filter(Boolean));
+  const tbl = (head, rows, cls) => h('div', { class: 'hscroll' }, h('table', { class: 'tbl' + (cls ? ' ' + cls : '') },
+    h('thead', null, h('tr', null, head.map(x => h('th', null, x)))),
+    h('tbody', null, rows.map(r => h('tr', { class: r.cls || null }, (r.cells || r).map(c => h('td', null, c)))))));
+  const MINUS = '−';
+  const range = (a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; };
+  const sample = (arr, n) => shuffle(arr).slice(0, n);
+  const lowFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  const secs = (n) => `${n} ${plural(n, 'секунда', 'секунды', 'секунд')}`;
+
+  /* =====================================================================
+     1. Исполнитель Калькулятор (неделя 1)
+     ===================================================================== */
+  function pickCalcOps() {
+    const a = rnd(2, 5), m = rnd(2, 3);
+    const sub = { n: `Вычти ${a}`, f: (v) => v - a, inv: (t) => t + a };
+    const add = { n: `Прибавь ${a}`, f: (v) => v + a, inv: (t) => t - a };
+    const mul = { n: `Умножь на ${m}`, f: (v) => v * m, inv: (t) => (t % m === 0 ? t / m : null) };
+    return pick([[sub, mul], [mul, sub], [add, mul], [mul, add]]);
+  }
+  function calcBfs(ops, s0, target, maxLen) {
+    for (let len = 1; len <= maxLen; len++) {
+      for (let mask = 0; mask < (1 << len); mask++) {
+        let v = s0, str = '';
+        for (let i = 0; i < len; i++) { const c = (mask >> (len - 1 - i)) & 1; v = ops[c].f(v); str += (c + 1); }
+        if (v === target) return str;
+      }
+    }
+    return null;
+  }
+  function genCalc() {
+    for (let t = 0; t < 5000; t++) {
+      const ops = pickCalcOps(), s0 = rnd(2, 9), len = rnd(4, 6);
+      let v = s0;
+      for (let i = 0; i < len; i++) v = ops[rnd(0, 1)].f(v);
+      if (v < 10 || v > 300 || v === s0) continue;
+      const best = calcBfs(ops, s0, v, 6);
+      if (!best || best.length < 4) continue;
+      return { ops, s0, target: v, best, limit: Math.min(6, best.length + (Math.random() < 0.4 ? 1 : 0)) };
+    }
+    throw new Error('calc');
+  }
+  function calcRun(P, text) {
+    const prog = String(text).replace(/[\s,;.\-]+/g, '');
+    if (!prog) return { err: 'Впиши программу: цифры 1 и 2, например 2121.' };
+    const bad = prog.split('').find(c => c !== '1' && c !== '2');
+    if (bad) return { err: `Символ «${bad}» — не команда. Пиши только цифры 1 и 2.` };
+    const trace = [P.s0];
+    for (const c of prog) trace.push(P.ops[+c - 1].f(trace[trace.length - 1]));
+    return { prog, trace, end: trace[trace.length - 1] };
+  }
+  G.push({
+    id: 'calc', tab: 'Калькулятор', title: 'Исполнитель Калькулятор', from: 'неделя 1',
+    make: genCalc,
+    story: (P) => wrap(
+      para('Исполнитель <b>Калькулятор</b> умеет выполнять две команды, у которых есть номера:'),
+      h('ol', { class: 'advice' }, P.ops.map(o => h('li', null, o.n))),
+      para(`Составь алгоритм, содержащий <b>не более ${P.limit} ${plural(P.limit, 'команды', 'команд', 'команд')}</b>, который из числа <b>${P.s0}</b> получает число <b>${P.target}</b>. Укажи только номера команд. Например, программа <code>12</code> — это «${P.ops[0].n}», затем «${P.ops[1].n}».`)),
+    draw(play, P, api) {
+      const inp = field({ inputmode: 'numeric', placeholder: 'например: 2121', 'aria-label': 'Номера команд', maxlength: 20 });
+      const chk = () => {
+        const r = calcRun(P, inp.value);
+        if (r.err) return api.bad(r.err);
+        const n = r.prog.length;
+        if (n > P.limit) return api.bad(`В программе ${n} ${plural(n, 'команда', 'команды', 'команд')}, а разрешено не больше ${P.limit}. Ход программы: ${r.trace.join(' → ')}.`);
+        if (r.end !== P.target) return api.bad(`Программа даёт число ${r.end}, а нужно ${P.target}. Ход программы: ${r.trace.join(' → ')}.`);
+        api.ok(n === P.best.length ? `Верно: ${r.trace.join(' → ')}.` : `Верно: ${r.trace.join(' → ')}. Кстати, можно и короче: за ${P.best.length}.`, chk);
+      };
+      play.append(checkRow(inp, chk));
+    },
+    hints: (P) => {
+      const cand = [0, 1].map(c => ({ c, v: P.ops[c].inv(P.target) })).filter(x => x.v !== null);
+      return ['Часто легче идти с конца: подумай, из какого числа можно получить цель одной командой.',
+        `Число ${P.target} могло получиться так: ` + cand.map(x => `после команды ${x.c + 1} («${P.ops[x.c].n}») — из числа ${x.v}`).join('; ') + '.',
+        `Подходит программа из ${P.best.length} ${plural(P.best.length, 'команды', 'команд', 'команд')}. Начинается она с цифры ${P.best[0]}.`];
+    },
+    explain: (P) => {
+      const tr = [P.s0]; for (const c of P.best) tr.push(P.ops[+c - 1].f(tr[tr.length - 1]));
+      return wrap(para(`Одна из подходящих программ: <code>${P.best}</code> (${P.best.length} ${plural(P.best.length, 'команда', 'команды', 'команд')}).`),
+        tbl(['Шаг', 'Команда', 'Число'], [{ cells: ['—', 'старт', P.s0] }].concat(P.best.split('').map((c, i) => ({ cells: [i + 1, `${c}. ${P.ops[+c - 1].n}`, tr[i + 1]] })))),
+        para('Других подходящих программ может быть несколько — проверка засчитывает любую верную.'));
+    }
+  });
+
+  /* =====================================================================
+     2. Перетасовка таблицы (неделя 2)
+     ===================================================================== */
+  const permKey = (a) => a.join('');
+  function shuffleSpace(n, start) {
+    const id = range(0, n - 1), seen = new Map();
+    const grid = (rp, cp) => rp.map(r => cp.map(c => start[r][c]));
+    const gk = (rp, cp) => grid(rp, cp).flat().join(',');
+    const k0 = permKey(id) + '|' + permKey(id);
+    seen.set(k0, { rp: id, cp: id, d: 0, from: null, op: null });
+    const q = [k0], byGrid = new Map([[gk(id, id), k0]]);
+    while (q.length) {
+      const k = q.shift(), st = seen.get(k);
+      for (const t of ['r', 'c']) for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+        const rp = st.rp.slice(), cp = st.cp.slice();
+        const arr = t === 'r' ? rp : cp; [arr[i], arr[j]] = [arr[j], arr[i]];
+        const nk = permKey(rp) + '|' + permKey(cp);
+        if (!seen.has(nk)) { seen.set(nk, { rp, cp, d: st.d + 1, from: k, op: { t, i, j } }); q.push(nk); byGrid.set(gk(rp, cp), nk); }
+      }
+    }
+    return { seen, byGrid, gk, grid };
+  }
+  function genShuffle() {
+    for (let t = 0; t < 3000; t++) {
+      const n = pick([3, 3, 4]);
+      const start = []; const pool = shuffle(range(1, n * n)); for (let i = 0; i < n; i++) start.push(pool.slice(i * n, i * n + n));
+      const sp = shuffleSpace(n, start);
+      const states = [...sp.seen.values()].filter(x => x.d >= 2 && x.d <= 4);
+      if (!states.length) continue;
+      const possible = Math.random() < 0.75;
+      const st = pick(states);
+      let target = sp.grid(st.rp, st.cp);
+      if (!possible) {
+        const r1 = rnd(0, n - 1); let r2 = rnd(0, n - 1); while (r2 === r1) r2 = rnd(0, n - 1);
+        const c1 = rnd(0, n - 1); let c2 = rnd(0, n - 1); while (c2 === c1) c2 = rnd(0, n - 1);
+        target = target.map(r => r.slice()); const x = target[r1][c1]; target[r1][c1] = target[r2][c2]; target[r2][c2] = x;
+        if (sp.byGrid.has(target.flat().join(','))) continue;
+      }
+      const ops = []; if (possible) { let k = permKey(st.rp) + '|' + permKey(st.cp); while (sp.seen.get(k).from) { ops.unshift(sp.seen.get(k).op); k = sp.seen.get(k).from; } }
+      let witness = null;
+      if (!possible) {
+        const rowOf = {}, colOf = {}; start.forEach((r, i) => r.forEach((v, j) => { rowOf[v] = i; colOf[v] = j; }));
+        outer: for (let i = 0; i < n; i++) for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) { const u = target[i][a], v = target[i][b]; if (rowOf[u] !== rowOf[v]) { witness = { kind: 'строке', u, v }; break outer; } }
+        if (!witness) outer2: for (let j = 0; j < n; j++) for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) { const u = target[a][j], v = target[b][j]; if (colOf[u] !== colOf[v]) { witness = { kind: 'столбце', u, v }; break outer2; } }
+      }
+      return { n, start, target, possible, ops, best: possible ? st.d : 0, witness, key: target.flat().join(',') };
+    }
+    throw new Error('shuffle');
+  }
+  const opText = (o) => `Поменять ${o.t === 'r' ? 'строки' : 'столбцы'} ${o.i + 1} и ${o.j + 1}`;
+  const gridTable = (g, cls) => h('div', { class: 'shg2 ' + (cls || ''), style: { gridTemplateColumns: `repeat(${g.length}, var(--sc))` } }, g.flat().map(v => h('div', { class: 'shc' }, String(v))));
+  G.push({
+    id: 'shuffle', tab: 'Перетасовка', title: 'Перетасовка таблицы', from: 'неделя 2',
+    make: genShuffle,
+    story: (P) => wrap(
+      para('В таблице разрешается менять местами <b>любые две строки</b> и <b>любые два столбца</b>. Можно ли получить из левой таблицы правую?'),
+      para('Если можно — получи её, сделав как можно <b>меньше перестановок</b>. Нажимай на «Р1, Р2…» (строки) или «С1, С2…» (столбцы): выбери два заголовка одного вида, и они поменяются местами. Если считаешь, что получить нельзя, нажми «Невозможно».')),
+    draw(play, P, api) {
+      const n = P.n;
+      let rp = range(0, n - 1), cp = range(0, n - 1), hist = [], sel = null, done = false;
+      const cnt = h('div', { class: 'rv-cnt', role: 'status' });
+      const board = h('div', { class: 'shg2 live', style: { gridTemplateColumns: `auto repeat(${n}, var(--sc))` } });
+      const undo = h('button', { class: 'btn sm', type: 'button' }, '↶ Отменить');
+      const reset = h('button', { class: 'btn sm ghost', type: 'button' }, 'Начать заново');
+      const no = h('button', { class: 'btn', type: 'button' }, 'Невозможно');
+      const cur = () => rp.map(r => cp.map(c => P.start[r][c]));
+      function render() {
+        const g = cur(), els = [h('div', { class: 'shc corner' })];
+        for (let j = 0; j < n; j++) els.push(h('button', { class: 'shh' + (sel && sel.t === 'c' && sel.i === j ? ' sel' : ''), type: 'button', 'aria-label': `Столбец ${j + 1}`, onclick: () => pickHead('c', j) }, 'С' + (j + 1)));
+        for (let i = 0; i < n; i++) {
+          els.push(h('button', { class: 'shh' + (sel && sel.t === 'r' && sel.i === i ? ' sel' : ''), type: 'button', 'aria-label': `Строка ${i + 1}`, onclick: () => pickHead('r', i) }, 'Р' + (i + 1)));
+          for (let j = 0; j < n; j++) els.push(h('div', { class: 'shc' }, String(g[i][j])));
+        }
+        board.replaceChildren(...els);
+        cnt.textContent = `Перестановок: ${hist.length}`;
+        undo.disabled = !hist.length || done; reset.disabled = !hist.length || done; no.disabled = done;
+        board.querySelectorAll('.shh').forEach(b => { b.disabled = done; });
+      }
+      function pickHead(t, i) {
+        if (done) return;
+        if (sel && sel.t === t && sel.i !== i) {
+          hist.push({ rp: rp.slice(), cp: cp.slice() });
+          const arr = t === 'r' ? rp : cp; [arr[sel.i], arr[i]] = [arr[i], arr[sel.i]];
+          api.say(`${t === 'r' ? 'Строки' : 'Столбцы'} ${sel.i + 1} и ${i + 1} поменялись местами.`, 'info'); sel = null; render();
+          if (cur().flat().join(',') === P.key) {
+            done = true; render();
+            const k = hist.length;
+            api.ok(k === P.best ? `Получилось за ${k} ${plural(k, 'перестановку', 'перестановки', 'перестановок')} — это минимум!` : `Получилось за ${k} ${plural(k, 'перестановку', 'перестановки', 'перестановок')}. Меньше всего нужно ${P.best}: смотри разбор.`, cnt);
+          }
+          return;
+        }
+        sel = sel && sel.t === t && sel.i === i ? null : { t, i };
+        render();
+      }
+      undo.onclick = () => { const x = hist.pop(); if (!x) return; rp = x.rp; cp = x.cp; sel = null; api.say('', 'info'); render(); };
+      reset.onclick = () => { rp = range(0, n - 1); cp = range(0, n - 1); hist = []; sel = null; api.say('Всё сначала.', 'info'); render(); };
+      no.onclick = () => {
+        if (P.possible) return api.bad('Получить нужную таблицу всё-таки можно. Сравни, куда должна попасть каждая строка и каждый столбец.');
+        done = true; render(); api.ok('Верно: получить такую таблицу нельзя!', no);
+      };
+      play.append(h('div', { class: 'shwrap' }, h('div', null, h('div', { class: 'sub-h' }, 'Сейчас'), board), h('div', null, h('div', { class: 'sub-h' }, 'Нужно получить'), gridTable(P.target, 'target'))),
+        h('div', { class: 'row' }, undo, reset, no, cnt));
+      render();
+    },
+    hints: (P) => P.possible ? ['Найди в левой таблице строку, которая должна стать первой строкой правой таблицы. Какая это строка?', 'Строки и столбцы можно разбирать по очереди: сначала поставь на место столбцы, затем строки.', `Нужное число перестановок — ${P.best}.`]
+      : ['Подумай, что не меняется при перестановках: числа из одной строки так и останутся в одной строке (но могут оказаться в другом порядке).', 'Возьми любые два числа, стоящие в одной строке правой таблицы, и посмотри, где они стояли в левой.', 'Если найдутся два числа, которые в правой таблице вместе в одной строке (или в одном столбце), а в левой — нет, получить таблицу нельзя.'],
+    explain: (P) => P.possible
+      ? wrap(para(`Минимальное число перестановок — <b>${P.best}</b>. Например:`), h('ol', null, P.ops.map(o => h('li', null, opText(o)))))
+      : wrap(para(`Получить такую таблицу нельзя. При перестановках строк и столбцов числа, стоявшие в одной строке (столбце), остаются в одной строке (столбце). Но в правой таблице числа <b>${P.witness.u}</b> и <b>${P.witness.v}</b> стоят в одной ${P.witness.kind}, а в левой — в разных.`))
+  });
+
+  /* =====================================================================
+     3. Районы, кварталы: формула (неделя 2)
+     ===================================================================== */
+  const ROAD_KINDS = {
+    total: { q: 'Определи суммарную длину <b>всех</b> дорог города в километрах.', f: (n, m) => (n + 1) * m + (m + 1) * n, ex: 'В городе n + 1 дорога длиной m километров (идут вдоль стороны m) и m + 1 дорога длиной n. Всего: (n + 1) * m + (m + 1) * n.' },
+    inner: { q: 'Определи суммарную длину дорог, которые проходят <b>внутри</b> города (дороги по границе не считаются).', f: (n, m) => (n - 1) * m + (m - 1) * n, ex: 'Внутренних дорог длиной m — на две меньше, чем всех: n − 1. Внутренних дорог длиной n — m − 1. Всего: (n − 1) * m + (m − 1) * n.' },
+    border: { q: 'Определи длину дороги, которая идёт <b>по границе</b> города.', f: (n, m) => 2 * (n + m), ex: 'Граница — прямоугольник со сторонами n и m, поэтому её длина 2 * (n + m).' },
+    cross: { q: 'Сколько в городе <b>перекрёстков</b> (точек, где пересекаются дороги, включая угловые и стоящие на границе)?', f: (n, m) => (n + 1) * (m + 1), ex: 'Дорог одного направления n + 1, другого — m + 1. Каждая пара пересекается ровно один раз: (n + 1) * (m + 1).' }
+  };
+  function exprParse(text) {
+    const src = String(text).replace(/[−–—]/g, '-').replace(/[×·х✕]/g, '*').replace(/\s+/g, ' ').trim();
+    const toks = []; let i = 0;
+    while (i < src.length) {
+      const c = src[i];
+      if (c === ' ') { i++; continue; }
+      if (/\d/.test(c)) { let j = i; while (j < src.length && /\d/.test(src[j])) j++; toks.push({ t: 'num', v: parseInt(src.slice(i, j), 10) }); i = j; continue; }
+      if (/[nNmM]/.test(c)) { toks.push({ t: 'var', v: c.toLowerCase() }); i++; continue; }
+      if ('+-*()'.includes(c)) { toks.push({ t: c }); i++; continue; }
+      return { err: `Символ «${c}» здесь не нужен. Используй числа, n, m, знаки + − * и скобки.` };
+    }
+    if (!toks.length) return { err: 'Впиши выражение.' };
+    for (let k = 0; k + 1 < toks.length; k++) {
+      const a = toks[k].t, b = toks[k + 1].t, left = a === 'num' || a === 'var' || a === ')', right = b === 'num' || b === 'var' || b === '(';
+      if (left && right) return { err: 'Знак умножения нужно писать явно: например, 2 * n, а не 2n; (n + 1) * m, а не (n + 1)m.' };
+    }
+    let p = 0;
+    const peek = () => toks[p] && toks[p].t;
+    function expr() { let a = term(); while (peek() === '+' || peek() === '-') { const op = toks[p++].t, b = term(); const x = a; a = (e) => op === '+' ? x(e) + b(e) : x(e) - b(e); } return a; }
+    function term() { let a = factor(); while (peek() === '*') { p++; const b = factor(), x = a; a = (e) => x(e) * b(e); } return a; }
+    function factor() {
+      const t = toks[p];
+      if (!t) throw new Error('Выражение оборвано: после знака должно идти число, переменная или скобка.');
+      if (t.t === '-') { p++; const f = factor(); return (e) => -f(e); }
+      if (t.t === 'num') { p++; return () => t.v; }
+      if (t.t === 'var') { p++; return (e) => e[t.v]; }
+      if (t.t === '(') { p++; const e = expr(); if (peek() !== ')') throw new Error('Не хватает закрывающей скобки.'); p++; return e; }
+      throw new Error('Не получилось разобрать выражение: проверь знаки и скобки.');
+    }
+    try { const f = expr(); if (p < toks.length) throw new Error('Не получилось разобрать выражение: проверь знаки и скобки.'); return { f }; } catch (e) { return { err: e.message }; }
+  }
+  const ROAD_PTS = [[1, 1], [2, 3], [3, 2], [4, 5], [7, 3], [10, 12], [6, 6]];
+  function roadSvg(kind) {
+    const n = 2, m = 3, W = 260, H = 180, pad = 24, sx = (W - 2 * pad) / m, sy = (H - 2 * pad) / n;
+    const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'road-svg', role: 'img', 'aria-label': `Пример плана города при n = 2, m = 3: ${n + 1} горизонтальные и ${m + 1} вертикальные дороги` });
+    const line = (x1, y1, x2, y2, border) => svg.append(s('line', { x1, y1, x2, y2, stroke: kind === 'inner' ? (border ? 'var(--line-strong)' : 'var(--accent)') : kind === 'border' ? (border ? 'var(--accent)' : 'var(--line-strong)') : 'var(--accent)', 'stroke-width': (kind === 'inner' && !border) || (kind === 'border' && border) || kind === 'total' || kind === 'cross' ? 5 : 3, 'stroke-linecap': 'round' }));
+    for (let i = 0; i <= n; i++) line(pad, pad + i * sy, pad + m * sx, pad + i * sy, i === 0 || i === n);
+    for (let j = 0; j <= m; j++) line(pad + j * sx, pad, pad + j * sx, pad + n * sy, j === 0 || j === m);
+    if (kind === 'cross') for (let i = 0; i <= n; i++) for (let j = 0; j <= m; j++) svg.append(s('circle', { cx: pad + j * sx, cy: pad + i * sy, r: 6, fill: 'var(--accent2)', stroke: 'var(--edge)', 'stroke-width': 1.5 }));
+    svg.append(s('text', { x: pad + m * sx / 2, y: H - 4, 'text-anchor': 'middle', class: 'road-t' }, 'm = 3 км'), s('text', { x: 7, y: pad + n * sy / 2, 'text-anchor': 'middle', class: 'road-t', transform: `rotate(-90 7 ${pad + n * sy / 2})` }, 'n = 2 км'));
+    return svg;
+  }
+  G.push({
+    id: 'roads', tab: 'Дороги города', title: 'Дороги в городе: формула', from: 'неделя 2',
+    make: () => ({ kind: pick(['total', 'total', 'inner', 'border', 'cross']) }),
+    story: (P) => wrap(
+      para('План города — прямоугольник <b>n × m</b> километров, разбитый на кварталы-квадраты со стороной 1 км. Дороги проложены между кварталами и по границе города. Для примера — план при n = 2, m = 3:'),
+      roadSvg(P.kind),
+      para(ROAD_KINDS[P.kind].q),
+      para('Ответ — выражение с числами, переменными <b>n</b> и <b>m</b>, знаками <b>+, −, *</b> и скобками. Умножение пиши знаком <b>*</b> (например, 2 * n). Подойдёт любое равное по смыслу выражение.')),
+    draw(play, P, api) {
+      const inp = field({ inputmode: 'text', placeholder: 'например: (n + 1) * m', 'aria-label': 'Выражение', maxlength: 60 });
+      const chk = () => {
+        const r = exprParse(inp.value);
+        if (r.err) return api.bad(r.err);
+        const fn = ROAD_KINDS[P.kind].f;
+        for (const [n, m] of ROAD_PTS) {
+          const got = r.f({ n, m }), want = fn(n, m);
+          if (got !== want) return api.bad(`Проверка на примере: при n = ${n}, m = ${m} по твоей формуле получается ${got}, а на самом деле ${want}. Нарисуй такой город и пересчитай.`);
+        }
+        api.ok('Верно! Формула работает на всех проверках.', chk);
+      };
+      play.append(checkRow(inp, chk));
+    },
+    hints: (P) => ['Нарисуй небольшой город, например 2 × 3, посчитай дороги руками, а потом проверь свою формулу на этом примере.',
+      P.kind === 'cross' ? 'Сколько дорог идёт в одну сторону, сколько — в другую? Каждая пара пересекается в одной точке.' : 'Дороги бывают двух видов — вдоль стороны n и вдоль стороны m. Посчитай отдельно, сколько дорог каждого вида и какой они длины.',
+      'Пробуй на маленьких числах: при n = 1, m = 1 город состоит из одного квартала.'],
+    explain: (P) => wrap(para(ROAD_KINDS[P.kind].ex), para('Подойдёт любое выражение, равное этому при всех n и m.'))
+  });
+
+  /* =====================================================================
+     4. Дискотека (неделя 2) — код
+     ===================================================================== */
+  const LAMPS = ['левый', 'средний', 'правый'];
+  const DISCO_PATS = [[0, 1, 2, 1], [1, 2, 1, 0], [2, 1, 0, 1], [1, 0, 1, 2], [0, 1, 2], [2, 1, 0], [1, 0, 2], [1, 2, 0]];
+  function discoSim(pat, res) {
+    const r = res.slice(); let t = 0;
+    for (;;) { const l = pat[t % pat.length]; if (r[l] <= 0) return t; r[l]--; t++; if (t > 5e6) return t; }
+  }
+  function discoRef(pat) {
+    const p = pat.length, vars = ['a', 'b', 'c'];
+    const ex = [0, 1, 2].map(l => {
+      const pos = pat.map((x, i) => x === l ? i + 1 : 0).filter(Boolean);
+      const step = pos.length === 1 ? p : p / 2, add = pos[0] - 1;
+      return `${step} * ${vars[l]}` + (add ? ` + ${add}` : '');
+    });
+    return `a = int(input())\nb = int(input())\nc = int(input())\nprint(min(${ex.join(', ')}))`;
+  }
+  function genDisco() {
+    const pat = pick(DISCO_PATS);
+    const base = [[1, 1, 1], [0, 5, 5], [5, 0, 5], [5, 5, 0], [3, 7, 2], [10, 4, 9], [100, 60, 80], [1000, 1000, 1000], [7, 3, 50], [2, 8, 3], [4, 4, 12]];
+    const ins = shuffle(base).slice(0, 7);
+    const tests = ins.map(x => ({ input: x.join('\n'), expected: String(discoSim(pat, x)) }));
+    const ex = [3, 7, 2];
+    return { pat, tests, ref: discoRef(pat), ex, exAns: discoSim(pat, ex) };
+  }
+  G.push({
+    id: 'disco', tab: 'Дискотека', title: 'Дискотека', from: 'неделя 2',
+    make: genDisco,
+    story: (P) => wrap(
+      para(`На дискотеке в ряд стоят три прожектора. Они загораются по очереди в таком порядке: <b>${P.pat.map(i => LAMPS[i]).join(', ')}</b>, потом снова с начала, и так по кругу. Каждый прожектор горит ровно одну секунду.`),
+      para(`Лампа левого прожектора рассчитана на <b>A</b> секунд горения, среднего — на <b>B</b>, правого — на <b>C</b>. Как только очередной прожектор должен загореться, а его лампа уже перегорела, представление заканчивается. Сколько секунд оно продлится?`),
+      para(`Программа получает числа A, B, C (каждое с новой строки) и выводит одно число. Пример: при A = ${P.ex[0]}, B = ${P.ex[1]}, C = ${P.ex[2]} ответ <code>${P.exAns}</code>.`)),
+    draw(play, P, api) { B.codeBox(play, { starter: 'a = int(input())\nb = int(input())\nc = int(input())\n# сколько секунд продлится представление?\n', sample: { input: P.ex.join('\n') }, tests: P.tests, rows: 8 }, api); },
+    hints: (P) => ['Пусть ресурс ограничен у одного прожектора, а у остальных бесконечен. Через сколько секунд процесс остановится? Найди такое время для каждого прожектора отдельно.',
+      'Процесс остановится при самом раннем из трёх событий — значит, ответ равен наименьшему из трёх чисел.',
+      'Посмотри, как часто загорается каждый прожектор: раз в период или дважды. Время его k-го включения — формула вида (длина периода) · k + (смещение).'],
+    explain: (P) => wrap(para('Для каждой лампы найдём, на какой секунде процесс оборвётся, если перегорит только она. Ответ — наименьшее из трёх значений.'), code(P.ref), para('Другие верные решения (например, с циклом, который моделирует все секунды) тоже подойдут, если не работают слишком долго.'))
+  });
+
+  /* =====================================================================
+     5. Лягушки и кузнечики (неделя 1) — код
+     ===================================================================== */
+  const FROG_SETS = [[2, 3, 1, 2], [3, 4, 1, 2], [2, 3, 2, 3], [1, 2, 2, 3], [3, 5, 1, 2], [2, 4, 1, 1]];
+  function frogBrute(d, lo, hi) {
+    if (d === 0) return 0;
+    let reach = new Set([0]);
+    for (let t = 1; t <= d; t++) {
+      const nx = new Set();
+      reach.forEach(x => { for (let j = lo; j <= hi; j++) if (x + j <= d) nx.add(x + j); });
+      if (nx.has(d)) return t;
+      if (!nx.size) return -1;
+      reach = nx;
+    }
+    return -1;
+  }
+  const jumpTxt = (a, b) => `на ${a} или на ${b} ${plural(b, 'клетку', 'клетки', 'клеток')}`;
+  function genFrog() {
+    const [fa, fb, ga, gb] = pick(FROG_SETS), lo = fa + ga, hi = fb + gb;
+    const Ns = shuffle([2, 3, 4, 5, 6, 7, 9, 12, 26, 101, 1001, 12345]).slice(0, 7);
+    if (!Ns.some(n => frogBrute(n - 1, lo, hi) === -1)) Ns[0] = 2;
+    const tests = Ns.map(n => ({ input: String(n), expected: String(frogBrute(n - 1, lo, hi)) }));
+    const ref = `n = int(input())\nd = n - 1\nt = (d + ${hi - 1}) // ${hi}\nif t * ${lo} <= d:\n    print(t)\nelse:\n    print(-1)`;
+    return { fa, fb, ga, gb, lo, hi, tests, ref };
+  }
+  G.push({
+    id: 'frog', tab: 'Лягушки', title: 'Лягушка и кузнечик', from: 'неделя 1',
+    make: genFrog,
+    story: (P) => wrap(
+      para(`В крайних клетках полоски шириной в одну клетку и длиной в <b>N</b> клеток сидят лягушка и кузнечик: лягушка в клетке № 1, кузнечик в клетке № N. Каждую секунду лягушка прыгает в сторону кузнечика, и одновременно кузнечик прыгает в сторону лягушки. Лягушка может прыгать только ${jumpTxt(P.fa, P.fb)}, кузнечик — только ${jumpTxt(P.ga, P.gb)}.`),
+      para('За какое наименьшее время они смогут оказаться в одной клетке?'),
+      para('<b>Ввод:</b> одно число N (N ≥ 2). <b>Вывод:</b> минимальное число секунд или <code>-1</code>, если они никогда не окажутся в одной клетке.')),
+    draw(play, P, api) { B.codeBox(play, { starter: 'n = int(input())\n# сколько секунд? если встретиться нельзя — выведи -1\n', sample: { input: '10' }, tests: P.tests, rows: 8 }, api); },
+    hints: (P) => ['Рассмотри расстояние между ними: сначала оно равно N − 1 клетка. На сколько оно сокращается за одну секунду? Какое наименьшее и наибольшее сокращение?',
+      `За секунду расстояние уменьшается на любое число от ${P.lo} до ${P.hi}. За t секунд — на любое число от ${P.lo}·t до ${P.hi}·t.`,
+      'Найди наименьшее t, при котором расстояние попадает в этот промежуток. Если такого t нет — выведи -1.'],
+    explain: (P) => wrap(para(`Расстояние N − 1 за секунду сокращается на ${P.lo}…${P.hi}. Минимальное t — это расстояние, делённое на ${P.hi} и округлённое вверх. Если даже при таком t нижняя граница ${P.lo}·t больше расстояния, встретиться нельзя.`), code(P.ref))
+  });
+
+  /* =====================================================================
+     6. Чтение готового кода (методичка)
+     ===================================================================== */
+  const RC = [
+    () => { const A = rnd(1, 5), B2 = rnd(A + 6, A + 14), K = rnd(2, 4), body = (hi) => `s = 0\nfor i in range(${A}, ${hi}):\n    if i % ${K} == 0:\n        s += i\nprint(s)`;
+      const mult = range(A, B2).filter(x => x % K === 0);
+      return { code: body(`${B2} + 1`), alts: [{ code: body(B2), msg: `Ты не учёл(а) число ${B2}: range(${A}, ${B2} + 1) заканчивается на ${B2} включительно.` }], expl: `Цикл перебирает числа от ${A} до ${B2} включительно. Прибавляются только делящиеся на ${K}: ${mult.join(', ')}. Их сумма — ${mult.reduce((a, b) => a + b, 0)}.` }; },
+    () => { const N = rnd(3, 14), seq = [N]; let n = N; while (n > 1) { n = n % 2 === 0 ? n / 2 : n * 3 + 1; seq.push(n); }
+      return { code: `n = ${N}\nc = 0\nwhile n > 1:\n    if n % 2 == 0:\n        n = n // 2\n    else:\n        n = n * 3 + 1\n    c += 1\nprint(c)`, alts: [], expl: `Число меняется так: ${seq.join(' → ')}. Шагов (стрелок): ${seq.length - 1}.` }; },
+    () => { const N = rnd(1000, 9999), digs = String(N).split('').reverse(); let r = 0; const st = [];
+      digs.forEach(d => { r = r * 10 + (+d); st.push(r); });
+      return { code: `n = ${N}\nr = 0\nwhile n > 0:\n    r = r * 10 + n % 10\n    n = n // 10\nprint(r)`, alts: [{ code: `n = ${N}\nr = 0\nwhile n > 0:\n    r = r * 10 + n // 10\n    n = n // 10\nprint(r)`, msg: 'n % 10 — это последняя цифра числа, а n // 10 — само число без последней цифры. Не перепутай.' }], expl: `Цикл «снимает» цифры справа налево и дописывает их к r: ${st.join(' → ')}. Число записывается наоборот.` }; },
+    () => { const N = rnd(4, 7), v = range(1, N).map(i => i % 2 === 0 ? i * i : i);
+      return { code: `for i in range(1, ${N} + 1):\n    if i % 2 == 0:\n        print(i * i)\n    else:\n        print(i)`, alts: [], expl: `Для чётных i печатается i², для нечётных — само i. Каждый print — новая строка: ${v.join(', ')}.` }; },
+    () => { const A = rnd(3, 4), B2 = rnd(3, 5), K = rnd(2, 4), pairs = [];
+      for (let i = 1; i <= A; i++) for (let j = 1; j <= B2; j++) if ((i + j) % K === 0) pairs.push(`(${i}, ${j})`);
+      return { code: `c = 0\nfor i in range(1, ${A} + 1):\n    for j in range(1, ${B2} + 1):\n        if (i + j) % ${K} == 0:\n            c += 1\nprint(c)`, alts: [], expl: `Считаем пары (i, j), у которых сумма делится на ${K}: ${pairs.join(' ') || 'таких нет'}. Всего ${pairs.length}.` }; },
+    () => { const A = rnd(1, 4), B2 = rnd(1, 4), K = rnd(3, 6); let a = A, b = B2; const st = [`(${a}, ${b})`];
+      for (let i = 0; i < K; i++) { a = a + b; b = a - b; st.push(`(${a}, ${b})`); }
+      return { code: `a = ${A}\nb = ${B2}\nfor i in range(${K}):\n    a = a + b\n    b = a - b\nprint(a, b)`, alts: [], expl: `Пара (a, b) после каждого шага: ${st.join(' → ')}. Новое b вычисляется уже с новым a.` }; },
+    () => { const L = rnd(20, 60); let s = 0, i = 1; const st = []; while (s + i <= L) { s += i; st.push(i); i++; }
+      return { code: `s = 0\ni = 1\nwhile s + i <= ${L}:\n    s += i\n    i += 1\nprint(i, s)`, alts: [], expl: `Прибавляем 1, 2, 3, … пока сумма не превысит ${L}: ${st.join(' + ')} = ${s}. Следующее число ${i} уже не помещается (${s} + ${i} > ${L}). Выводится: ${i} ${s}.` }; }
+  ];
+  function genRead() {
+    for (let t = 0; t < 200; t++) {
+      const T = pick(RC)();
+      const r = PyRun.run(T.code, '');
+      if (r.err) continue;
+      const out = r.out.trim(), tokens = out.split(/\s+/);
+      const alts = {}; T.alts.forEach(a => { const q = PyRun.run(a.code, ''); if (!q.err && q.out.trim() !== out) alts[q.out.trim().split(/\s+/).join(' ')] = a.msg; });
+      return { code: T.code, out, tokens, alts, expl: T.expl, lines: tokens.length };
+    }
+    throw new Error('read');
+  }
+  G.push({
+    id: 'read', tab: 'Что выведет код', title: 'Что выведет программа?', from: 'методичка: «Чтение готового кода»',
+    make: genRead,
+    story: (P) => wrap(para('Прочитай программу на Питоне и определи, что она выведет. Если значений несколько (каждый <code>print</code> печатает с новой строки или через пробел) — запиши их через пробел в порядке вывода.'), code(P.code)),
+    draw(play, P, api) {
+      const inp = field({ inputmode: 'text', placeholder: P.lines > 1 ? 'значения через пробел' : 'ответ', 'aria-label': 'Вывод программы' });
+      const chk = () => {
+        const t = inp.value.replace(/[,;]/g, ' ').trim().split(/\s+/).filter(Boolean);
+        if (!t.length) return api.bad('Впиши то, что выведет программа.');
+        if (t.join(' ') === P.tokens.join(' ')) return api.ok('Верно!', chk);
+        const alt = P.alts[t.join(' ')];
+        if (alt) return api.bad(alt);
+        if (t.length !== P.tokens.length) return api.bad(`Программа выводит ${P.tokens.length} ${plural(P.tokens.length, 'значение', 'значения', 'значений')}, а у тебя ${t.length}.`);
+        api.bad('Пока не так. Выполни программу вручную: после каждого шага записывай значения всех переменных.');
+      };
+      play.append(checkRow(inp, chk));
+    },
+    hints: () => ['Заведи таблицу: по строке на каждый шаг цикла, по столбцу на каждую переменную.', 'Следи за границами цикла: range(a, b) не включает b. Следи и за порядком действий внутри цикла.', 'Проверь себя: выполни программу ещё раз, но с конца записи.'],
+    explain: (P) => wrap(para(P.expl), para(`Вывод программы: <b>${P.out.split('\n').join(' ')}</b>`))
+  });
+
+  /* =====================================================================
+     7. Поиск ошибки в коде (методичка)
+     ===================================================================== */
+  const BT = [
+    { task: 'Программа должна вывести сумму всех целых чисел от 1 до n.',
+      lines: [['n = int(input())', 'считываем n'], ['s = 0', 'начальное значение суммы'], ['for i in range(1, n + 1):', 'перебираем i от 1 до n'], ['    s += i', 'прибавляем i к сумме'], ['print(s)', 'выводим сумму']],
+      bugs: [{ at: 2, bad: 'for i in range(1, n):', wrongs: ['for i in range(0, n):', 'for i in range(1, n + 2):', 'for i in range(2, n + 1):'] }, { at: 1, bad: 's = 1', wrongs: ['s = n', 's = -1'] }, { at: 3, bad: '    s = i', wrongs: ['    s -= i', '    s += 1'] }],
+      inputs: () => [rnd(4, 9)], exp: ([n]) => String(n * (n + 1) / 2) },
+    { task: 'Сначала вводится число n, затем n целых чисел (каждое с новой строки). Программа должна вывести, сколько среди них чётных.',
+      lines: [['n = int(input())', 'считываем n'], ['c = 0', 'счётчик чётных'], ['for i in range(n):', 'повторяем n раз'], ['    x = int(input())', 'читаем очередное число'], ['    if x % 2 == 0:', 'число чётное?'], ['        c += 1', 'увеличиваем счётчик'], ['print(c)', 'выводим счётчик']],
+      bugs: [{ at: 4, bad: '    if x % 2 == 1:', wrongs: ['    if x // 2 == 0:', '    if x % 2 == 2:', '    if x == 0:'] }, { at: 5, bad: '        c += x', wrongs: ['        c = 1', '        c += 2', '        c -= 1'] }, { at: 1, bad: 'c = 1', wrongs: ['c = -1', 'c = n', 'c = 2'] }],
+      inputs: () => { const n = rnd(4, 6), a = [n]; for (let i = 0; i < n; i++) a.push(rnd(1, 20)); return a; }, exp: (a) => String(a.slice(1).filter(x => x % 2 === 0).length) },
+    { task: 'Сначала вводится число n, затем n различных целых чисел (каждое с новой строки). Программа должна вывести наибольшее из них.',
+      lines: [['n = int(input())', 'считываем n'], ['m = int(input())', 'первое число пока наибольшее'], ['for i in range(n - 1):', 'остальные n − 1 чисел'], ['    x = int(input())', 'читаем очередное число'], ['    if x > m:', 'нашли число больше текущего максимума?'], ['        m = x', 'запоминаем его'], ['print(m)', 'выводим максимум']],
+      bugs: [{ at: 4, bad: '    if x < m:', wrongs: ['    if x == m:', '    if x > 0:', '    if x != m:'] }, { at: 2, bad: 'for i in range(n - 2):', wrongs: ['for i in range(n):', 'for i in range(n + 1):', 'for i in range(1, n - 1):'] }],
+      inputs: () => { const n = rnd(4, 6), nums = sample(range(1, 60), n), mi = nums.indexOf(Math.max(...nums)); if (mi === 0 || mi === n - 1) { const t = nums[mi]; nums[mi] = nums[1]; nums[1] = t; } return [n].concat(nums); }, exp: (a) => String(Math.max(...a.slice(1))) },
+    { task: 'Программа должна вывести n! — произведение всех целых чисел от 1 до n.',
+      lines: [['n = int(input())', 'считываем n'], ['r = 1', 'начальное значение произведения'], ['for i in range(2, n + 1):', 'перебираем i от 2 до n'], ['    r *= i', 'умножаем'], ['print(r)', 'выводим результат']],
+      bugs: [{ at: 1, bad: 'r = 0', wrongs: ['r = 2', 'r = n'] }, { at: 2, bad: 'for i in range(2, n):', wrongs: ['for i in range(n):', 'for i in range(2, n + 2):', 'for i in range(3, n + 1):'] }, { at: 3, bad: '    r += i', wrongs: ['    r = i', '    r -= i'] }],
+      inputs: () => [rnd(4, 7)], exp: ([n]) => { let r = 1; for (let i = 2; i <= n; i++) r *= i; return String(r); } },
+    { task: 'Программа должна вывести сумму цифр введённого натурального числа.',
+      lines: [['n = int(input())', 'считываем число'], ['s = 0', 'сумма цифр'], ['while n > 0:', 'пока в числе остались цифры'], ['    s += n % 10', 'прибавляем последнюю цифру'], ['    n = n // 10', 'отбрасываем последнюю цифру'], ['print(s)', 'выводим сумму']],
+      bugs: [{ at: 3, bad: '    s += n // 10', wrongs: ['    s += n % 100', '    s += n * 10', '    s += n % 10 + 1'] }, { at: 4, bad: '    n = n // 100', wrongs: ['    n = n // 1', '    n = n - 1', '    n = n % 10'] }, { at: 1, bad: 's = 1', wrongs: ['s = n', 's = -1'] }],
+      inputs: () => [rnd(1000, 9999)], exp: ([n]) => String(String(n).split('').reduce((a, d) => a + +d, 0)) },
+    { task: 'Сначала вводятся два числа n и k (каждое с новой строки). Программа должна вывести, сколько чисел от 1 до n делятся на k.',
+      lines: [['n = int(input())', 'считываем n'], ['k = int(input())', 'считываем k'], ['c = 0', 'счётчик'], ['for i in range(1, n + 1):', 'перебираем числа от 1 до n'], ['    if i % k == 0:', 'делится на k?'], ['        c += 1', 'увеличиваем счётчик'], ['print(c)', 'выводим счётчик']],
+      bugs: [{ at: 4, bad: '    if i % k == 1:', wrongs: ['    if i // k == 0:', '    if i % k != 0:', '    if k % i == 0:'] }, { at: 3, bad: 'for i in range(1, n):', wrongs: ['for i in range(0, n + 1):', 'for i in range(1, n + 2):', 'for i in range(2, n + 1):'] }],
+      inputs: () => { const k = rnd(2, 5); return [k * rnd(3, 5), k]; }, exp: ([n, k]) => String(Math.floor(n / k)) }
+  ];
+  const runLines = (lines, input) => PyRun.run(lines.join('\n'), input.join('\n'));
+  const outOf = (r) => r.err ? null : r.out.trim();
+  function genBug() {
+    for (let t = 0; t < 500; t++) {
+      const T = pick(BT), bug = pick(T.bugs), inp = T.inputs(), exp = T.exp(inp);
+      const good = T.lines.map(l => l[0]);
+      if (outOf(runLines(good, inp)) !== exp) continue;
+      const buggy = good.slice(); buggy[bug.at] = bug.bad;
+      const bres = runLines(buggy, inp), got = outOf(bres);
+      if (got === exp) continue;
+      const wrongs = bug.wrongs.filter(w => { const l = good.slice(); l[bug.at] = w; return outOf(runLines(l, inp)) !== exp && w !== bug.bad; });
+      if (wrongs.length < 2) continue;
+      const options = shuffle([good[bug.at]].concat(wrongs.slice(0, 3)));
+      return { task: T.task, notes: T.lines.map(l => l[1]), good, buggy, at: bug.at, bad: bug.bad, inp, exp, got, gotErr: bres.err ? PyRun.describe(bres.err) : null, options, fixIdx: options.indexOf(good[bug.at]) };
+    }
+    throw new Error('bug');
+  }
+  const numbered = (lines) => lines.map((l, i) => String(i + 1).padStart(2, ' ') + ' │ ' + l).join('\n');
+  G.push({
+    id: 'bug', tab: 'Найди ошибку', title: 'Найди ошибку в программе', from: 'методичка: «Поиск ошибки в готовом коде»',
+    make: genBug,
+    story: (P) => wrap(para(P.task), code(numbered(P.buggy)),
+      para(`Ввод: <code>${P.inp.join(' ')}</code> (числа вводятся по одному в строке). Программа должна вывести <b>${P.exp}</b>, а выводит <b>${P.gotErr ? 'сообщение об ошибке «' + P.gotErr + '»' : P.got}</b>.`),
+      para('В программе ровно <b>одна</b> ошибка. Сначала выбери номер строки с ошибкой, потом — как её исправить.')),
+    draw(play, P, api) {
+      const stage2 = h('div', { class: 'stack' });
+      let found = false;
+      const lineRow = choiceRow(P.buggy.map((_, i) => `Строка ${i + 1}`), (i, btn) => {
+        if (found) return;
+        if (i !== P.at) return api.bad(`В строке ${i + 1} (${P.notes[i]}) всё в порядке. Ищи дальше: проследи, где значения начинают расходиться с ожидаемым.`);
+        found = true; btn.classList.add('picked'); api.say(`Да, ошибка в строке ${P.at + 1}. Как её исправить?`, 'ok');
+        const optRow = choiceRow(P.options.map(o => o.trim()), (j, b2) => {
+          if (api.solved) return;
+          if (j === P.fixIdx) { b2.classList.add('picked'); return api.ok(`Верно! В строке ${P.at + 1} должно быть: ${P.good[P.at].trim()}`, b2); }
+          const l = P.buggy.slice(); l[P.at] = P.options[j];
+          const r = runLines(l, P.inp);
+          api.bad(`С такой строкой программа ${r.err ? 'завершится ошибкой («' + PyRun.describe(r.err) + '»)' : 'выведет ' + r.out.trim()}, а нужно ${P.exp}.`);
+        });
+        optRow.setAttribute('aria-label', 'Варианты исправления');
+        stage2.replaceChildren(h('div', { class: 'sub-h' }, `Строка ${P.at + 1} должна быть такой:`), optRow);
+      });
+      lineRow.setAttribute('aria-label', 'Номер строки с ошибкой');
+      play.append(h('div', { class: 'sub-h' }, 'Где ошибка?'), lineRow, stage2);
+    },
+    hints: (P) => ['Выполни программу в уме на этом вводе и сравни результат с ожидаемым. На каком шаге значения начинают отличаться?',
+      `Ошибка где-то в строках ${Math.max(1, P.at)}–${Math.min(P.buggy.length, P.at + 2)}.`,
+      `Ошибка в строке ${P.at + 1}: ${P.notes[P.at]}.`],
+    explain: (P) => wrap(para(`Ошибка в строке ${P.at + 1} (${P.notes[P.at]}). Написано <code>${P.bad.trim()}</code>, а нужно <code>${P.good[P.at].trim()}</code>.`), code(numbered(P.good)), para(`С исправлением программа выводит ${P.exp}.`))
+  });
+
+  /* =====================================================================
+     8. Объём информации (методичка: «Теоретическая информатика»)
+     ===================================================================== */
+  const log2c = (n) => { let k = 0; while ((1 << k) < n) k++; return k; };
+  const INFO = [
+    () => {
+      const N = pick([5, 6, 9, 10, 12, 20, 26, 33, 50, 100, 150, 200, 250]), k = log2c(N);
+      return { text: `Для передачи сообщений используется <b>${N}</b> разных сигналов. Какое наименьшее количество бит нужно, чтобы каждому сигналу присвоить свой код, причём все коды должны быть одной длины?`, ans: k, unit: 'бит',
+        alts: [{ v: k - 1, msg: `${k - 1} ${plural(k - 1, 'бит', 'бита', 'бит')} дают только ${2 ** (k - 1)} разных кодов — на ${N} сигналов не хватит.` }, { v: N, msg: 'Это число сигналов, а спрашивают, сколько бит нужно для кода.' }],
+        hints: ['Одним битом можно закодировать 2 сигнала, двумя битами — 4, тремя — 8… Сколько разных кодов даёт k бит?', `Нужно, чтобы 2 в степени k было не меньше ${N}.`],
+        expl: `k бит дают 2<sup>k</sup> разных кодов. ${2 ** (k - 1)} < ${N} ≤ ${2 ** k}, значит, нужно <b>${k}</b> ${plural(k, 'бит', 'бита', 'бит')}.` };
+    },
+    () => {
+      const k = pick([3, 4, 5, 6, 8]); let M = rnd(10, 80); while ((M * k) % 8) M++;
+      return { text: `Сообщение состоит из <b>${M}</b> символов. Алфавит содержит <b>${2 ** k}</b> символов, и каждый символ кодируется одинаковым числом бит. Сколько <b>байт</b> занимает сообщение?`, ans: M * k / 8, unit: 'байт',
+        alts: [{ v: M * k, msg: 'Это размер в битах. В одном байте 8 бит.' }, { v: M, msg: 'Это число символов, а нужен размер в байтах.' }],
+        hints: [`Сколько бит нужно для одного символа алфавита из ${2 ** k} символов?`, 'Размер в битах = число символов × бит на символ. Потом переведи в байты: 1 байт = 8 бит.'],
+        expl: `На символ нужно ${k} ${plural(k, 'бит', 'бита', 'бит')} (так как 2<sup>${k}</sup> = ${2 ** k}). Всего ${M} × ${k} = ${M * k} бит = ${M * k} / 8 = <b>${M * k / 8}</b> байт.` };
+    },
+    () => {
+      for (;;) {
+        const W = pick([8, 16, 32, 64, 128, 256]), H = pick([8, 16, 32, 64, 128, 256]), d = pick([1, 2, 4, 8, 16]), bits = W * H * d, kb = Math.random() < 0.5;
+        const bytes = bits / 8;
+        if (bits % 8) continue;
+        if (kb ? (bytes % 1024 !== 0 || bytes / 1024 > 4000) : bytes > 5000) continue;
+        const ans = kb ? bytes / 1024 : bytes;
+        return { text: `Изображение состоит из <b>${W} × ${H}</b> пикселей, цвет каждого пикселя кодируется <b>${d}</b> ${plural(d, 'битом', 'битами', 'битами')}. Каков размер изображения в <b>${kb ? 'килобайтах' : 'байтах'}</b>?${kb ? ' (1 килобайт = 1024 байта.)' : ''}`, ans, unit: kb ? 'Кбайт' : 'байт',
+          alts: [{ v: bits, msg: 'Это размер в битах.' }].concat(kb ? [{ v: bytes, msg: 'Это размер в байтах. Переведи в килобайты: раздели на 1024.' }] : [{ v: W * H, msg: 'Это число пикселей, а нужно ещё учесть, сколько бит занимает каждый пиксель, и перевести в байты.' }]),
+          hints: ['Сколько в изображении пикселей? Сколько бит занимает один?', `Размер в битах = ${W} · ${H} · ${d}. Дальше переводи: 8 бит = 1 байт${kb ? ', 1024 байта = 1 килобайт' : ''}.`],
+          expl: `Пикселей: ${W} × ${H} = ${W * H}. Бит: ${W * H} × ${d} = ${bits}. В байтах: ${bits} / 8 = ${bytes}${kb ? `; в килобайтах: ${bytes} / 1024 = <b>${ans}</b>` : ` = <b>${ans}</b>`}.` };
+      }
+    },
+    () => {
+      const k = rnd(5, 11);
+      return { text: `Сколько различных значений можно записать с помощью <b>${k}</b> бит?`, ans: 2 ** k, unit: '',
+        alts: [{ v: k * k, msg: `${k}² — это не то. Каждый новый бит удваивает число вариантов.` }, { v: 2 * k, msg: 'Каждый новый бит не прибавляет 2 варианта, а удваивает их число.' }],
+        hints: ['Один бит — 2 значения (0 или 1). Два бита — 4 значения. Что происходит с числом вариантов при добавлении ещё одного бита?'],
+        expl: `Каждый бит удваивает число вариантов: 2 · 2 · … · 2 (${k} раз) = 2<sup>${k}</sup> = <b>${2 ** k}</b>.` };
+    },
+    () => {
+      const N = pick([2, 3, 4, 5, 10]), L = rnd(3, 5), ans = N ** L;
+      if (ans > 100000) return INFO[4]();
+      const alph = { 2: 'цифры 0 и 1', 3: 'буквы А, Б, В', 4: 'буквы А, Б, В, Г', 5: 'цифры 1, 2, 3, 4, 5', 10: 'все десять цифр' }[N];
+      return { text: `Код состоит из <b>${L}</b> ${plural(L, 'символа', 'символов', 'символов')}. Для каждого символа можно использовать ${alph} (символы могут повторяться). Сколько всего различных кодов можно составить?`, ans, unit: '',
+        alts: [{ v: N * L, msg: 'Это произведение числа символов и числа вариантов. Но варианты каждого символа нужно перемножать между собой.' }, { v: L ** N, msg: 'Основание и показатель степени перепутаны: вариантов на каждый символ — столько, сколько букв (цифр) в алфавите.' }],
+        hints: ['Сколько вариантов у первого символа? У второго? Варианты нужно перемножить.'],
+        expl: `На каждое из ${L} мест можно поставить любой из ${N} символов: ${N}<sup>${L}</sup> = <b>${ans}</b>.` };
+    }
+  ];
+  G.push({
+    id: 'info', tab: 'Информация', title: 'Объём информации', from: 'методичка: «Теоретическая информатика»',
+    make: () => { const P = pick(INFO)(); return Object.assign(P, { unitNote: '1 байт = 8 бит, 1 килобайт = 1024 байта' }); },
+    story: (P) => wrap(para(P.text), para('Ответ — целое число' + (P.unit ? ` (в единицах: ${P.unit})` : '') + '.')),
+    draw(play, P, api) {
+      const inp = field({ placeholder: 'ответ', 'aria-label': 'Ответ' });
+      const chk = () => {
+        const v = num(inp.value);
+        if (isNaN(v)) return api.bad('Впиши ответ целым числом.');
+        if (v === P.ans) return api.ok(`Верно! ${v}${P.unit ? ' ' + P.unit : ''}.`, chk);
+        const a = P.alts.find(x => x.v === v);
+        api.bad(a ? a.msg : `Пока не так. Не перепутай единицы измерения: ${P.unitNote}.`);
+      };
+      play.append(checkRow(inp, chk));
+    },
+    hints: (P) => P.hints, explain: (P) => wrap(para(P.expl))
+  });
+
+  /* =====================================================================
+     9. Кратчайший путь по матрице расстояний (методичка)
+     ===================================================================== */
+  const MN = ['А', 'Б', 'В', 'Г', 'Д'];
+  function dijkstra(w, n, src) {
+    const dist = Array(n).fill(Infinity), prev = Array(n).fill(-1), done = Array(n).fill(false), log = [];
+    dist[src] = 0;
+    for (let it = 0; it < n; it++) {
+      let u = -1; for (let i = 0; i < n; i++) if (!done[i] && (u < 0 || dist[i] < dist[u])) u = i;
+      if (u < 0 || dist[u] === Infinity) break;
+      done[u] = true;
+      for (let v = 0; v < n; v++) if (w[u][v] && !done[v] && dist[u] + w[u][v] < dist[v]) { dist[v] = dist[u] + w[u][v]; prev[v] = u; }
+      log.push({ u, dist: dist.slice() });
+    }
+    return { dist, prev, log };
+  }
+  function genMatrix() {
+    const n = 5;
+    for (let t = 0; t < 4000; t++) {
+      const w = Array.from({ length: n }, () => Array(n).fill(0));
+      for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (Math.random() < 0.65) w[i][j] = w[j][i] = rnd(2, 14);
+      const d = dijkstra(w, n, 0);
+      if (d.dist[4] === Infinity) continue;
+      const route = []; for (let c = 4; c !== -1; c = d.prev[c]) route.unshift(c);
+      if (route.length < 4) continue;
+      let greedy = 0, cur = 0, seen = new Set([0]), ok = true;
+      while (cur !== 4) { let bj = -1; for (let j = 0; j < n; j++) if (w[cur][j] && !seen.has(j) && (bj < 0 || w[cur][j] < w[cur][bj])) bj = j; if (bj < 0) { ok = false; break; } greedy += w[cur][bj]; seen.add(bj); cur = bj; }
+      return { w, n, ans: d.dist[4], route, direct: w[0][4], greedy: ok ? greedy : -1, log: d.log, dist: d.dist };
+    }
+    throw new Error('matrix');
+  }
+  G.push({
+    id: 'matrix', tab: 'Кратчайший путь', title: 'Кратчайший путь по таблице', from: 'методичка: «Теоретическая информатика»',
+    make: genMatrix,
+    story: (P) => wrap(para(`В таблице указаны длины дорог между пунктами А, Б, В, Г и Д. Знак «—» означает, что прямой дороги между пунктами нет. По дорогам можно ехать в обе стороны. Найди <b>длину кратчайшего пути из А в Д</b>.`),
+      tbl([''].concat(MN), MN.map((nm, i) => ({ cells: [h('b', null, nm)].concat(P.w[i].map((x, j) => i === j ? '' : x || '—')) })), 'mtx')),
+    draw(play, P, api) {
+      const inp = field({ placeholder: 'ответ', 'aria-label': 'Длина кратчайшего пути' });
+      const chk = () => {
+        const v = num(inp.value);
+        if (isNaN(v)) return api.bad('Впиши ответ целым числом.');
+        if (v === P.ans) return api.ok(`Верно! Кратчайший путь ${P.route.map(i => MN[i]).join(' → ')} имеет длину ${v}.`, chk);
+        if (P.direct && v === P.direct) return api.bad('Это длина прямой дороги А–Д. Но по другим пунктам можно проехать короче.');
+        if (P.greedy > 0 && v === P.greedy && P.greedy !== P.ans) return api.bad('Так получится, если из каждого пункта ехать по самой короткой дороге. Но жадный выбор не всегда ведёт к кратчайшему пути.');
+        if (v < P.ans) return api.bad('Такой короткий путь не получится: проверь, что все дороги на твоём пути есть в таблице.');
+        api.bad('Пока не так. Подпиши у каждого пункта кратчайшее известное расстояние от А и обновляй эти числа.');
+      };
+      play.append(checkRow(inp, chk));
+    },
+    hints: (P) => ['Поставь у пункта А число 0. Затем возьми ближайший к А пункт и посмотри, не стал ли какой-нибудь другой пункт ближе через него.', 'Повторяй: каждый раз выбирай необработанный пункт с наименьшим расстоянием и пересчитывай расстояния до его соседей.', `Кратчайший путь проходит через ${P.route.length - 2} ${plural(P.route.length - 2, 'промежуточный пункт', 'промежуточных пункта', 'промежуточных пунктов')}.`],
+    explain: (P) => wrap(para(`Считаем расстояния от А. На каждом шаге берём ближайший необработанный пункт и улучшаем расстояния до его соседей:`),
+      tbl(['Шаг', 'Берём'].concat(MN), P.log.map((x, i) => ({ cells: [i + 1, MN[x.u]].concat(x.dist.map(d => d === Infinity ? '∞' : d)) }))),
+      para(`Кратчайший путь: <b>${P.route.map(i => MN[i]).join(' → ')}</b>, длина <b>${P.ans}</b>.`))
+  });
+
+  /* =====================================================================
+     10. Комбинаторика чисел (методичка)
+     ===================================================================== */
+  const permN = (n, k) => { let r = 1; for (let i = 0; i < k; i++) r *= (n - i); return r; };
+  const binom = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return Math.round(r); };
+  const CK = {
+    div5: { q: (L) => `Сколько существует ${L}-значных чисел, в записи которых <b>нет повторяющихся цифр</b> и которые <b>делятся на 5</b>?`, ok: (d, L) => new Set(d).size === L && d[L - 1] % 5 === 0, f: (L) => permN(9, L - 1) + 8 * permN(8, L - 2),
+      ex: (L) => `Число делится на 5, если оканчивается на 0 или 5.<br>• Последняя цифра 0: остальные ${L - 1} цифры — разные ненулевые: 9 · 8 · … = ${permN(9, L - 1)}.<br>• Последняя цифра 5: первая цифра — не 0 и не 5 (8 способов), остальные ${L - 2} — из оставшихся 8, 7, …: 8 · ${permN(8, L - 2)} = ${8 * permN(8, L - 2)}.<br>Всего ${permN(9, L - 1)} + ${8 * permN(8, L - 2)} = <b>${permN(9, L - 1) + 8 * permN(8, L - 2)}</b>.`, alt: 'rep' },
+    even: { q: (L) => `Сколько существует ${L}-значных <b>чётных</b> чисел, в записи которых <b>все цифры различны</b>?`, ok: (d, L) => new Set(d).size === L && d[L - 1] % 2 === 0, f: (L) => permN(9, L - 1) + 4 * 8 * permN(8, L - 2),
+      ex: (L) => `Последняя цифра чётная.<br>• Последняя цифра 0: остальные ${L - 1} цифры — разные ненулевые: ${permN(9, L - 1)}.<br>• Последняя цифра 2, 4, 6 или 8 (4 способа): первая цифра — не 0 и не последняя (8 способов), остальные ${L - 2} — из оставшихся: ${permN(8, L - 2)}. Всего 4 · 8 · ${permN(8, L - 2)} = ${4 * 8 * permN(8, L - 2)}.<br>Итого ${permN(9, L - 1)} + ${4 * 8 * permN(8, L - 2)} = <b>${permN(9, L - 1) + 4 * 8 * permN(8, L - 2)}</b>.`, alt: 'rep' },
+    odd: { q: (L) => `Сколько существует ${L}-значных чисел, <b>все цифры которых нечётные</b>?`, ok: (d) => d.every(x => x % 2 === 1), f: (L) => 5 ** L, ex: (L) => `На каждое из ${L} мест можно поставить любую из 5 нечётных цифр (1, 3, 5, 7, 9): 5<sup>${L}</sup> = <b>${5 ** L}</b>.` },
+    incr: { q: (L) => `Сколько существует ${L}-значных чисел, у которых цифры идут <b>строго по возрастанию</b> слева направо?`, ok: (d) => d.every((x, i) => !i || d[i - 1] < x), f: (L) => binom(9, L), ex: (L) => `Любой набор из ${L} разных цифр можно записать по возрастанию ровно одним способом. Нуль в таком числе стоял бы первым, поэтому цифры берём из 1…9: C(9, ${L}) = <b>${binom(9, L)}</b>.` },
+    has7: { q: (L) => `Сколько существует ${L}-значных чисел, в записи которых <b>есть хотя бы одна цифра 7</b>?`, ok: (d) => d.includes(7), f: (L) => 9 * 10 ** (L - 1) - 8 * 9 ** (L - 1), ex: (L) => `Посчитаем «наоборот»: чисел без цифры 7 — первая цифра (не 0 и не 7) 8 способов, остальные ${L - 1} по 9: 8 · 9<sup>${L - 1}</sup> = ${8 * 9 ** (L - 1)}. Всего ${L}-значных чисел 9 · 10<sup>${L - 1}</sup> = ${9 * 10 ** (L - 1)}. Значит, с семёркой: ${9 * 10 ** (L - 1)} − ${8 * 9 ** (L - 1)} = <b>${9 * 10 ** (L - 1) - 8 * 9 ** (L - 1)}</b>.` },
+    pal: { q: (L) => `Сколько существует ${L}-значных чисел-<b>палиндромов</b> (читаются одинаково слева направо и справа налево)?`, ok: (d, L) => d.every((x, i) => x === d[L - 1 - i]), f: (L) => 9 * 10 ** (Math.ceil(L / 2) - 1), ex: (L) => `Палиндром определяется первой половиной (вместе со средней цифрой): ${Math.ceil(L / 2)} ${plural(Math.ceil(L / 2), 'цифра', 'цифры', 'цифр')}, первая не нуль: 9 · 10<sup>${Math.ceil(L / 2) - 1}</sup> = <b>${9 * 10 ** (Math.ceil(L / 2) - 1)}</b>.` }
+  };
+  function combCount(kind, L, noRep) {
+    const spec = CK[kind]; let c = 0;
+    for (let v = 10 ** (L - 1); v < 10 ** L; v++) { const d = String(v).split('').map(Number); if (spec.ok(d, L)) c++; }
+    return c;
+  }
+  G.push({
+    id: 'count', tab: 'Комбинаторика', title: 'Сколько чисел?', from: 'методичка: «Комбинаторика»',
+    make: () => {
+      const kind = pick(['div5', 'div5', 'even', 'odd', 'incr', 'has7', 'pal']), L = kind === 'incr' ? rnd(3, 5) : (kind === 'div5' || kind === 'even') ? pick([3, 4, 5]) : pick([3, 4, 5]);
+      const P = { kind, L, ans: combCount(kind, L) };
+      if (CK[kind].alt) { const rep = (kind === 'div5' ? (9 * 10 ** (L - 2) * 2) : (9 * 10 ** (L - 2) * 5)); P.altRep = rep; }
+      return P;
+    },
+    story: (P) => wrap(para(CK[P.kind].q(P.L)), para('Число не может начинаться с нуля.')),
+    draw(play, P, api) {
+      const inp = field({ placeholder: 'ответ', 'aria-label': 'Количество чисел' });
+      const chk = () => {
+        const v = num(inp.value);
+        if (isNaN(v)) return api.bad('Впиши ответ целым числом.');
+        if (v === P.ans) return api.ok(`Верно! Всего ${v}.`, chk);
+        if (P.altRep && v === P.altRep) return api.bad('Похоже, ты не учёл(а) запрет на повторяющиеся цифры (или чётность/делимость): считай по позициям, не забывая, какие цифры уже заняты.');
+        api.bad('Пока не так. Разбей подсчёт на случаи, выбирай цифры по очереди: сначала самую «капризную» позицию, потом остальные.');
+      };
+      play.append(checkRow(inp, chk));
+    },
+    hints: (P) => ['Выбирай цифры по очереди и перемножай число вариантов на каждом месте. Какую позицию ограничивает условие сильнее всего? Начни с неё.',
+      P.kind === 'div5' || P.kind === 'even' ? 'Раздели подсчёт на два случая по последней цифре (0 и «не 0»): в них первая цифра ограничена по-разному.' : 'Иногда проще посчитать «наоборот»: все числа минус «плохие».',
+      `Всего ${P.L}-значных чисел 9 · 10<sup>${P.L - 1}</sup> = ${9 * 10 ** (P.L - 1)}. Ответ меньше этого числа.`],
+    explain: (P) => wrap(para(CK[P.kind].ex(P.L)))
+  });
+
+  /* =====================================================================
+     11. Программы: условия и циклы (методичка)
+     ===================================================================== */
+  const seqFmt = (a) => [a.length].concat(a).join('\n');
+  const PREAMBLE = 'n = int(input())\n';
+  const CODE12 = [
+    () => { const mx = Math.random() < 0.5, ins = [[5, 2, 9, 1, 7], [-3, -8, -1, -5], [4], [10, 10, 10], [0, -2, 6, 6, -9, 3], [100, -100], [8, 3, 3, 8]];
+      return { text: `Сначала вводится число <b>n</b>, затем <b>n</b> целых чисел (каждое с новой строки). Выведи ${mx ? '<b>наибольшее</b>' : '<b>наименьшее</b>'} из них.`, starter: 'n = int(input())\nm = int(input())\n# обработай остальные n - 1 чисел\n', ref: `n = int(input())\nm = int(input())\nfor i in range(n - 1):\n    x = int(input())\n    if x ${mx ? '>' : '<'} m:\n        m = x\nprint(m)`, ins, fmt: seqFmt, f: (a) => String(mx ? Math.max(...a) : Math.min(...a)), hints: ['Считай первое число и пока считай его ответом. Затем в цикле читай остальные.', `Если очередное число ${mx ? 'больше' : 'меньше'} текущего ответа — замени ответ.`] }; },
+    () => { const kinds = [['положительных', 'x > 0', (x) => x > 0], ['чётных', 'x % 2 == 0', (x) => x % 2 === 0], ['кратных 3', 'x % 3 == 0', (x) => x % 3 === 0], ['больших 10', 'x > 10', (x) => x > 10]], [nm, cond, fn] = pick(kinds), ins = [[5, -2, 9, 12, 7], [-3, -8, -1, -5], [4], [10, 10, 11], [0, -2, 6, 6, -9, 3], [100, -100, 30], [8, 3, 18, 8]];
+      return { text: `Сначала вводится число <b>n</b>, затем <b>n</b> целых чисел (каждое с новой строки). Выведи <b>сумму ${nm}</b> среди них.`, starter: 'n = int(input())\ns = 0\n# обработай n чисел\n', ref: `n = int(input())\ns = 0\nfor i in range(n):\n    x = int(input())\n    if ${cond}:\n        s += x\nprint(s)`, ins, fmt: seqFmt, f: (a) => String(a.filter(fn).reduce((p, q) => p + q, 0)), hints: ['Заведи сумму s = 0. В цикле читай число и проверяй условие.', `Прибавляй число к сумме только если оно подходит (${nm}).`] }; },
+    () => { const kinds = [['отрицательных', 'x < 0', (x) => x < 0], ['нечётных', 'x % 2 == 1', (x) => x % 2 === 1], ['оканчивающихся на 5', 'x % 10 == 5', (x) => x % 10 === 5], ['кратных 4', 'x % 4 == 0', (x) => x % 4 === 0]], [nm, cond, fn] = pick(kinds), ins = [[5, 2, 9, 15, 7], [3, 8, 1, 5], [4], [10, 20, 45], [0, 2, 6, 6, 9, 35], [100, 100, 25], [8, 3, 18, 8]];
+      return { text: `Сначала вводится число <b>n</b>, затем <b>n</b> целых чисел (каждое с новой строки). Выведи, <b>сколько среди них ${nm}</b>.`, starter: 'n = int(input())\nc = 0\n# обработай n чисел\n', ref: `n = int(input())\nc = 0\nfor i in range(n):\n    x = int(input())\n    if ${cond}:\n        c += 1\nprint(c)`, ins: nm === 'отрицательных' ? [[5, -2, 9, -15, 7], [-3, -8, -1, -5], [4], [10, 20, 45], [0, -2, 6, -6, 9, 35], [100, -100, 25], [8, 3, -18, 8]] : ins, fmt: seqFmt, f: (a) => String(a.filter(fn).length), hints: ['Заведи счётчик c = 0. В цикле читай число и проверяй условие.', 'Если число подходит — увеличь счётчик на 1.'] }; },
+    () => ({ text: 'Введено натуральное число (не больше 99999). Выведи <code>ДА</code>, если оно является палиндромом (читается одинаково слева направо и справа налево), и <code>НЕТ</code> в противном случае.', starter: 'n = int(input())\n# перевернуть число и сравнить с исходным\n', ref: 'n = int(input())\nm = n\nr = 0\nwhile m > 0:\n    r = r * 10 + m % 10\n    m = m // 10\nif r == n:\n    print("ДА")\nelse:\n    print("НЕТ")', ins: [[12321], [123], [7], [1221], [10], [99999], [45654]], fmt: (a) => a[0], f: ([n]) => String(n) === String(n).split('').reverse().join('') ? 'ДА' : 'НЕТ', hints: ['Переверни число: в цикле бери последнюю цифру (% 10) и дописывай её к результату (r = r * 10 + цифра).', 'Не забудь сохранить исходное число до того, как будешь его разбирать, — иначе сравнивать будет не с чем.'] }),
+    () => ({ text: 'Введено натуральное число <b>n</b> (2 ≤ n ≤ 10000). Выведи слово <code>простое</code>, если n — простое число, и <code>составное</code> — если нет.', starter: 'n = int(input())\n# есть ли делитель от 2 до корня из n?\n', ref: 'n = int(input())\nd = 2\np = 1\nwhile d * d <= n:\n    if n % d == 0:\n        p = 0\n    d += 1\nif p == 1:\n    print("простое")\nelse:\n    print("составное")', ins: [[2], [3], [4], [9], [97], [100], [9973]], fmt: (a) => a[0], f: ([n]) => { for (let d = 2; d * d <= n; d++) if (n % d === 0) return 'составное'; return 'простое'; }, hints: ['Число составное, если у него есть делитель от 2 до √n. Проверяй делители циклом while d * d <= n.', 'Заведи «флажок» p = 1 и сбрасывай его в 0, если нашёлся делитель.'] }),
+    () => ({ text: 'Введены два натуральных числа (каждое с новой строки). Выведи их <b>наибольший общий делитель</b>.', starter: 'a = int(input())\nb = int(input())\n# алгоритм Евклида\n', ref: 'a = int(input())\nb = int(input())\nwhile b != 0:\n    t = a % b\n    a = b\n    b = t\nprint(a)', ins: [[12, 18], [7, 13], [100, 25], [48, 36], [17, 17], [1000, 750], [91, 35]], fmt: (a) => a.join('\n'), f: ([a, b]) => { while (b) { const t = a % b; a = b; b = t; } return String(a); }, hints: ['Алгоритм Евклида: пока b не равно нулю, замени пару (a, b) на (b, a % b).', 'В Питоне без кортежей нужна временная переменная: t = a % b; a = b; b = t.'] }),
+    () => ({ text: 'Введено натуральное число <b>n</b>. Выполняют операции: если число чётное — делят его на 2, если нечётное и больше 1 — умножают на 3 и прибавляют 1. Так продолжают, пока не получится 1. Выведи, <b>сколько операций</b> потребовалось.', starter: 'n = int(input())\nc = 0\n# пока n не стало равно 1\n', ref: 'n = int(input())\nc = 0\nwhile n > 1:\n    if n % 2 == 0:\n        n = n // 2\n    else:\n        n = n * 3 + 1\n    c += 1\nprint(c)', ins: [[1], [2], [3], [6], [7], [27], [10]], fmt: (a) => a[0], f: ([n]) => { let c = 0; while (n > 1) { n = n % 2 === 0 ? n / 2 : n * 3 + 1; c++; } return String(c); }, hints: ['Используй цикл while n > 1: внутри — условие чётности и счётчик операций.', 'При n = 1 операций не нужно — ответ 0.'] }),
+    () => { const d = rnd(1, 9); return { text: `Введено натуральное число. Выведи, <b>сколько раз в его записи встречается цифра ${d}</b>.`, starter: 'n = int(input())\nc = 0\n# разбери число по цифрам\n', ref: `n = int(input())\nc = 0\nwhile n > 0:\n    if n % 10 == ${d}:\n        c += 1\n    n = n // 10\nprint(c)`, ins: [[d], [10 * d + 1], [d * 111], [1234567], [100000], [d * 1000 + d], [98765]], fmt: (a) => a[0], f: ([n]) => String(String(n).split('').filter(x => +x === d).length), hints: ['Последняя цифра числа — n % 10. Чтобы перейти к следующей, отбрасывай последнюю: n = n // 10.', `Увеличивай счётчик, когда последняя цифра равна ${d}.`] }; },
+    () => ({ text: 'Сначала вводится число <b>n</b>, затем <b>n</b> целых чисел (каждое с новой строки). Выведи, <b>сколько раз среди них встречается наибольшее</b> число.', starter: 'n = int(input())\nm = int(input())\nc = 1\n# обработай остальные n - 1 чисел\n', ref: 'n = int(input())\nm = int(input())\nc = 1\nfor i in range(n - 1):\n    x = int(input())\n    if x > m:\n        m = x\n        c = 1\n    elif x == m:\n        c += 1\nprint(c)', ins: [[3, 7, 7, 1, 7], [5, 5, 5], [1, 2, 3], [9], [4, 9, 2, 9], [-1, -1, -5], [2, 8, 8, 3, 8, 1]], fmt: seqFmt, f: (a) => String(a.filter(x => x === Math.max(...a)).length), hints: ['Помни текущий максимум m и сколько раз он встретился (c).', 'Если пришло число больше m — оно новый максимум, c = 1. Если равно m — c увеличивается.'] })
+  ];
+  function genCode12() {
+    const v = pick(CODE12)();
+    return Object.assign(v, { tests: shuffle(v.ins.map(x => ({ input: v.fmt(x), expected: v.f(x) }))) });
+  }
+  G.push({
+    id: 'code', tab: 'Программа', title: 'Напиши программу', from: 'методичка: «Задачи на написание кода»',
+    make: genCode12,
+    story: (P) => wrap(para(P.text), para('Пиши на Питоне. «Запустить» выполняет программу на вводе из поля, «Проверить решение» прогоняет её на тестах, как в настоящей олимпиаде.')),
+    draw(play, P, api) { B.codeBox(play, { starter: P.starter, sample: { input: P.tests[0].input }, tests: P.tests, rows: 9 }, api); },
+    hints: (P) => P.hints.concat(['Сначала проверь программу на маленьком примере через «Запустить», потом — на тестах.']),
+    explain: (P) => wrap(para('Одно из верных решений (подходит любое, которое проходит все тесты):'), code(P.ref))
+  });
+
+  B.Bank({
+    title: 'Банк заданий',
+    sub: 'Для детей 12–14 лет. Каждый раз — новый вариант.',
+    intro: '<b>Как заниматься.</b> Выбери тип задания и решай варианты один за другим. Ответ проверяется сразу, а когда справишься, откроется разбор. Подсказки открываются по одной. Типы заданий взяты из недель 1–2 и из методички олимпиады для старшей группы. В заданиях на программы кнопка «Проверить решение» прогоняет код на нескольких тестах.',
+    gens: G
+  });
+  window.__G = G; window.__CK = { CK, combCount, frogBrute, discoSim };
+})();
+
+</script>
+
+</body></html>
