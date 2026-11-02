@@ -1,0 +1,868 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Неделя 8 для 9–11 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+<style>
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{max-width:68ch}
+.story>*+*{margin-top:10px}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+
+/* Макет: тетрадь в клетку, строгие контуры без теней, акцент бирюзовый и оранжевый. Лаборатория логики для 9–11 лет. */
+:root{
+  --bg:#EAF4F1;--surface:#FFFFFF;--surface2:#F2F9F7;--ink:#0F2F2A;--muted:#44625C;
+  --edge:#0F2F2A;--line:#C6DDD7;--line-strong:#86B3A9;--grid:rgba(15,80,70,.07);
+  --accent:#0B7E6F;--on-accent:#FFFFFF;--accent2:#F26B21;--on-accent2:#1A0A00;
+  --good:#18803C;--good-bg:#DFF4E4;--bad:#BF3520;--bad-bg:#FCE7E1;--star:#F5B21B;
+  --field:#FFFFFF;--hint-bg:#FFF0DB;--hint-edge:#EBA45E;--code-inline:#DDEDE9;--focus:#1B62E0;
+  --s1:#F26B21;--s2:#0B7E6F;--s3:#3C6FD8;--s4:#E5A50A;
+  --sock-b:#2F6FE0;--sock-g:#2EA44F;--sock-r:#D93A30;
+  --card-shadow:none;
+  --radius:10px;--radius-lg:16px;--bw:2px;--bw-thin:1.5px;--lift:0px;--fs:17px;--maxw:900px;
+  --f-display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --f-body:'Onest','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}
+
+body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.top h1{font-size:clamp(1.15rem,4.6vw,1.8rem);font-weight:700}
+.task-head h2{font-size:clamp(1.05rem,3.9vw,1.4rem);font-weight:700}
+.num{border-radius:8px}
+.tab{border-radius:8px}
+.intro{border-color:var(--hint-edge);background:var(--hint-bg)}
+.btn.primary{border-color:var(--accent)}
+.bubble .mascot{display:none}
+
+/* пирамида */
+.pyr{--bs:clamp(40px,11.4vw,60px);display:grid;gap:6px;justify-items:center;padding-block:4px}
+.pr{display:flex;gap:6px;justify-content:center}
+.ball{width:var(--bs);height:var(--bs);border-radius:50%;border:2px dashed var(--line-strong);background:var(--field);text-align:center;font-family:var(--f-mono);font-weight:800;font-size:calc(var(--bs)*.36);padding:0;color:var(--ink);-moz-appearance:textfield}
+.ball::-webkit-outer-spin-button,.ball::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ball.given{background:var(--accent);color:var(--on-accent);border:2px solid var(--accent)}
+.ball.ok{border:2px solid var(--good);background:var(--good-bg);color:var(--good)}
+.ball.bad{border:2px solid var(--bad);background:var(--bad-bg);color:var(--bad)}
+.ball.hl{box-shadow:0 0 0 4px var(--accent2)}
+.ball.goal{box-shadow:0 0 0 4px var(--accent2);border-style:solid;border-color:var(--accent2)}
+.counter{text-align:center;font-weight:700}
+
+/* носки */
+.drawer{display:flex;gap:10px;flex-wrap:wrap}
+.dcol{display:flex;align-items:center;gap:8px;padding:.4em .8em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface);font-weight:700}
+.dcol svg{width:28px;height:28px}
+.sockrow{display:flex;gap:8px;flex-wrap:wrap;min-height:76px;align-items:flex-end}
+.sock{display:grid;justify-items:center;gap:0;font-size:.72rem;font-weight:800;font-family:var(--f-mono);animation:pop .25s}
+.sock svg{width:46px;height:46px}
+.sock.pair svg{filter:drop-shadow(0 0 0 var(--accent2));outline:3px solid var(--accent2);outline-offset:2px;border-radius:8px}
+.cb{color:var(--sock-b)}.cg{color:var(--sock-g)}.cr{color:var(--sock-r)}
+.hist{display:grid;gap:6px}
+.hbar{display:grid;grid-template-columns:7.5em 1fr 4.2em;gap:8px;align-items:center;font-size:.92em}
+.hbar .bar{height:18px;background:var(--surface);border:var(--bw-thin) solid var(--line-strong);border-radius:6px;overflow:hidden}
+.hbar .bar i{display:block;height:100%;background:var(--accent)}
+.hbar.zero .bar i{background:var(--bad)}
+.colbtns{display:flex;gap:8px;flex-wrap:wrap}
+.colbtns .btn{display:flex;align-items:center;gap:8px}
+.colbtns .btn svg{width:26px;height:26px}
+.sub-h{font-family:var(--f-display);font-size:.95rem;font-weight:700}
+
+/* фигуры */
+.shg{display:grid;grid-template-columns:repeat(3,var(--cs)) minmax(5.2em,auto);grid-auto-rows:var(--cs);gap:0;--cs:clamp(54px,15.5vw,82px);border:var(--bw) solid var(--edge);width:max-content;max-width:100%;background:var(--surface);margin-inline:auto}
+.shg>div{display:grid;place-items:center;border:1px solid var(--line-strong);padding:4px;text-align:center;line-height:1.15}
+.shg svg{width:72%;height:72%}
+.shg .sum{font-family:var(--f-mono);font-weight:800;font-size:clamp(.95rem,3.4vw,1.15rem)}
+.shg .sum small{display:block;font-weight:700;font-size:.62em;color:var(--muted)}
+.shg .sum.ok{background:var(--good-bg);color:var(--good)}
+.shg .sum.ok small{color:var(--good)}
+.shg .sum.bad{background:var(--bad-bg)}
+.shg .sum.q{background:var(--hint-bg)}
+.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.box{display:grid;gap:10px}
+.val{display:flex;align-items:center;gap:8px;padding:.4em .6em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.val svg{width:34px;height:34px;flex:none}
+.trick{display:grid;gap:6px;font-family:var(--f-mono);font-size:.95em}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+
+/* ===== неделя 5 ===== */
+.pg{display:grid;width:max-content;max-width:100%;margin-inline:auto;--cs:clamp(34px,10.4vw,56px);background:var(--surface)}
+.pc{width:var(--cs);height:var(--cs);padding:0;margin:0;border-style:solid;border-color:var(--line-strong);background:var(--surface2);cursor:pointer;display:grid;place-items:center;font-size:calc(var(--cs)*.42);font-weight:800;color:var(--on-accent);border-radius:0;font-family:var(--f-body)}
+.pc:hover{filter:brightness(.95)}
+.pc[data-c="1"]{background:var(--s1)}.pc[data-c="2"]{background:var(--s2)}.pc[data-c="3"]{background:var(--s3)}.pc[data-c="4"]{background:var(--s4)}
+.pc[data-c="3"],.pc[data-c="2"]{color:#fff}
+.pc[data-c="1"],.pc[data-c="4"]{color:#1A0A00}
+.pg.static .pc{cursor:default}.pg.static .pc:hover{filter:none}
+.pvoid{width:var(--cs);height:var(--cs)}
+.pal{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pal .btn{display:flex;gap:6px;align-items:center;min-height:44px}
+.pal .btn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.sw{display:inline-grid;place-items:center;width:1.7em;height:1.7em;border-radius:6px;border:2px solid var(--edge);font-weight:800;font-size:.9em}
+.sw[data-c="1"]{background:var(--s1);color:#1A0A00}.sw[data-c="2"]{background:var(--s2);color:#fff}.sw[data-c="3"]{background:var(--s3);color:#fff}.sw[data-c="4"]{background:var(--s4);color:#1A0A00}
+
+.fcw{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.fcw{grid-template-columns:minmax(0,1fr)}}
+svg.flow{width:100%;height:auto;display:block;max-width:420px;margin-inline:auto}
+svg.flow .nd rect,svg.flow .nd polygon,svg.flow .nd ellipse{fill:var(--surface);stroke:var(--edge);stroke-width:1.8}
+svg.flow .nd text{font-family:var(--f-mono);font-weight:800;font-size:13px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+svg.flow .nd.cur rect,svg.flow .nd.cur polygon,svg.flow .nd.cur ellipse{stroke:var(--accent2);stroke-width:3.6;fill:var(--hint-bg)}
+svg.flow .nd.seen rect,svg.flow .nd.seen polygon,svg.flow .nd.seen ellipse{fill:var(--good-bg);stroke:var(--good)}
+svg.flow .ed{fill:none;stroke:var(--line-strong);stroke-width:1.8}
+svg.flow .lb{font-family:var(--f-mono);font-weight:800;font-size:11px;fill:var(--muted);text-anchor:middle}
+.trace{display:grid;gap:10px}
+.trace table{table-layout:fixed}
+.trace td,.trace th{padding:.3em .3em;font-size:.9em}
+.trace th{font-size:.78em;line-height:1.2}
+.trace td input.field,.trace td select.field{width:100%;min-height:40px;padding:.2em .3em;text-align:center;font-family:var(--f-mono);font-weight:800}
+.trace .ok{border-color:var(--good);background:var(--good-bg)}.trace .bad{border-color:var(--bad);background:var(--bad-bg)}
+.algo{font-family:var(--f-mono);font-size:.92em;display:grid;gap:2px}
+
+.expr{display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center;font-family:var(--f-mono);font-size:clamp(1.05rem,4.4vw,1.5rem);font-weight:800;line-height:1.2;padding:12px;border:var(--bw) dashed var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.expr .op{color:var(--muted)}
+.expr .val{display:inline-grid;place-items:center;min-width:1.6em;height:1.6em;border-radius:6px;background:var(--accent);color:var(--on-accent)}
+.expr .chip{cursor:pointer;font:inherit;border:var(--bw) solid var(--accent2);background:var(--hint-bg);color:var(--ink);border-radius:8px;padding:.1em .45em;min-height:44px;animation:pulse 1.6s infinite}
+.expr .ans{display:inline-flex;gap:4px;align-items:center}
+.expr .ans .btn{min-height:44px;padding:.2em .8em;font-family:var(--f-mono);font-weight:800}
+@keyframes pulse{50%{box-shadow:0 0 0 4px var(--hint-edge)}}
+.hist{display:grid;gap:4px;font-family:var(--f-mono);font-size:.92em;counter-reset:h}
+.hist div::before{counter-increment:h;content:counter(h) ". ";color:var(--muted)}
+.tt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tt table{font-family:var(--f-mono);font-size:.9em}
+.big01{display:flex;gap:10px}.big01 .btn{min-width:64px;font-family:var(--f-mono);font-size:1.3em;font-weight:800}
+.stage{display:grid;gap:12px}
+
+/* ===== неделя 8, 9–11 лет ===== */
+.stage{display:grid;gap:12px;min-width:0}
+.task{min-width:0}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.answer-row .lbl{font-family:var(--f-mono);font-weight:800}
+.sub-h{font-family:var(--f-mono);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0}
+details.box>summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
+.field.wide{min-width:0;width:100%;max-width:20em}
+.opts{display:flex;gap:10px;flex-wrap:wrap}
+.opts.col{flex-direction:column;align-items:stretch}
+.opts.col .btn{text-align:left}
+.btn.okb{background:var(--good-bg);border-color:var(--good)}
+.btn.badb{background:var(--bad-bg);border-color:var(--bad)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.v-ok{color:var(--good);font-weight:800}
+/* очередь */
+.qpool{display:flex;flex-wrap:wrap;gap:8px;min-height:48px}
+.pc{cursor:pointer;font:inherit;font-weight:800;border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);border-radius:var(--radius);padding:.5em .9em;min-height:44px}
+.pc:hover{background:var(--surface2)}
+.pc.in{width:100%;padding:.5em .2em;min-height:44px;background:var(--hint-bg);border-color:var(--accent2)}
+.qslots{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.qs{display:grid;gap:4px;justify-items:center;align-content:start;min-height:88px;padding:6px 4px;border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);background:var(--surface);min-width:0}
+.qs.full{border-style:solid;border-color:var(--edge)}
+.qs .on{font-family:var(--f-mono);font-weight:800;color:var(--muted);font-size:.85rem}
+.clues{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.clues li{display:flex;gap:8px;align-items:baseline;padding:.4em .7em;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.clues li i{font-style:normal;font-weight:800;min-width:1.2em}
+.clues li.ok{background:var(--good-bg);border-color:var(--good)}
+.clues li.bad{background:var(--bad-bg);border-color:var(--bad)}
+.clues li.pend{color:var(--muted)}
+/* пирамида */
+.pyr{display:grid;gap:6px;justify-items:center}
+.pyr-row{display:flex;gap:6px;justify-content:center}
+.pcell{width:min(21vw,80px);height:48px;display:grid;place-items:center;border:var(--bw) solid var(--edge);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--f-mono);font-weight:800;font-size:clamp(.85rem,3.6vw,1.1rem);padding:0;min-width:0}
+button.pcell{cursor:pointer}
+button.pcell:hover{background:var(--surface2)}
+.pcell.hl{background:var(--accent2);color:var(--on-accent2)}
+.pcell.src{background:var(--accent);color:var(--on-accent)}
+.pcell.unk{background:var(--hint-bg);border-color:var(--accent2);overflow:hidden}
+.pin{width:100%;height:100%;border:0;background:transparent;text-align:center;font:inherit;color:inherit;padding:0;min-width:0}
+.pin:disabled{opacity:.5}
+.pcell.unk:has(.pin.ok){background:var(--good-bg);border-color:var(--good)}
+.pcell.unk:has(.pin.bad){background:var(--bad-bg);border-color:var(--bad)}
+.eqbox{margin:0;text-align:center;font-family:var(--f-mono);font-weight:800;min-height:1.6em}
+/* шифр */
+.cipt{max-width:22em;margin-inline:auto}
+.cipt td{font-family:var(--f-mono);font-weight:800;font-size:1.1rem}
+.lab{display:grid;gap:6px;margin-top:8px}
+.lrow{display:grid;grid-template-columns:3.2em auto 3.2em 1fr;gap:8px;align-items:center;padding:.3em .7em;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface);font-family:var(--f-mono);font-weight:800}
+.lrow.ok{background:var(--good-bg);border-color:var(--good)}
+.lrow.bad{background:var(--bad-bg);border-color:var(--bad)}
+.lrow .le{text-align:right;font-size:.9rem}
+.ciph-in{display:grid;gap:10px}
+.cl{display:grid;gap:4px;font-family:var(--f-mono);font-weight:800}
+.alpha{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:4px}
+.alpha span{display:grid;justify-items:center;border:var(--bw-thin) solid var(--line-strong);border-radius:6px;background:var(--surface);font-family:var(--f-mono);font-weight:800;padding:2px 0}
+.alpha i{font-style:normal;font-size:.68rem;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-weight:700;word-break:break-all}
+.task>*{min-width:0}
+.explain>*,.pbody>*,.box>*,.stage>*,.story>*{min-width:0;max-width:100%}
+
+</style>
+<main id="app"></main>
+<script>window.PAGE_ID='w8b';</script>
+<script>
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+
+/* ===== Страница 9–11 лет, неделя 8 ===== */
+(function () {
+  'use strict';
+  const { h, rnd, pick, shuffle, onEnter } = K;
+  const num = (str) => { const t = String(str).trim().replace('−', '-'); return /^-?\d+$/.test(t) ? parseInt(t, 10) : NaN; };
+  const perms = (a) => a.length <= 1 ? [a.slice()] : a.flatMap((x, i) => perms(a.slice(0, i).concat(a.slice(i + 1))).map(p => [x, ...p]));
+
+  /* ================= Задача 1. Очередь за билетами ================= */
+  /* условие-«факт»: type before(a,b) | adj | nadj | notfirst | notlast */
+  const CL = {
+    before: { text: (c) => `${c.a} купит билет раньше, чем ${c.b}`, f: (o, c) => o.indexOf(c.a) < o.indexOf(c.b), why: (o, c) => `${c.b} стоит раньше, чем ${c.a}`, who: (c) => [c.a, c.b] },
+    after: { text: (c) => `${c.a} купит билет позже, чем ${c.b}`, f: (o, c) => o.indexOf(c.a) > o.indexOf(c.b), why: (o, c) => `${c.a} стоит раньше, чем ${c.b}`, who: (c) => [c.a, c.b] },
+    adj: { text: (c) => `${c.a} и ${c.b} стоят рядом`, f: (o, c) => Math.abs(o.indexOf(c.a) - o.indexOf(c.b)) === 1, why: (o, c) => `между ${c.a} и ${c.b} стоят другие`, who: (c) => [c.a, c.b] },
+    nadj: { text: (c) => `${c.a} и ${c.b} не стоят рядом`, f: (o, c) => Math.abs(o.indexOf(c.a) - o.indexOf(c.b)) !== 1, why: (o, c) => `${c.a} и ${c.b} стоят рядом`, who: (c) => [c.a, c.b] },
+    notfirst: { text: (c) => `${c.a} не стоит первым`, f: (o, c) => o.indexOf(c.a) !== 0, why: (o, c) => `${c.a} стоит первым`, who: (c) => [c.a] },
+    notlast: { text: (c) => `${c.a} не стоит последним`, f: (o, c) => o.indexOf(c.a) !== o.length - 1, why: (o, c) => `${c.a} стоит последним`, who: (c) => [c.a] }
+  };
+  const clText = (c) => c.t || CL[c.type].text(c);
+  const clOk = (o, c) => CL[c.type].f(o, c);
+
+  /* доска: кого куда поставить. slots: имена или null */
+  function queueBoard(names, clues, opts) {
+    opts = opts || {};
+    const n = names.length;
+    const pool = shuffle(names);
+    const slots = Array(n).fill(null);
+    const marks = { v: null };
+    const poolEl = h('div', { class: 'qpool', role: 'group', 'aria-label': 'Ребята' });
+    const slotEl = h('ol', { class: 'qslots', style: { gridTemplateColumns: `repeat(${n},minmax(0,1fr))` } });
+    const cluesEl = h('ul', { class: 'clues' });
+    const status = (c) => {
+      const who = CL[c.type].who(c); if (who.some(x => !slots.includes(x))) return null;
+      return clOk(slots, c);
+    };
+    const draw = () => {
+      poolEl.replaceChildren(...pool.filter(x => !slots.includes(x)).map(x => h('button', { class: 'pc', type: 'button', 'aria-label': 'Поставить в очередь: ' + x, onclick: () => { const k = slots.indexOf(null); if (k >= 0) { slots[k] = x; draw(); opts.onChange && opts.onChange(); } } }, x)));
+      if (!poolEl.firstChild) poolEl.append(h('span', { class: 'muted small' }, 'Все стоят в очереди. Нажми на имя внизу, чтобы убрать человека.'));
+      slotEl.replaceChildren(...slots.map((v, k) => h('li', { class: 'qs' + (v ? ' full' : '') },
+        h('span', { class: 'on' }, k + 1),
+        v ? h('button', { class: 'pc in', type: 'button', 'aria-label': `Место ${k + 1}: ${v}. Убрать`, onclick: () => { slots[k] = null; draw(); opts.onChange && opts.onChange(); } }, v) : h('span', { class: 'muted small' }, '—'))));
+      cluesEl.replaceChildren(...clues.map(c => { const st = status(c); return h('li', { class: st === null ? 'pend' : st ? 'ok' : 'bad' }, h('i', { 'aria-hidden': 'true' }, st === null ? '○' : st ? '✓' : '✗'), h('span', null, clText(c)), h('span', { class: 'sr' }, st === null ? ' (пока неизвестно)' : st ? ' (выполнено)' : ' (нарушено)')); }));
+    };
+    draw();
+    return {
+      el: h('div', { class: 'stage' }, h('p', { class: 'sub-h' }, 'Условия (отметки появятся, когда нужные ребята встанут в очередь)'), cluesEl,
+        h('p', { class: 'sub-h' }, 'Ребята'), poolEl, h('p', { class: 'sub-h' }, 'Очередь: 1 — первый (раньше всех купит билет)'), slotEl),
+      slots, draw, clear() { slots.fill(null); draw(); },
+      violated() { return clues.filter(c => !clOk(slots, c)); }
+    };
+  }
+  const MAIN_CL = [{ type: 'before', a: 'Юля', b: 'Маша' }, { type: 'after', a: 'Юля', b: 'Олег' }, { type: 'nadj', a: 'Витя', b: 'Олег' }];
+  const ALL4 = ['Юля', 'Маша', 'Витя', 'Олег'];
+  const MAIN_SOL = perms(ALL4).filter(o => MAIN_CL.every(c => clOk(o, c)));
+
+  const t1 = {
+    id: 'queue', num: 1, title: 'Очередь за билетами',
+    story: '<p>В очереди за билетами в кинотеатр стоят <b>Юля, Маша, Витя и Олег</b>. Кто за кем стоит, если известно, что <b>Юля купит билет раньше Маши, но позже Олега</b>, а <b>Витя и Олег не стоят рядом</b>?</p><p class="muted"><i>У этой задачи может быть несколько вариантов ответа.</i> Нажимай на имена: первым ставь того, кто стоит ближе к кассе.</p>',
+    hints: [
+      'Выпиши три факта отдельно: (1) Юля раньше Маши; (2) Юля позже Олега; (3) Витя и Олег не рядом. Первые два говорят о том, кто за кем стоит среди Олега, Юли и Маши.',
+      'Из (1) и (2): Олег стоит раньше Юли, а Юля — раньше Маши. Значит, порядок этих троих всегда такой: Олег → Юля → Маша. Витя может оказаться где угодно между ними или с краю.',
+      'Теперь Витя. Олег в очереди первый среди троих, а Витя не должен стоять рядом с ним. Какое место сразу после Олега нельзя отдавать Вите?',
+      'Витя не может стоять сразу перед Олегом и сразу после него. Остаются два места: между Юлей и Машей или в самом конце. Проверь оба варианта по условиям — это два ответа.'
+    ],
+    build(play, api) {
+      const found = new Set();
+      const board = queueBoard(ALL4, MAIN_CL, {});
+      const sub = () => {
+        if (board.slots.includes(null)) { api.say(`Расставь всех: осталось ${board.slots.filter(x => x === null).length}.`, 'bad'); return; }
+        const bad = board.violated();
+        if (bad.length) {
+          api.attempt(); const c = bad[0];
+          api.say(`Нарушено условие «${clText(c)}»: сейчас ${CL[c.type].why(board.slots, c)}. Нарушено условий: ${bad.length}.`, 'bad'); return;
+        }
+        const key = board.slots.join(' → ');
+        if (found.has(key)) { api.say('Этот порядок ты уже нашёл(ла). Попробуй найти другой.', 'info'); return; }
+        found.add(key);
+        if (found.size === 1) api.solve(`Верно! ${key}. Но ответов несколько — найди ещё один порядок и нажми «Проверить» снова.`);
+        else api.say(`Отлично! Найдены оба порядка: ${[...found].join(' и ')}. Других нет.`, 'ok');
+      };
+      play.append(board.el, h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить'), h('button', { class: 'btn ghost', type: 'button', onclick: () => { board.clear(); api.say('', 'info'); } }, 'Сбросить')));
+    },
+    explain() {
+      return h('div', null,
+        h('ol', null,
+          h('li', { html: '«Юля раньше Маши» и «Юля позже Олега» вместе дают цепочку: <b>Олег → Юля → Маша</b>.' }),
+          h('li', { html: 'Остался Витя. Его можно вставить в цепочку на четыре места: до Олега, между Олегом и Юлей, между Юлей и Машей, после Маши.' }),
+          h('li', { html: 'Витя не должен стоять рядом с Олегом, поэтому «до Олега» и «между Олегом и Юлей» не подходят.' }),
+          h('li', { html: 'Подходят два места: <b>Олег, Юля, Витя, Маша</b> и <b>Олег, Юля, Маша, Витя</b>.' })),
+        h('p', { class: 'small muted' }, 'Идея: сначала собери цепочку из условий, которые связывают людей друг с другом, а потом «вставляй» оставшегося по запрету. Типичные ошибки: поставить Витю первым или вторым (рядом с Олегом) и найти только один ответ, хотя их два. В олимпиаде обычно достаточно одного верного порядка, но проверять, нет ли второго, полезно.'));
+    },
+    practiceTitle: 'Ещё потренироваться: случайные очереди',
+    practice(body) {
+      const POOL = ['Аня', 'Боря', 'Вика', 'Гена', 'Даша', 'Егор', 'Лена', 'Миша', 'Ника', 'Рома', 'Саша', 'Тоня'];
+      const mount = h('div'), f = h('p', { class: 'fb' });
+      const mk = (names) => {
+        const cand = [];
+        for (const a of names) for (const b of names) if (a !== b) { cand.push({ type: 'before', a, b }); cand.push({ type: 'after', a, b }); cand.push({ type: 'nadj', a, b }); cand.push({ type: 'adj', a, b }); }
+        for (const a of names) { cand.push({ type: 'notfirst', a }); cand.push({ type: 'notlast', a }); }
+        for (let it = 0; it < 400; it++) {
+          const hid = pick(perms(names));
+          const tr = shuffle(cand.filter(c => clOk(hid, c)));
+          const k = pick([3, 3, 4]);
+          const cl = tr.slice(0, k);
+          const sols = perms(names).filter(o => cl.every(c => clOk(o, c)));
+          if (sols.length >= 1 && sols.length <= 3 && cl.some(c => c.type === 'before' || c.type === 'after')) return { cl, sols };
+        }
+        return { cl: MAIN_CL.map(c => ({ ...c })), sols: MAIN_SOL, names: ALL4 };
+      };
+      const gen = () => {
+        const names = shuffle(POOL).slice(0, 4);
+        const q = mk(names); const nm = q.names || names;
+        const board = queueBoard(nm, q.cl, { onChange: () => { f.textContent = ''; } });
+        mount.replaceChildren(h('p', { class: 'muted small' }, 'Найди любой порядок, который подходит ко всем условиям. Ответов может быть несколько.'), board.el,
+          h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => {
+            if (board.slots.includes(null)) { f.className = 'fb bad'; f.textContent = 'Расставь всех.'; return; }
+            const bad = board.violated();
+            if (bad.length) { const c = bad[0]; f.className = 'fb bad'; f.textContent = `Нарушено «${clText(c)}»: сейчас ${CL[c.type].why(board.slots, c)}.`; }
+            else { f.className = 'fb ok'; f.textContent = `Верно! Всего подходящих порядков: ${q.sols.length}.`; K.burst(f); }
+          } }, 'Проверить'),
+            h('button', { class: 'btn ghost', type: 'button', onclick: () => { board.clear(); f.textContent = ''; } }, 'Сбросить'),
+            h('button', { class: 'btn ghost', type: 'button', onclick: () => { f.className = 'fb info'; f.textContent = 'Все подходящие порядки: ' + q.sols.map(o => o.join(' → ')).join(' ; ') + '.'; } }, 'Показать все ответы')));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другая очередь')); gen();
+    }
+  };
+
+  /* ================= Задача 2. Пирамида Числопса ================= */
+  /* vals[r][c]: r=0 вершина; null — неизвестно (ячейка-поле) */
+  function pyramid(vals, onShow) {
+    const inputs = {};
+    const rowsEl = vals.map((row, r) => h('div', { class: 'pyr-row' }, ...row.map((v, c) => {
+      if (v === null) {
+        const inp = h('input', { class: 'pin', type: 'text', inputmode: 'numeric', autocomplete: 'off', 'aria-label': `Пустая клетка, ряд ${r + 1} сверху, место ${c + 1}` });
+        inputs[r + ',' + c] = inp; return h('div', { class: 'pcell unk' }, inp);
+      }
+      const el = h('button', { class: 'pcell', type: 'button', 'aria-label': `Число ${v}` + (r < vals.length - 1 ? '. Показать, из каких чисел оно получено' : ''), onclick: () => {
+        if (r >= vals.length - 1) { onShow && onShow(null); return; }
+        const a = vals[r + 1][c], b = vals[r + 1][c + 1];
+        cells.forEach(x => x.classList.remove('hl', 'src'));
+        el.classList.add('src'); if (a != null) cells.find(x => x.dataset.rc === (r + 1) + ',' + c).classList.add('hl'); if (b != null) cells.find(x => x.dataset.rc === (r + 1) + ',' + (c + 1)).classList.add('hl');
+        onShow && onShow(a != null && b != null ? { a, b, v, sum: a + b } : { missing: true });
+      } }, String(v));
+      el.dataset.rc = r + ',' + c; return el;
+    })));
+    const cells = [];
+    rowsEl.forEach(rw => rw.querySelectorAll('button.pcell').forEach(x => cells.push(x)));
+    /* ячейки-поля тоже нужны для подсветки — помечаем */
+    rowsEl.forEach((rw, r) => rw.querySelectorAll('.pcell.unk').forEach((x, i) => { }));
+    return { el: h('div', { class: 'pyr' }, ...rowsEl), inputs };
+  }
+  const MAIN_P = [[null], [1125, null], [451, 684, 686], [198, 263, 431, 265]];
+  const eqText = (r) => r ? (r.missing ? 'Одно из чисел снизу неизвестно — выбери другое число.' : `${r.a} + ${r.b} = ${r.sum};  ${r.sum} − ${r.v} = ${r.sum - r.v}`) : 'Нажми на число выше нижнего ряда — увидишь, из каких чисел оно получено.';
+
+  const t2 = {
+    id: 'pyr', num: 2, title: 'Пирамида Числопса',
+    story: '<p>Посмотри внимательно на числовую пирамиду. <b>Найди закономерность</b> в расстановке чисел и определи, какие значения скрываются под <b>X</b> и <b>Y</b>.</p><p class="muted">Нажимай на числа: подсветятся два числа под ними, и ты увидишь, как получено число.</p>',
+    hints: [
+      'Возьми самое левое число второго ряда снизу (451) и два числа под ним: 198 и 263. Как из 198 и 263 получить 451?',
+      '198 + 263 = 461. А в клетке над ними стоит 451. На сколько 461 больше 451?',
+      'Проверь на другом числе: 263 + 431 = 694, а над ними 684. Разница снова 10. Правило: число сверху = сумма двух соседей снизу − 10.',
+      'Сначала найди Y: под ним 684 и 686. Потом X: под ним 1125 и Y.'
+    ],
+    build(play, api) {
+      const info = h('p', { class: 'eqbox', 'aria-live': 'polite' }, eqText(null));
+      const P = pyramid(MAIN_P, (r) => { info.textContent = eqText(r); });
+      const yI = P.inputs['1,1'], xI = P.inputs['0,0'];
+      const RULES = [['Число сверху — сумма двух чисел снизу', 'bad', 'Проверь на 198 и 263: 198 + 263 = 461, а в клетке над ними 451. Просто суммой не получается.'], ['Число сверху — сумма двух чисел снизу минус 10', 'ok'], ['Число сверху — сумма двух чисел снизу плюс 10', 'bad', '198 + 263 + 10 = 471, а сверху стоит 451. Так тоже не сходится: нужно число меньше суммы.'], ['Число сверху — разность двух чисел снизу', 'bad', '263 − 198 = 65, а сверху стоит 451. Для такого числа разность слишком мала.']];
+      const rf = h('p', { class: 'fb small' });
+      const ruleOk = { v: false };
+      const q = h('div', { class: 'stage' }, h('p', { class: 'sub-h' }, 'Шаг 1. Какая закономерность?'), h('div', { class: 'opts col' }, shuffle(RULES).map(([t, k, why]) => h('button', { class: 'btn', type: 'button', onclick: function () {
+        if (k === 'ok') { this.classList.add('okb'); rf.className = 'fb small ok'; rf.textContent = 'Верно! Сумма двух нижних на 10 больше числа сверху — значит, сверху стоит сумма минус 10.'; ruleOk.v = true; step2.hidden = false; }
+        else { this.classList.add('badb'); api.attempt(); rf.className = 'fb small bad'; rf.textContent = why; }
+      } }, t))), rf);
+      const sub = () => {
+        const y = num(yI.value), x = num(xI.value);
+        if (Number.isNaN(y) || Number.isNaN(x)) { api.attempt(); api.say('Впиши числа и в X, и в Y.', 'bad'); return; }
+        const yw = 684 + 686 - 10, xw = 1125 + yw - 10;
+        yI.className = 'pin' + (y === yw ? ' ok' : ' bad'); xI.className = 'pin' + (x === xw ? ' ok' : ' bad');
+        if (y === yw && x === xw) { api.solve('Верно! Y = 1360, X = 2475.'); return; }
+        api.attempt();
+        if (y !== yw) {
+          if (y === 684 + 686) api.say('Y: ты сложил 684 и 686 и получил 1370, но забыл вычесть 10. Число сверху всегда на 10 меньше суммы.', 'bad');
+          else if (y === 684 + 686 - 20) api.say('Y: вычитать 10 нужно один раз, а не два.', 'bad');
+          else if (y === 684 + 686 + 10) api.say('Y: ты прибавил 10, а правило — вычесть 10.', 'bad');
+          else if (y === 1125 + 686 - 10 || y === 1125 + 684 - 10) api.say('Y стоит над числами 684 и 686 — возьми именно их (соседей снизу).', 'bad');
+          else api.say('Y не сходится. Под Y стоят 684 и 686: сложи их и вычти 10.', 'bad');
+        } else {
+          if (x === 1125 + yw) api.say('Y верный. В X ты сложил 1125 и 1360, но забыл вычесть 10.', 'bad');
+          else if (x === 1125 + yw - 20) api.say('Y верный. В X нужно вычесть 10 только один раз.', 'bad');
+          else api.say('Y верный! Для X сложи 1125 и Y (1360) и вычти 10.', 'bad');
+        }
+      };
+      onEnter(yI, sub); onEnter(xI, sub);
+      const step2 = h('div', { class: 'stage', hidden: true }, h('p', { class: 'sub-h' }, 'Шаг 2. Найди Y (поле справа во втором ряду) и X (вершина)'),
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить X и Y')));
+      /* поля Y и X находятся прямо в пирамиде; до шага 1 они недоступны */
+      [xI, yI].forEach(i => { i.disabled = true; });
+      const unlock = new MutationObserver(() => { if (!step2.hidden) { [xI, yI].forEach(i => { i.disabled = false; }); unlock.disconnect(); } });
+      unlock.observe(step2, { attributes: true, attributeFilter: ['hidden'] });
+      play.append(P.el, info, q, step2);
+    },
+    explain() {
+      return h('div', null,
+        h('ol', null,
+          h('li', { html: 'Смотрим на левую нижнюю часть: 198 + 263 = 461, а над ними <b>451</b>. 461 − 451 = 10. Проверяем ещё: 263 + 431 = 694, а над ними 684 — снова на 10 меньше. Правило: <b>число сверху = сумма двух чисел снизу − 10</b>.' }),
+          h('li', { html: '<b>Y</b> стоит над 684 и 686: 684 + 686 = 1370; 1370 − 10 = <b>1360</b>.' }),
+          h('li', { html: '<b>X</b> стоит над 1125 и Y: 1125 + 1360 = 2485; 2485 − 10 = <b>2475</b>.' })),
+        h('p', { class: 'small muted' }, 'Как искать правило в пирамиде: возьми одно число сверху и два под ним, сложи и сравни с верхним. Если разница одна и та же на разных примерах — это и есть правило. Типичные ошибки: забыть вычесть 10 (получается 1370 и 2485), вычесть 10 дважды, сложить не те числа, а X считать по неверному Y.'));
+    },
+    practiceTitle: 'Ещё потренироваться: пирамиды с другим правилом',
+    practice(body) {
+      const mount = h('div'), f = h('p', { class: 'fb' });
+      const gen = () => {
+        const d = pick([-5, -10, -20, 5, 10, 15]);
+        const base = Array.from({ length: 4 }, () => rnd(20, 300));
+        const r3 = [0, 1, 2].map(i => base[i] + base[i + 1] + d);
+        const r2 = [0, 1].map(i => r3[i] + r3[i + 1] + d);
+        const top = r2[0] + r2[1] + d;
+        const info = h('p', { class: 'eqbox', 'aria-live': 'polite' }, eqText(null));
+        const P = pyramid([[null], [r2[0], null], r3, base], (r) => { info.textContent = eqText(r); });
+        const yI = P.inputs['1,1'], xI = P.inputs['0,0'];
+        const sub = () => {
+          const y = num(yI.value), x = num(xI.value);
+          if (Number.isNaN(y) || Number.isNaN(x)) { f.className = 'fb bad'; f.textContent = 'Впиши числа в оба поля.'; return; }
+          yI.className = 'pin ' + (y === r2[1] ? 'ok' : 'bad'); xI.className = 'pin ' + (x === top ? 'ok' : 'bad');
+          if (y === r2[1] && x === top) { f.className = 'fb ok'; f.textContent = `Верно! Правило: сумма двух нижних ${d < 0 ? 'минус ' + (-d) : 'плюс ' + d}.`; K.burst(f); return; }
+          f.className = 'fb bad';
+          if (y !== r2[1]) f.textContent = y === r3[1] + r3[2] ? 'Y: ты просто сложил два нижних числа. Найди правило: сравни сумму двух нижних чисел с числом над ними в другом месте пирамиды.' : 'Y не сходится. Сначала найди правило по нижним рядам (нажми на число — увидишь разность), потом примени к Y.';
+          else f.textContent = x === r2[0] + y ? 'Y верный. В X ты просто сложил два нижних числа — добавь поправку из правила.' : 'Y верный. X считай из числа слева во втором ряду и Y — с той же поправкой.';
+        };
+        onEnter(yI, sub); onEnter(xI, sub);
+        mount.replaceChildren(h('p', { class: 'muted small' }, 'Правило другое — найди его по числам. Подсказка: нажми на число в третьем ряду.'), P.el, info,
+          h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить'), h('button', { class: 'btn ghost', type: 'button', onclick: () => { f.className = 'fb info'; f.textContent = `Правило: сумма двух нижних ${d < 0 ? 'минус ' + (-d) : 'плюс ' + d}. Y = ${r2[1]}, X = ${top}.`; } }, 'Показать ответ')));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другая пирамида')); gen();
+    }
+  };
+
+  /* ================= Задача 3. Шифр ================= */
+  const ALPHA = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+  const ALPHA32 = ALPHA.replace('Ё', '');
+  const shift = (w, d, al) => { al = al || ALPHA; return [...w].map(ch => { const i = al.indexOf(ch); return i < 0 ? ch : al[(((i + d) % al.length) + al.length) % al.length]; }).join(''); };
+  const nrm = (s) => String(s).toUpperCase().replace(/\s+/g, '');
+  const ALPHA_TBL = () => h('div', { class: 'alpha' }, [...ALPHA].map((c, i) => h('span', null, h('i', null, i + 1), c)));
+  const plR = (n) => K.plural(n, 'букву', 'буквы', 'букв');
+
+  /* проверка ответа: mode 'dec' — расшифровать, 'enc' — зашифровать; k — сдвиг */
+  function cipherCheck(base, got, mode, k) {
+    const want = shift(base, mode === 'dec' ? -k : k);
+    const u = nrm(got), wantN = nrm(want);
+    if (!u) return { ok: false, msg: 'Впиши ответ.' };
+    if (u === wantN) return { ok: true };
+    const dg = (x) => x.replace(/\D/g, '');
+    if (dg(u) !== dg(nrm(base))) return { ok: false, msg: 'Цифры шифр не меняет — они должны остаться такими же, как были.' };
+    if (u.length !== nrm(base).length) return { ok: false, msg: `Длина не совпадает: в слове ${nrm(base).length} ${K.plural(nrm(base).length, 'символ', 'символа', 'символов')}, и после шифра их столько же.` };
+    const noE = nrm(shift(base, mode === 'dec' ? -k : k, ALPHA32));
+    if (u === noE) return { ok: false, msg: 'Ты пропустил(а) букву «Ё»: в этом алфавите она стоит после «Е», её тоже надо считать.' };
+    for (let d = -12; d <= 12; d++) {
+      if (d === 0) continue;
+      if (nrm(shift(base, d)) === u) {
+        const dirOk = (mode === 'dec') === (d < 0);
+        if (Math.abs(d) === k && !dirOk) return { ok: false, msg: mode === 'dec' ? `Ты сдвинул(а) буквы вперёд на ${k}. Расшифровывать надо в обратную сторону — назад на ${k}.` : `Ты сдвинул(а) буквы назад на ${k}. Шифровать надо вперёд на ${k}.` };
+        if (Math.abs(d) !== k) return { ok: false, msg: `Все буквы сдвинуты на ${Math.abs(d)}, а в правиле — на ${k}.` };
+      }
+    }
+    if (u === nrm(base)) return { ok: false, msg: 'Ответ совпадает с исходным. Нужно применить шифр к каждой букве.' };
+    const wrong = [...u].map((ch, i) => ch !== wantN[i] ? i + 1 : 0).filter(Boolean);
+    return { ok: false, msg: `Часть букв верна, а ошибка в ${wrong.length > 1 ? 'позициях' : 'позиции'} ${wrong.join(', ')}. Проверь по таблице алфавита, особенно буквы возле конца алфавита (после «Я» снова идёт «А»).` };
+  }
+
+  const EX3 = [['1', '1'], ['И', 'Л'], ['25', '25'], ['Ю', 'Б'], ['Р', 'У']];
+  const t3 = {
+    id: 'cipher', num: 3, title: 'Шифр',
+    story: '<p>Обработчик настроен на <b>шифровку сообщений</b>. Попробуй по таблице отгадать его алгоритм и с его помощью <b>расшифровать</b> и <b>зашифровать</b> данные ниже.</p><p class="muted">Алфавит: <span class="mono">АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ</span> (33 буквы, есть «Ё»).</p>',
+    hints: [
+      'Посмотри на таблицу: «И» → «Л». Сколько букв надо отсчитать от «И» вперёд по алфавиту, чтобы дойти до «Л»? (И → Й → К → Л)',
+      'Проверь на других примерах: «Р» → «У» (Р → С → Т → У). А «Ю» → «Б»: после «Я» алфавит начинается заново — Ю → Я → А → Б. Цифры не меняются.',
+      'Правило: шифр сдвигает каждую букву на 3 вперёд. Чтобы РАСШИФРОВАТЬ, надо сдвинуть каждую букву на 3 НАЗАД.',
+      'НСФПСФ: Н → М → Л → К; С → Р → П → О; … Помни про «Ё» после «Е»: Ж → Ё → Е → Д. Цифры в дате остаются как есть.'
+    ],
+    build(play, api) {
+      const kS = K.stepper(0, 8, 0, () => draw());
+      const rowsEl = h('div', { class: 'lab' });
+      const labFb = h('p', { class: 'fb small' });
+      let labDone = false;
+      const draw = () => {
+        const k = kS.get();
+        const ok = EX3.map(([i, o]) => shift(i, k) === o);
+        rowsEl.replaceChildren(...EX3.map(([i, o], idx) => h('div', { class: 'lrow ' + (ok[idx] ? 'ok' : 'bad') }, h('span', { class: 'li' }, i), h('span', { class: 'ar' }, '→'), h('span', { class: 'lo' }, shift(i, k)), h('span', { class: 'le' }, ok[idx] ? '= ' + o + ' ✓' : '≠ ' + o + ' ✗'))));
+        if (ok.every(Boolean)) { labFb.className = 'fb small ok'; labFb.textContent = `Совпали все пять строк! Правило найдено: каждая буква сдвигается на ${k} вперёд, цифры не меняются.`; labDone = true; }
+        else { labFb.className = 'fb small info'; labFb.textContent = 'Меняй сдвиг, пока все строки таблицы не совпадут с «Выходом».'; }
+      };
+      draw();
+      const tasks = [
+        { base: 'НСФПСФ', mode: 'dec', label: 'Расшифруй: НСФПСФ →' },
+        { base: 'КЗПОВ', mode: 'dec', label: 'Расшифруй: КЗПОВ →' },
+        { base: '12 АПРЕЛЯ', mode: 'enc', label: 'Зашифруй: 12 АПРЕЛЯ →' }
+      ];
+      const ins = tasks.map(t => h('input', { class: 'field wide', type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', 'aria-label': t.label }));
+      const okf = tasks.map(() => false);
+      const sub = () => {
+        let err = null;
+        tasks.forEach((t, i) => {
+          const r = cipherCheck(t.base, ins[i].value, t.mode, 3); okf[i] = r.ok;
+          ins[i].className = 'field wide ' + (ins[i].value.trim() ? (r.ok ? 'ok' : 'bad') : '');
+          if (!r.ok && !err) err = `«${t.base}»: ${r.msg}`;
+        });
+        if (err) { api.attempt(); api.say(err, 'bad'); return; }
+        api.solve('Верно! КОСМОС, ЗЕМЛЯ и 12 ГТУЗОВ.');
+      };
+      ins.forEach(x => onEnter(x, sub));
+      play.append(h('div', { class: 'stage' },
+        h('table', { class: 'tbl cipt' }, h('thead', null, h('tr', null, h('th', null, 'Вход'), h('th', null, 'Выход'))), h('tbody', null, ...EX3.map(([i, o]) => h('tr', null, h('td', null, i), h('td', null, o))))),
+        h('details', { class: 'box', open: '' }, h('summary', { class: 'sub-h' }, 'Лаборатория: подбери сдвиг'),
+          h('div', { class: 'row' }, h('span', null, 'Сдвиг вперёд на'), kS, h('span', null, kS.get() === 1 ? 'букву' : 'букв(ы)')), rowsEl, labFb),
+        h('div', { class: 'ciph-in' }, ...tasks.map((t, i) => h('label', { class: 'cl' }, h('span', null, t.label), ins[i]))),
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить')),
+        h('details', { class: 'box' }, h('summary', { class: 'sub-h' }, 'Таблица алфавита (с буквой «Ё»)'), ALPHA_TBL())));
+    },
+    explain() {
+      return h('div', null,
+        h('p', { html: 'Правило из таблицы: <b>буква заменяется на букву через 3 после неё</b>, цифры не меняются (И → Л, Ю → Б, Р → У).' }),
+        h('ol', null,
+          h('li', { html: '<b>НСФПСФ</b> — расшифровываем, сдвигая назад на 3: Н→К, С→О, Ф→С, П→М, С→О, Ф→С ⇒ <b>КОСМОС</b>.' }),
+          h('li', { html: '<b>КЗПОВ</b>: К→З, З→Е (Ж → Ё → Е — «Ё» тоже буква!), П→М, О→Л, В→Я (до «А», потом с конца алфавита) ⇒ <b>ЗЕМЛЯ</b>.' }),
+          h('li', { html: '<b>12 АПРЕЛЯ</b> — шифруем вперёд на 3, цифры оставляем: А→Г, П→Т, Р→У, Е→З, Л→О, Я→В ⇒ <b>12 ГТУЗОВ</b>.' })),
+        h('p', { class: 'small muted' }, 'Чтобы расшифровать — делай обратное действие: шифр сдвигает вперёд, значит, при расшифровке сдвигаем назад. Типичные ошибки: сдвинуть не в ту сторону, забыть про «Ё», сбиться на границе алфавита (после «Я» идёт «А», а перед «А» — «Я»), изменить цифры.'));
+    },
+    practiceTitle: 'Ещё потренироваться: шифры с другим сдвигом',
+    practice(body) {
+      const WORDS = ['ШКОЛА', 'РОБОТ', 'ПРОГРАММА', 'ЭКРАН', 'ЗВЕЗДА', 'ФАЙЛ', 'КЛАВИША', 'МЫШЬ', 'ПИКСЕЛЬ', 'ЯБЛОКО', 'ЮЛЯ', 'ЁЖИК', 'СЕТЬ', 'ТАБЛИЦА'];
+      const mount = h('div'), f = h('p', { class: 'fb' });
+      const gen = () => {
+        const k = rnd(1, 7), mode = pick(['dec', 'enc']), w = pick(WORDS);
+        const base = mode === 'enc' ? w : shift(w, k);
+        const w1 = pick(['А', 'Б', 'В', 'Г', 'Д', 'К', 'М']);
+        const inp = h('input', { class: 'field wide', type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', 'aria-label': 'Ответ' });
+        const sub = () => {
+          const r = cipherCheck(base, inp.value, mode, k);
+          inp.className = 'field wide ' + (inp.value.trim() ? (r.ok ? 'ok' : 'bad') : ''); f.className = 'fb ' + (r.ok ? 'ok' : 'bad');
+          f.textContent = r.ok ? `Верно! ${mode === 'enc' ? 'Шифруем' : 'Расшифровываем'} со сдвигом ${k}: ${mode === 'enc' ? base + ' → ' + shift(base, k) : base + ' → ' + w}.` : r.msg; if (r.ok) K.burst(f);
+        };
+        onEnter(inp, sub);
+        mount.replaceChildren(h('p', { class: 'box small' }, 'Шифр сдвигает каждую букву вперёд по алфавиту. Примеры: ', h('b', null, `${w1} → ${shift(w1, k)}`), ', ', h('b', null, `${shift(w1, 5)} → ${shift(shift(w1, 5), k)}`), '. Найди сдвиг и ', h('b', null, mode === 'enc' ? 'зашифруй' : 'расшифруй'), ' слово.'),
+          h('div', { class: 'answer-row' }, h('span', { class: 'lbl' }, `${base} →`), inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить'), h('button', { class: 'btn ghost', type: 'button', onclick: () => { f.className = 'fb info'; f.textContent = `Сдвиг ${k}. Ответ: ${shift(base, mode === 'dec' ? -k : k)}.`; } }, 'Показать ответ')));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другой шифр')); gen();
+    }
+  };
+
+  K.App({
+    title: 'Олимпиада KIBERone · неделя 8',
+    sub: 'Средняя группа, 9–11 лет',
+    intro: 'Три задачи: очередь за билетами (ответов может быть несколько), числовая пирамида и шифр со сдвигом. У каждой есть подсказки (открывай по одной), мгновенная проверка и разбор. Решённые задачи отмечаются звёздочкой на вкладке.',
+    tasks: [t1, t2, t3]
+  });
+})();
+
+</script>
+
+</body></html>

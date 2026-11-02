@@ -1,0 +1,1338 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Неделя 8 для 12–14 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{max-width:68ch}
+.story>*+*{margin-top:10px}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+
+/* Макет: рабочее место участника контеста, светлая бумага и тёмные панели кода, синий акцент и янтарная подсветка. 12–14 лет. */
+:root{
+  --bg:#EDF0F6;--surface:#FFFFFF;--surface2:#F4F6FB;--ink:#16202E;--muted:#536074;
+  --edge:#16202E;--line:#D2D9E6;--line-strong:#97A6BF;
+  --accent:#2457E6;--on-accent:#FFFFFF;--accent2:#F0A81C;--on-accent2:#1B1300;
+  --good:#11803E;--good-bg:#DDF3E4;--bad:#BE321D;--bad-bg:#FCE6E1;--star:#F0A81C;
+  --field:#FFFFFF;--hint-bg:#E9EFFF;--hint-edge:#8AA5F0;--code-inline:#E1E7F3;--focus:#2457E6;
+  --code-bg:#0F1624;--code-ink:#DCE6F7;--code-muted:#7D8BA6;--code-hl:rgba(240,168,28,.22);--code-line:#26324A;
+  --card-shadow:none;
+  --radius:7px;--radius-lg:12px;--bw:1.5px;--bw-thin:1px;--lift:0px;--fs:16.5px;--maxw:940px;
+  --f-display:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --f-body:'Manrope','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D121A;--surface:#151C27;--surface2:#1B2433;--ink:#E5EBF5;--muted:#9AA8BF;
+  --edge:#42536E;--line:#26324A;--line-strong:#4B5C78;
+  --accent:#7399FF;--on-accent:#0A142C;--accent2:#F5B73A;--on-accent2:#1B1300;
+  --good:#5BD58A;--good-bg:#123221;--bad:#FF8E7A;--bad-bg:#42201A;--star:#F5B73A;
+  --field:#0D121A;--hint-bg:#1B2849;--hint-edge:#4E69B8;--code-inline:#26324A;--focus:#8FB0FF;
+  --code-bg:#080C13;--code-ink:#DCE6F7;--code-muted:#7D8BA6;--code-hl:rgba(245,183,58,.2);--code-line:#26324A;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D121A;--surface:#151C27;--surface2:#1B2433;--ink:#E5EBF5;--muted:#9AA8BF;
+  --edge:#42536E;--line:#26324A;--line-strong:#4B5C78;
+  --accent:#7399FF;--on-accent:#0A142C;--accent2:#F5B73A;--on-accent2:#1B1300;
+  --good:#5BD58A;--good-bg:#123221;--bad:#FF8E7A;--bad-bg:#42201A;--star:#F5B73A;
+  --field:#0D121A;--hint-bg:#1B2849;--hint-edge:#4E69B8;--code-inline:#26324A;--focus:#8FB0FF;
+  --code-bg:#080C13;--code-ink:#DCE6F7;--code-muted:#7D8BA6;--code-hl:rgba(245,183,58,.2);--code-line:#26324A;color-scheme:dark}
+
+.top .mascot,.bubble .mascot{display:none}
+.top h1{font-size:clamp(1.2rem,4.8vw,1.9rem);font-weight:800;letter-spacing:-.02em}
+.top h1::before{content:"> ";color:var(--accent)}
+.task-head h2{font-size:clamp(1.05rem,3.8vw,1.4rem);font-weight:800}
+.num{border-radius:6px;font-family:var(--f-mono)}
+.tab{font-family:var(--f-mono);font-size:.9em}
+.bubble .say{border-radius:var(--radius)}
+.btn{box-shadow:none}
+.btn.primary{border-color:var(--accent)}
+.intro{background:var(--hint-bg);border-color:var(--hint-edge)}
+.box{display:grid;gap:10px}
+.sub-h{font-family:var(--f-mono);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+
+/* код */
+.code{background:var(--code-bg);color:var(--code-ink);font-family:var(--f-mono);font-size:.88rem;line-height:1.75;border-radius:var(--radius);padding:10px 0;overflow-x:auto;max-width:100%}
+.code .ln{display:block;padding:0 14px;white-space:pre;min-height:1.75em}
+.code .ln.on{background:var(--code-hl);box-shadow:inset 3px 0 0 var(--accent2)}
+.code .kw{color:#8DB4FF;font-weight:700}
+.code .cm{color:var(--code-muted)}
+.tabs-s{display:flex;gap:6px;flex-wrap:wrap}
+.pill{cursor:pointer;border:var(--bw-thin) solid var(--line-strong);background:var(--surface);color:var(--ink);padding:.3em .8em;border-radius:999px;font-weight:700;font-size:.88em;min-height:36px}
+.pill[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.vars{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--f-mono)}
+.vars span{background:var(--surface);border:var(--bw-thin) solid var(--line-strong);border-radius:6px;padding:.15em .6em;font-weight:800}
+.vars span b{color:var(--accent)}
+table.tbl td input.field{width:5.5em;min-height:38px;padding:.2em .4em;text-align:center}
+table.tbl td.mono,table.tbl th{font-family:var(--f-mono)}
+table.tbl tr.cur td{background:var(--hint-bg)}
+table.tbl td.okc{background:var(--good-bg);color:var(--good);font-weight:800}
+.stepx{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stepx label{display:grid;gap:4px;font-size:.88em;font-weight:700;color:var(--muted)}
+
+/* диаграмма Венна */
+.vwrap{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(220px,1fr);gap:18px;align-items:start}
+@media (max-width:700px){.vwrap{grid-template-columns:minmax(0,1fr)}}
+.vd{position:relative;width:100%;max-width:440px;aspect-ratio:320/300;margin-inline:auto}
+.vd svg{position:absolute;inset:0;width:100%;height:100%}
+.vd text{font-family:var(--f-body);font-weight:800;font-size:11.5px;fill:var(--ink)}
+input.rg{position:absolute;transform:translate(-50%,-50%);width:3.1em;height:2.2em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:clamp(.85rem,3.3vw,1.05rem);border:var(--bw) solid var(--line-strong);border-radius:6px;background:var(--surface);padding:0;color:var(--ink)}
+input.rg:focus{border-color:var(--accent)}
+.clues{display:grid;gap:8px;list-style:none;margin:0;padding:0}
+.clues li{display:grid;grid-template-columns:1.6em 1fr;gap:6px;align-items:start;padding:.45em .6em;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.clues li i{font-style:normal;font-weight:800;font-family:var(--f-mono);text-align:center}
+.clues li.ok{background:var(--good-bg);border-color:var(--good)}.clues li.ok i{color:var(--good)}
+.clues li.bad{background:var(--bad-bg);border-color:var(--bad)}.clues li.bad i{color:var(--bad)}
+.vtotal{font-family:var(--f-mono);font-weight:800}
+
+/* проверка */
+.ed{width:100%;min-height:220px;resize:vertical;background:var(--code-bg);color:var(--code-ink);border:var(--bw) solid var(--code-line);border-radius:var(--radius);padding:12px 14px;font-family:var(--f-mono);font-size:.9rem;line-height:1.65;tab-size:4;white-space:pre;overflow:auto}
+.ed:focus{border-color:var(--accent)}
+.io{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.io textarea{width:100%;min-height:96px;font-family:var(--f-mono);font-size:.88rem;resize:vertical}
+.console{background:var(--code-bg);color:var(--code-ink);font-family:var(--f-mono);font-size:.88rem;border-radius:var(--radius);padding:10px 14px;min-height:72px;white-space:pre-wrap;overflow-wrap:anywhere}
+.console.err{color:#FFB4A5}
+.verd{width:100%}
+.verd td,.verd th{font-size:.9em}
+.v-ok{color:var(--good);font-weight:800}.v-bad{color:var(--bad);font-weight:800}
+.parsons{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.plist{display:grid;gap:6px;align-content:start;min-height:60px;padding:8px;border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);background:var(--surface2)}
+.pline{cursor:pointer;text-align:left;font-family:var(--f-mono);font-size:.82rem;background:var(--code-bg);color:var(--code-ink);border:var(--bw-thin) solid var(--code-line);border-radius:6px;padding:.45em .7em;white-space:pre-wrap;overflow-wrap:anywhere;min-height:38px}
+.pline:hover{border-color:var(--accent)}
+.pline .pn{color:var(--code-muted);margin-right:.7em}
+.calc{font-family:var(--f-mono);font-size:.9rem;display:grid;gap:4px}
+.calc div{display:grid;grid-template-columns:minmax(9em,12em) 1fr;gap:10px}
+.calc div span:first-child{color:var(--muted);font-family:var(--f-body);font-weight:700}
+.calc div.total{font-weight:800;color:var(--accent);border-top:var(--bw-thin) solid var(--line-strong);padding-top:6px;margin-top:4px}
+@media (max-width:520px){.calc div{grid-template-columns:1fr;gap:0}}
+.iotable{width:100%;font-family:var(--f-mono);font-size:.88rem}
+.iotable pre{margin:0;font-family:inherit}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+
+/* ===== неделя 5 ===== */
+.fcw{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.fcw{grid-template-columns:minmax(0,1fr)}}
+svg.flow{width:100%;height:auto;display:block;max-width:420px;margin-inline:auto}
+svg.flow .nd rect,svg.flow .nd polygon,svg.flow .nd ellipse,svg.flow .nd path{fill:var(--surface);stroke:var(--edge);stroke-width:1.6}
+svg.flow .nd text{font-family:var(--f-mono);font-weight:700;font-size:13px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+svg.flow .nd.cur rect,svg.flow .nd.cur polygon,svg.flow .nd.cur ellipse{stroke:var(--accent2);stroke-width:3.4;fill:var(--code-hl)}
+svg.flow .nd.seen rect,svg.flow .nd.seen polygon,svg.flow .nd.seen ellipse{fill:var(--good-bg);stroke:var(--good)}
+svg.flow .ed{fill:none;stroke:var(--line-strong);stroke-width:1.8}
+svg.flow .ed.used{stroke:var(--accent2);stroke-width:3}
+svg.flow .lb{font-family:var(--f-mono);font-weight:800;font-size:11px;fill:var(--muted);text-anchor:middle}
+.ctl{display:grid;gap:10px}
+.ctl .q{font-weight:800}
+.vars span.mm b{color:var(--accent2)}
+
+.bt{border-collapse:collapse;width:100%;table-layout:fixed;min-width:0}
+.bt th,.bt td{border:var(--bw-thin) solid var(--line-strong);padding:0;text-align:center}
+.bt th{font-family:var(--f-mono);font-size:.78rem;background:var(--surface2);padding:.35em 0;line-height:1.15}
+.bt th.pn{width:5.9em}
+.bt td.pn{font-weight:800;text-align:left;padding:.3em .5em;font-size:.92em;background:var(--surface2)}
+.bt button.cell{width:100%;min-height:40px;background:var(--field);border:0;cursor:pointer;font-family:var(--f-mono);font-weight:800;font-size:1.05rem;color:var(--muted)}
+.bt button.cell[data-v="1"]{background:var(--good-bg);color:var(--good)}
+.bt button.cell[data-v="-1"]{background:var(--bad-bg);color:var(--bad)}
+.bt button.cell:hover{filter:brightness(.96)}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:4px 14px;font-size:.88em;color:var(--muted)}
+.legend b{font-family:var(--f-mono);color:var(--ink)}
+.clues li.unk i{color:var(--muted)}
+.mini-q{display:grid;gap:8px}
+.chk{display:flex;gap:8px;flex-wrap:wrap}
+.chk label{display:flex;gap:6px;align-items:center;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);padding:.4em .8em;background:var(--surface);cursor:pointer;min-height:40px}
+.chk label:has(input:checked){background:var(--hint-bg);border-color:var(--accent)}
+
+.tl{width:100%;height:auto;display:block}
+.tl .fm{fill:var(--accent)}.tl .ad{fill:var(--accent2)}.tl .gh{fill:none;stroke:var(--accent2);stroke-width:1.5;stroke-dasharray:4 3}
+.tl text{font-family:var(--f-mono);font-size:9px;fill:var(--muted);text-anchor:middle}
+.tl .tk{stroke:var(--line-strong);stroke-width:1}
+.sim{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.sim label{display:grid;gap:4px;font-weight:700;font-size:.9em;color:var(--muted)}
+.chal{display:grid;gap:6px;list-style:none;margin:0;padding:0}
+.chal li{display:flex;gap:8px;align-items:center;padding:.4em .7em;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.chal li.ok{background:var(--good-bg);border-color:var(--good)}
+.chal li i{font-style:normal;font-weight:800;font-family:var(--f-mono);width:1.4em;text-align:center}
+.stage{display:grid;gap:12px}
+.pline.used{opacity:.4}
+.pline.in{border-color:var(--accent)}
+.pline.err{border-color:var(--bad)}
+.verd th,.verd td{padding:.35em .5em;text-align:left;vertical-align:top;font-family:var(--f-mono);font-size:.82rem;overflow-wrap:anywhere}
+.verd td.t,.verd th.t{white-space:nowrap}
+
+/* ===== неделя 8, 12–14 лет ===== */
+.stage{display:grid;gap:12px;min-width:0}
+.task{min-width:0}
+.sub-h{font-family:var(--f-mono);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0}
+.lbl{font-family:var(--f-mono);font-weight:800}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.score{font-family:var(--f-mono);font-weight:800;font-size:1.05rem;margin-bottom:6px}
+.eqbox{margin:0;text-align:center;font-family:var(--f-mono);font-weight:800;min-height:1.6em;overflow-wrap:anywhere}
+.eqbox.big{font-size:1.1rem}
+.mz-msg{font-family:var(--f-mono);font-size:.86rem;min-height:3em;background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:.5em .7em}
+.mz-msg.bad{color:var(--bad);border-color:var(--bad);background:var(--bad-bg)}
+.mz-msg.ok{color:var(--good);border-color:var(--good);background:var(--good-bg)}
+/* диаграмма Эйлера–Венна */
+.venn{display:block;width:100%;max-width:440px;height:auto;margin-inline:auto}
+.venn .vb{fill:var(--surface);stroke:var(--edge);stroke-width:1.5}
+.venn .va{fill:var(--accent);fill-opacity:.28;stroke:var(--accent);stroke-width:2}
+.venn .vc{fill:var(--accent2);fill-opacity:.34;stroke:var(--accent2);stroke-width:2}
+.venn text{font-family:var(--f-mono);text-anchor:middle;fill:var(--ink)}
+.venn .vn{font-size:20px;font-weight:800}
+.venn .vn.hot{font-size:24px}
+.venn .vt{font-size:11px;font-weight:800}
+.venn .vs{font-size:8.5px;fill:var(--muted);font-weight:700}
+.venn .vl{text-anchor:start}
+.venn .vr{text-anchor:end}
+/* дорожка робота */
+.trkbox{padding:8px}
+.trk{display:block;width:100%;height:auto}
+.trk .tc{fill:var(--surface);stroke:var(--line-strong);stroke-width:1}
+.trk .tc.cur{stroke:var(--accent);stroke-width:2;fill:var(--hint-bg)}
+.trk .tp{fill:var(--accent2);stroke:var(--edge);stroke-width:.6}
+.trk .tn{font-size:7px;font-family:var(--f-mono);fill:var(--muted);text-anchor:middle}
+.trk .tr{fill:var(--accent);stroke:var(--edge);stroke-width:1}
+/* способы переноски */
+.cases{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:700px){.cases{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.case{display:grid;gap:6px;padding:10px;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface);min-width:0}
+.case.no{opacity:.65}
+.brow{display:grid;grid-template-columns:4.4em minmax(0,1fr) 2.4em;gap:8px;align-items:center;font-family:var(--f-mono);font-size:.88rem;padding:2px 4px;border:var(--bw-thin) solid transparent;border-radius:6px}
+.brow.min{border-color:var(--accent2);background:var(--code-hl)}
+.btr{display:block;background:var(--surface2);height:12px;border-radius:6px;overflow:hidden}
+.bf{display:block;height:100%;background:var(--accent)}
+.bf.neg{background:var(--bad)}
+.bv{text-align:right;font-weight:800}
+.bres{margin:0;font-weight:700;font-size:.9em}
+.task>*{min-width:0}
+.story .code{font-size:.8rem}
+.explain,.pbody{min-width:0}
+.explain code,.story code,.fb code{white-space:normal;overflow-wrap:anywhere}
+.explain>*,.pbody>*,.box>*,.stage>*,.story>*{min-width:0;max-width:100%}
+@media (max-width:430px){.story .code{font-size:.7rem}}
+@media (max-width:430px){.code{font-size:.72rem}}
+.trk .tn{font-size:8.5px}
+
+</style>
+<main id="app"></main>
+<script>window.PAGE_ID='w8c';</script>
+<script>
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+
+/* ===== Мини-интерпретатор подмножества Python для олимпиадных задач ===== */
+/* Поддержка: переменные, int/float/str/bool, арифметика (+ - * / // % **), сравнения, and/or/not,
+   input(), print(sep, end), int/float/str/abs/min/max/divmod/round/len, if/elif/else, while, for ... in range(...) */
+const PyRun = (function () {
+  'use strict';
+  class PyErr extends Error { constructor(kind, msg, line) { super(msg); this.kind = kind; this.line = line; } }
+  class Flt { constructor(v) { this.v = v; } }
+  const isInt = (v) => typeof v === 'bigint';
+  const isNum = (v) => typeof v === 'bigint' || v instanceof Flt;
+  const lt = (a, b) => (isInt(a) && isInt(b)) ? BigInt(a) < BigInt(b) : nv(a) < nv(b);
+  const nv = (v) => v instanceof Flt ? v.v : Number(v);
+  const syn = (no, msg) => new PyErr('SyntaxError', msg, no);
+
+  function fmtFloat(x) {
+    if (Number.isNaN(x)) return 'nan';
+    if (!Number.isFinite(x)) return x > 0 ? 'inf' : '-inf';
+    if (Number.isInteger(x) && Math.abs(x) < 1e16) return x.toFixed(1);
+    return String(x);
+  }
+  function str(v) {
+    if (typeof v === 'string') return v;
+    if (v instanceof Flt) return fmtFloat(v.v);
+    if (typeof v === 'boolean') return v ? 'True' : 'False';
+    if (Array.isArray(v)) return '(' + v.map(repr).join(', ') + (v.length === 1 ? ',' : '') + ')';
+    return String(v);
+  }
+  const repr = (v) => typeof v === 'string' ? "'" + v + "'" : str(v);
+
+  /* ---------- лексер ---------- */
+  function stripComment(line) {
+    let q = null;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (q) { if (c === '\\') i++; else if (c === q) q = null; }
+      else if (c === '"' || c === "'") q = c;
+      else if (c === '#') return line.slice(0, i);
+    }
+    return line;
+  }
+  const OPS3 = ['**=', '//='], OPS2 = ['**', '//', '==', '!=', '<=', '>=', '+=', '-=', '*=', '%=', '/='], OPS1 = '+-*/%<>=(),';
+  function tokenize(text, no) {
+    const toks = []; let i = 0;
+    while (i < text.length) {
+      const ch = text[i];
+      if (/\s/.test(ch)) { i++; continue; }
+      if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(text[i + 1] || ''))) {
+        const m = /^(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/.exec(text.slice(i));
+        toks.push({ t: 'num', v: m[0], f: /[.eE]/.test(m[0]) }); i += m[0].length; continue;
+      }
+      if (/[A-Za-z_А-Яа-яЁё]/.test(ch)) {
+        const m = /^[A-Za-z_0-9А-Яа-яЁё]+/.exec(text.slice(i));
+        toks.push({ t: 'name', v: m[0] }); i += m[0].length; continue;
+      }
+      if (ch === '"' || ch === "'") {
+        let j = i + 1, s = '';
+        while (j < text.length && text[j] !== ch) {
+          if (text[j] === '\\') { const n = text[j + 1]; s += n === 'n' ? '\n' : n === 't' ? '\t' : n; j += 2; } else s += text[j++];
+        }
+        if (j >= text.length) throw syn(no, 'не закрыта кавычка');
+        toks.push({ t: 'str', v: s }); i = j + 1; continue;
+      }
+      const t3 = text.slice(i, i + 3), t2 = text.slice(i, i + 2);
+      if (OPS3.includes(t3)) { toks.push({ t: 'op', v: t3 }); i += 3; continue; }
+      if (OPS2.includes(t2)) { toks.push({ t: 'op', v: t2 }); i += 2; continue; }
+      if (OPS1.includes(ch)) { toks.push({ t: 'op', v: ch }); i++; continue; }
+      throw syn(no, `неожиданный символ «${ch}»`);
+    }
+    return toks;
+  }
+
+  /* ---------- парсер выражений ---------- */
+  function ExprParser(toks, no) {
+    let p = 0;
+    const peek = () => toks[p], isOp = (v) => toks[p] && toks[p].t === 'op' && toks[p].v === v, isKw = (v) => toks[p] && toks[p].t === 'name' && toks[p].v === v;
+    const eat = (v) => { if (!isOp(v)) throw syn(no, `ожидалось «${v}»`); p++; };
+    function exprList() {
+      const first = expr();
+      if (!isOp(',')) return first;
+      const items = [first];
+      while (isOp(',')) { p++; if (p >= toks.length) break; items.push(expr()); }
+      return { k: 'tuple', items };
+    }
+    function expr() { let l = andE(); while (isKw('or')) { p++; l = { k: 'or', l, r: andE() }; } return l; }
+    function andE() { let l = notE(); while (isKw('and')) { p++; l = { k: 'and', l, r: notE() }; } return l; }
+    function notE() { if (isKw('not')) { p++; return { k: 'not', e: notE() }; } return cmp(); }
+    function cmp() {
+      const first = arith(), ops = [];
+      while (peek() && peek().t === 'op' && ['==', '!=', '<', '>', '<=', '>='].includes(peek().v)) { const op = toks[p++].v; ops.push([op, arith()]); }
+      return ops.length ? { k: 'cmp', first, ops, no } : first;
+    }
+    function arith() { let l = term(); while (isOp('+') || isOp('-')) { const op = toks[p++].v; l = { k: 'bin', op, l, r: term(), no }; } return l; }
+    function term() { let l = factor(); while (isOp('*') || isOp('/') || isOp('//') || isOp('%')) { const op = toks[p++].v; l = { k: 'bin', op, l, r: factor(), no }; } return l; }
+    function factor() { if (isOp('-') || isOp('+')) { const op = toks[p++].v; return { k: 'un', op, e: factor(), no }; } return power(); }
+    function power() { const b = atom(); if (isOp('**')) { p++; return { k: 'bin', op: '**', l: b, r: factor(), no }; } return b; }
+    function atom() {
+      const t = toks[p];
+      if (!t) throw syn(no, 'выражение оборвано');
+      if (t.t === 'num') { p++; return { k: 'num', v: t.f ? new Flt(parseFloat(t.v)) : BigInt(t.v) }; }
+      if (t.t === 'str') { p++; return { k: 'str', v: t.v }; }
+      if (t.t === 'name') {
+        p++;
+        if (t.v === 'True') return { k: 'num', v: true };
+        if (t.v === 'False') return { k: 'num', v: false };
+        if (isOp('(')) {
+          p++; const args = [], kw = {};
+          while (!isOp(')')) {
+            if (p >= toks.length) throw syn(no, 'не закрыта скобка');
+            if (toks[p].t === 'name' && toks[p + 1] && toks[p + 1].t === 'op' && toks[p + 1].v === '=') { const key = toks[p].v; p += 2; kw[key] = expr(); }
+            else args.push(expr());
+            if (isOp(',')) p++; else break;
+          }
+          eat(')');
+          return { k: 'call', name: t.v, args, kw, no };
+        }
+        return { k: 'name', v: t.v, no };
+      }
+      if (isOp('(')) {
+        p++;
+        if (isOp(')')) { p++; return { k: 'tuple', items: [] }; }
+        const e = exprList(); eat(')'); return e;
+      }
+      throw syn(no, `неожиданное «${t.v}»`);
+    }
+    return { exprList, expr, done: () => p >= toks.length, rest: () => toks[p] };
+  }
+  function parseExprAll(toks, no) {
+    const P = ExprParser(toks, no), e = P.exprList();
+    if (!P.done()) throw syn(no, `лишнее «${P.rest().v}»`);
+    return e;
+  }
+
+  /* ---------- парсер программы ---------- */
+  function parse(src) {
+    const lines = [];
+    src.replace(/\r/g, '').split('\n').forEach((ln, i) => {
+      const t = stripComment(ln);
+      if (!t.trim()) return;
+      lines.push({ ind: t.match(/^[ \t]*/)[0].replace(/\t/g, '    ').length, text: t.trim(), no: i + 1 });
+    });
+    let pos = 0;
+    function block(ind) {
+      const out = [];
+      while (pos < lines.length) {
+        const L = lines[pos];
+        if (L.ind < ind) break;
+        if (L.ind > ind) throw syn(L.no, 'лишний отступ');
+        out.push(stmt(L, ind));
+      }
+      return out;
+    }
+    function body(L, ind) {
+      const n = lines[pos];
+      if (!n || n.ind <= ind) throw syn(L.no, 'после «:» нужен блок с отступом');
+      return block(n.ind);
+    }
+    function condToks(text, kw, L) {
+      const rest = text.slice(kw.length, -1).trim();
+      if (!rest) throw syn(L.no, `после «${kw}» нужно условие`);
+      return parseExprAll(tokenize(rest, L.no), L.no);
+    }
+    function stmt(L, ind) {
+      pos++;
+      const text = L.text;
+      let m;
+      if (/^if\s/.test(text) && text.endsWith(':')) {
+        const node = { k: 'if', branches: [{ c: condToks(text, 'if', L), b: body(L, ind) }], els: null, no: L.no };
+        while (pos < lines.length && lines[pos].ind === ind && /^(elif\s.*:|else\s*:)$/.test(lines[pos].text)) {
+          const E = lines[pos++];
+          if (E.text.startsWith('elif')) node.branches.push({ c: condToks(E.text, 'elif', E), b: body(E, ind) });
+          else { node.els = body(E, ind); break; }
+        }
+        return node;
+      }
+      if (/^while\s/.test(text) && text.endsWith(':')) return { k: 'while', c: condToks(text, 'while', L), b: body(L, ind), no: L.no };
+      if ((m = /^for\s+([A-Za-z_А-Яа-яЁё][\wА-Яа-яЁё]*)\s+in\s+range\s*\((.*)\)\s*:$/.exec(text))) {
+        const args = ExprParser(tokenize(m[2], L.no), L.no);
+        const list = args.exprList(); const items = list.k === 'tuple' ? list.items : [list];
+        if (!items.length || items.length > 3) throw syn(L.no, 'range принимает от 1 до 3 аргументов');
+        return { k: 'for', v: m[1], items, b: body(L, ind), no: L.no };
+      }
+      if (/^(if|while|for|elif|else)\b.*$/.test(text) && !text.endsWith(':')) throw syn(L.no, 'в конце строки должно быть «:»');
+      if (/^(def|class|import|from|try|with|lambda|return)\b/.test(text)) throw new PyErr('Unsupported', `«${text.split(/\s/)[0]}» не поддерживается в этой мини-среде`, L.no);
+      if (text === 'pass') return { k: 'pass' };
+      const toks = tokenize(text, L.no);
+      // присваивания
+      let depth = 0; const eqs = []; let aug = -1;
+      toks.forEach((t, i) => {
+        if (t.t !== 'op') return;
+        if (t.v === '(') depth++; else if (t.v === ')') depth--;
+        else if (depth === 0 && t.v === '=') eqs.push(i);
+        else if (depth === 0 && ['+=', '-=', '*=', '/=', '//=', '%=', '**='].includes(t.v)) aug = i;
+      });
+      if (aug >= 0) {
+        if (aug !== 1 || toks[0].t !== 'name') throw syn(L.no, 'слева от «' + toks[aug].v + '» должно быть имя переменной');
+        return { k: 'aug', name: toks[0].v, op: toks[aug].v.slice(0, -1), e: parseExprAll(toks.slice(aug + 1), L.no), no: L.no };
+      }
+      if (eqs.length) {
+        const segs = []; let prev = 0;
+        eqs.forEach(i => { segs.push(toks.slice(prev, i)); prev = i + 1; });
+        const valToks = toks.slice(prev);
+        if (!valToks.length) throw syn(L.no, 'справа от «=» нет значения');
+        const targets = segs.map(sg => {
+          const names = []; let ok = true;
+          sg.forEach((t, i) => { if (i % 2 === 0) { if (t.t === 'name') names.push(t.v); else ok = false; } else if (!(t.t === 'op' && t.v === ',')) ok = false; });
+          if (!ok || !names.length) throw syn(L.no, 'слева от «=» должны стоять имена переменных');
+          return names;
+        });
+        return { k: 'assign', targets, e: parseExprAll(valToks, L.no), no: L.no };
+      }
+      const e = parseExprAll(toks, L.no);
+      if (e.k !== 'call') throw new PyErr('Unsupported', 'строка ничего не делает; ожидалась команда, например print(...)', L.no);
+      return { k: 'expr', e, no: L.no };
+    }
+    const prog = block(lines.length ? lines[0].ind : 0);
+    if (pos < lines.length) throw syn(lines[pos].no, 'лишний отступ');
+    return prog;
+  }
+
+  /* ---------- вычисление ---------- */
+  function bigFloorDiv(a, b) { let q = a / b; if ((a % b !== 0n) && ((a < 0n) !== (b < 0n))) q -= 1n; return q; }
+  function bigMod(a, b) { let r = a % b; if (r !== 0n && ((r < 0n) !== (b < 0n))) r += b; return r; }
+  function pyMod(a, b) { return ((a % b) + b) % b; }
+  function binop(op, a, b, no) {
+    if (op === '+' && typeof a === 'string' && typeof b === 'string') return a + b;
+    if (op === '*' && typeof a === 'string' && isInt(b)) return a.repeat(Math.max(0, Number(b)));
+    if (op === '*' && isInt(a) && typeof b === 'string') return b.repeat(Math.max(0, Number(a)));
+    if (typeof a === 'boolean') a = BigInt(+a); if (typeof b === 'boolean') b = BigInt(+b);
+    if (!isNum(a) || !isNum(b)) throw new PyErr('TypeError', `нельзя применить «${op}» к значениям разных типов (например, число и текст)`, no);
+    if (isInt(a) && isInt(b)) {
+      switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': if (b === 0n) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(Number(a) / Number(b));
+        case '//': if (b === 0n) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return bigFloorDiv(a, b);
+        case '%': if (b === 0n) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return bigMod(a, b);
+        case '**':
+          if (b < 0n) return new Flt(Math.pow(Number(a), Number(b)));
+          if (b > 5000n) throw new PyErr('OverflowError', 'слишком большая степень', no);
+          return a ** b;
+      }
+    }
+    const x = nv(a), y = nv(b);
+    switch (op) {
+      case '+': return new Flt(x + y);
+      case '-': return new Flt(x - y);
+      case '*': return new Flt(x * y);
+      case '/': if (y === 0) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(x / y);
+      case '//': if (y === 0) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(Math.floor(x / y));
+      case '%': if (y === 0) throw new PyErr('ZeroDivisionError', 'деление на ноль', no); return new Flt(pyMod(x, y));
+      case '**': return new Flt(Math.pow(x, y));
+    }
+  }
+  function cmpVals(op, x, y) {
+    switch (op) { case '==': return x === y; case '!=': return x !== y; case '<': return x < y; case '>': return x > y; case '<=': return x <= y; case '>=': return x >= y; }
+  }
+  function compare(op, a, b, no) {
+    if (typeof a === 'boolean') a = BigInt(+a); if (typeof b === 'boolean') b = BigInt(+b);
+    if (isInt(a) && isInt(b)) return cmpVals(op, a, b);
+    if (isNum(a) && isNum(b)) return cmpVals(op, nv(a), nv(b));
+    if (typeof a === 'string' && typeof b === 'string') return cmpVals(op, a, b);
+    if (op === '==') return false; if (op === '!=') return true;
+    throw new PyErr('TypeError', 'нельзя сравнивать число и текст', no);
+  }
+  const truthy = (v) => v instanceof Flt ? v.v !== 0 : Array.isArray(v) ? v.length > 0 : isInt(v) ? v !== 0n : !!v;
+  function roundHalfEven(x) { const f = Math.floor(x), d = x - f; if (d < 0.5) return f; if (d > 0.5) return f + 1; return f % 2 === 0 ? f : f + 1; }
+
+  function run(src, stdin, opts) {
+    const limit = (opts && opts.limit) || 400000;
+    let out = '', steps = 0;
+    const inLines = String(stdin == null ? '' : stdin).replace(/\r/g, '').split('\n');
+    if (inLines.length && inLines[inLines.length - 1] === '') inLines.pop();
+    let ip = 0;
+    const env = new Map();
+    const tick = (no) => { if (++steps > limit) throw new PyErr('TimeoutError', 'программа работает слишком долго (возможно, бесконечный цикл)', no); };
+
+    const BUILTINS = {
+      input(args, kw, no) { if (args.length) out += str(args[0]); if (ip >= inLines.length) throw new PyErr('EOFError', 'функция input() вызвана, но входных данных больше нет', no); return inLines[ip++]; },
+      int(args, kw, no) {
+        const v = args[0];
+        if (typeof v === 'string') { const tt = v.trim(); if (!/^[+-]?\d+$/.test(tt)) throw new PyErr('ValueError', `нельзя превратить «${v}» в целое число`, no); return BigInt(tt); }
+        if (typeof v === 'boolean') return BigInt(+v);
+        if (v instanceof Flt) { if (!Number.isFinite(v.v)) throw new PyErr('ValueError', 'нельзя превратить бесконечность или nan в целое число', no); return BigInt(Math.trunc(v.v)); }
+        if (isInt(v)) return v;
+        throw new PyErr('TypeError', 'int() не умеет работать с таким значением', no);
+      },
+      float(args, kw, no) {
+        const v = args[0];
+        if (typeof v === 'string') { const tt = v.trim(); if (!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(tt)) throw new PyErr('ValueError', `нельзя превратить «${v}» в дробное число`, no); return new Flt(parseFloat(tt)); }
+        if (typeof v === 'boolean') return new Flt(+v);
+        return new Flt(nv(v));
+      },
+      str(args) { return str(args[0]); },
+      abs(args) { const v = args[0]; return v instanceof Flt ? new Flt(Math.abs(v.v)) : (isInt(v) ? (v < 0n ? -v : v) : v); },
+      min(args, kw, no) { return extreme(args, no, (a, b) => lt(a, b)); },
+      max(args, kw, no) { return extreme(args, no, (a, b) => lt(b, a)); },
+      divmod(args, kw, no) { return [binop('//', args[0], args[1], no), binop('%', args[0], args[1], no)]; },
+      round(args) { const v = nv(args[0]); if (args.length > 1) { const k = Math.pow(10, Number(args[1])); return new Flt(roundHalfEven(v * k) / k); } return BigInt(roundHalfEven(v)); },
+      len(args, kw, no) { if (typeof args[0] === 'string' || Array.isArray(args[0])) return BigInt(args[0].length); throw new PyErr('TypeError', 'len() работает с текстом', no); },
+      print(args, kw) { const sep = 'sep' in kw ? str(kw.sep) : ' ', end = 'end' in kw ? str(kw.end) : '\n'; out += args.map(str).join(sep) + end; return null; }
+    };
+    function extreme(args, no, better) {
+      const list = args.length === 1 && Array.isArray(args[0]) ? args[0] : args;
+      if (!list.length) throw new PyErr('ValueError', 'нет значений для сравнения', no);
+      let b = list[0]; for (const v of list) if (better(v, b)) b = v; return b;
+    }
+
+    function ev(n) {
+      switch (n.k) {
+        case 'num': case 'str': return n.v;
+        case 'name': if (!env.has(n.v)) throw new PyErr('NameError', `переменная «${n.v}» не определена (проверь, что её значение задано выше)`, n.no); return env.get(n.v);
+        case 'tuple': return n.items.map(ev);
+        case 'un': { let v = ev(n.e); if (typeof v === 'boolean') v = BigInt(+v); if (!isNum(v)) throw new PyErr('TypeError', 'унарный минус нельзя применить к тексту', n.no); return n.op === '-' ? (v instanceof Flt ? new Flt(-v.v) : -v) : v; }
+        case 'bin': return binop(n.op, ev(n.l), ev(n.r), n.no);
+        case 'cmp': { let a = ev(n.first); for (const [op, rn] of n.ops) { const b = ev(rn); if (!compare(op, a, b, n.no)) return false; a = b; } return true; }
+        case 'and': { const l = ev(n.l); return truthy(l) ? ev(n.r) : l; }
+        case 'or': { const l = ev(n.l); return truthy(l) ? l : ev(n.r); }
+        case 'not': return !truthy(ev(n.e));
+        case 'call': {
+          const f = BUILTINS[n.name];
+          if (!f) throw new PyErr('NameError', `функция «${n.name}» не поддерживается в этой мини-среде`, n.no);
+          const kw = {}; for (const k in n.kw) kw[k] = ev(n.kw[k]);
+          return f(n.args.map(ev), kw, n.no);
+        }
+      }
+      throw new PyErr('Error', 'внутренняя ошибка', n.no);
+    }
+    function assign(names, val, no) {
+      if (names.length === 1) { env.set(names[0], val); return; }
+      if (!Array.isArray(val)) throw new PyErr('TypeError', 'справа должно быть столько же значений, сколько переменных слева', no);
+      if (val.length !== names.length) throw new PyErr('ValueError', `слева ${names.length} переменных, а справа значений: ${val.length}`, no);
+      names.forEach((nm, i) => env.set(nm, val[i]));
+    }
+    function exec(list) {
+      for (const s of list) {
+        tick(s.no);
+        switch (s.k) {
+          case 'pass': break;
+          case 'expr': ev(s.e); break;
+          case 'assign': { const v = ev(s.e); s.targets.forEach(t => assign(t, v, s.no)); break; }
+          case 'aug': { if (!env.has(s.name)) throw new PyErr('NameError', `переменная «${s.name}» не определена`, s.no); env.set(s.name, binop(s.op, env.get(s.name), ev(s.e), s.no)); break; }
+          case 'if': { let done = false; for (const br of s.branches) { if (truthy(ev(br.c))) { exec(br.b); done = true; break; } } if (!done && s.els) exec(s.els); break; }
+          case 'while': while (truthy(ev(s.c))) { tick(s.no); exec(s.b); } break;
+          case 'for': {
+            const a = s.items.map(ev);
+            if (!a.every(isInt)) throw new PyErr('TypeError', 'range принимает только целые числа', s.no);
+            let [lo, hi, st] = a.length === 1 ? [0n, a[0], 1n] : a.length === 2 ? [a[0], a[1], 1n] : a;
+            if (st === 0n) throw new PyErr('ValueError', 'шаг range не может быть нулём', s.no);
+            for (let i = lo; st > 0n ? i < hi : i > hi; i += st) { tick(s.no); env.set(s.v, i); exec(s.b); }
+            break;
+          }
+        }
+      }
+    }
+    try { exec(parse(src)); return { out, err: null, env }; }
+    catch (e) {
+      if (e instanceof PyErr) return { out, err: { kind: e.kind, msg: e.message, line: e.line }, env };
+      return { out, err: { kind: 'Error', msg: 'внутренняя ошибка: ' + e.message, line: null }, env };
+    }
+  }
+  function describe(err) {
+    if (!err) return '';
+    const names = { SyntaxError: 'Синтаксическая ошибка', NameError: 'Неизвестное имя', ValueError: 'Неверное значение', ZeroDivisionError: 'Деление на ноль', EOFError: 'Не хватает входных данных', TypeError: 'Неверный тип', TimeoutError: 'Слишком долго', OverflowError: 'Слишком большое число', Unsupported: 'Не поддерживается' };
+    return `${names[err.kind] || 'Ошибка'}${err.line ? ' (строка ' + err.line + ')' : ''}: ${err.msg}`;
+  }
+  return { run, describe, parse };
+})();
+/*if (typeof module !== 'undefined') module.exports = PyRun;*/
+
+
+/* ===== Страница 12–14 лет, неделя 8 ===== */
+(function () {
+  'use strict';
+  const { h, s, rnd, pick, shuffle, onEnter, plural } = K;
+  const num = (str) => { const t = String(str).trim().replace('−', '-'); return /^-?\d+$/.test(t) ? parseInt(t, 10) : NaN; };
+
+  /* ================= Задача 1. Класс спортсменов ================= */
+  function vennSvg(L) {
+    /* L: {total, none, a, b, both, nameA, nameB, hideNums} */
+    const onlyA = L.a - L.both, onlyB = L.b - L.both;
+    const t = (x, y, txt, cls) => s('text', { x, y, class: cls || 'vn', text: String(txt) });
+    return s('svg', { class: 'venn', viewBox: '0 0 320 196', role: 'img', 'aria-label': `Диаграмма: только ${L.nameA} — ${onlyA}, оба — ${L.both}, только ${L.nameB} — ${onlyB}, ни то ни другое — ${L.none}` },
+      s('rect', { class: 'vb', x: 3, y: 3, width: 314, height: 190, rx: 8 }),
+      s('circle', { class: 'va', cx: 118, cy: 100, r: 66 }), s('circle', { class: 'vc', cx: 202, cy: 100, r: 66 }),
+      t(76, 22, `${L.nameA}: ${L.a}`, 'vt'), t(244, 22, `${L.nameB}: ${L.b}`, 'vt'),
+      t(80, 104, onlyA), t(160, 104, L.both, 'vn hot'), t(240, 104, onlyB),
+      t(160, 124, 'оба', 'vs'), t(80, 124, `только ${L.nameA}`, 'vs'), t(240, 124, `только ${L.nameB}`, 'vs'),
+      t(34, 176, L.none), t(8, 188, 'ни то, ни другое', 'vs vl'),
+      t(312, 188, 'всего ' + L.total, 'vs vr'));
+  }
+  const t1 = {
+    id: 'sport', num: 1, title: 'Класс спортсменов',
+    story: '<p>В классе <b>25</b> обучающихся. Из них <b>5</b> человек не умеют играть ни в шашки, ни в шахматы. <b>18</b> обучающихся играют в шашки, <b>20</b> — в шахматы.</p><p><b>Сколько человек из класса играют и в шашки, и в шахматы?</b></p>',
+    hints: [
+      'Сначала отбрось тех, кто не играет ни во что: 25 − 5 = 20. Это те, кто умеет играть хотя бы в одну игру.',
+      'Из этих 20 человек 20 играют в шахматы. Значит, в шахматы играют ВСЕ, кто вообще играет. Что тогда можно сказать про шашистов среди них?',
+      'Шашки знают 18 человек, и все они — среди тех 20, кто играет в шахматы. Значит, все 18 шашистов играют и в шахматы.',
+      'Проверь формулой: «только шашки» + «оба» + «только шахматы» + «никто» = 25. Подбери «оба» на модели, чтобы сумма стала 25.'
+    ],
+    build(play, api) {
+      const st = { b: 0 };
+      const mount = h('div'), calc = h('p', { class: 'eqbox', 'aria-live': 'polite' });
+      const chal = [{ t: 'Подбери «оба» так, чтобы в сумме получилось ровно <b>25</b> человек.', f: (v) => v.sum === 25 }];
+      const chalEls = chal.map(c => h('li', null, h('i', null, '○'), h('span', { html: c.t })));
+      const done = chal.map(() => false);
+      const redraw = () => {
+        const L = { total: 25, none: 5, a: 18, b: 20, both: st.b, nameA: 'шашки', nameB: 'шахматы' };
+        mount.replaceChildren(vennSvg(L));
+        const A = 18 - st.b, B = 20 - st.b, sum = A + st.b + B + 5;
+        calc.textContent = `${A} + ${st.b} + ${B} + 5 = ${sum}` + (sum === 25 ? ' ✓' : sum > 25 ? ' — слишком много (в классе 25)' : ' — слишком мало (в классе 25)');
+        chal.forEach((c, i) => { if (!done[i] && c.f({ sum })) { done[i] = true; chalEls[i].className = 'ok'; chalEls[i].firstChild.textContent = '✓'; } });
+      };
+      const stp = K.stepper(0, 18, 0, v => { st.b = v; redraw(); });
+      redraw();
+      const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Сколько играют в обе игры' });
+      const sub = () => {
+        const v = num(inp.value);
+        if (Number.isNaN(v)) { api.say('Впиши число.', 'bad'); return; }
+        if (v === 18) { inp.className = 'field ok'; api.solve('Верно! В обе игры играют 18 обучающихся.'); return; }
+        inp.className = 'field bad'; api.attempt();
+        const M = {
+          13: 'Получилось 18 + 20 − 25 = 13: так делают, когда все 25 человек играют хотя бы в одну игру. Но 5 человек не играют вообще, значит, играющих только 20: 18 + 20 − 20 = 18.',
+          38: '38 = 18 + 20 — это сумма игроков в шашки и в шахматы. Но те, кто играет в обе игры, посчитаны в ней дважды. Лишнее надо вычесть.',
+          43: '43 = 18 + 20 + 5 — так складывают, когда «шашисты», «шахматисты» и «никто» не пересекаются. Но шашисты и шахматисты пересекаются — это и есть ответ.',
+          20: '20 — это число шахматистов (и всех, кто играет хоть во что-то). В обе игры играют не все 20 — подумай про шашки: их 18.',
+          5: '5 человек не играют ни в шашки, ни в шахматы — это совсем другая группа. Нужны те, кто играет в обе игры.',
+          2: '2 = 20 − 18 — это число тех, кто играет только в шахматы. А нужно число играющих в обе игры.',
+          7: '7 = 25 − 18 — это те, кто не играет в шашки. Нужны играющие в обе игры.',
+          25: 'В классе всего 25 человек, но 5 не играют вообще, а играющих в шашки — 18. «Обе игры» не может быть больше 18.',
+          0: 'Проверь: играющих хоть во что-то 20, а в шахматы играют 20. Значит, все они — шахматисты. А шашистов 18, и они тоже среди этих 20.'
+        };
+        api.say(M[v] || (v > 18 ? 'Не может быть больше 18: в шашки играют всего 18 человек, а играющих в обе игры не больше, чем в одну из них.' : 'Не сходится. Сначала найди, сколько человек играют хоть во что-то (25 − 5 = 20), и сравни с числом шахматистов.'), 'bad');
+      };
+      onEnter(inp, sub);
+      play.append(h('div', { class: 'stage' },
+        h('p', { class: 'muted small' }, 'Подбери на диаграмме, сколько человек играют в обе игры: числа в областях пересчитаются, а сумма должна быть равна 25.'),
+        h('div', { class: 'box' }, mount), h('div', { class: 'row' }, h('span', { class: 'sub-h' }, 'Играют в обе игры:'), stp), calc, h('ul', { class: 'chal' }, chalEls),
+        h('div', { class: 'answer-row' }, h('span', { class: 'lbl' }, 'Ответ:'), inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить'))));
+    },
+    explain() {
+      return h('div', null,
+        h('ol', null,
+          h('li', { html: '25 − 5 = <b>20</b> человек умеют играть хотя бы в одну игру (в шашки или в шахматы).' }),
+          h('li', { html: 'В шахматы играют <b>20</b> человек — столько же, сколько всего играющих. Значит, <b>все</b> играющие умеют играть в шахматы.' }),
+          h('li', { html: 'В шашки играют 18 человек, и все они — среди этих 20, то есть тоже шахматисты. Ответ: <b>18</b>.' })),
+        h('p', { html: 'Другой способ — формула включений-исключений: «хотя бы одна» = шашки + шахматы − обе, то есть <code>20 = 18 + 20 − обе</code>, откуда <code>обе = 18</code>.' }),
+        h('p', { class: 'small muted', html: 'Типичные ошибки: вычитать из суммы 18 + 20 число 25 (получается 13) — забывают, что 5 человек не играют вообще; складывать 18 + 20 и забывать вычесть пересечение; считать, что «оба» — это 20 − 18 = 2 (это «только шахматы»).' }));
+    },
+    practiceTitle: 'Ещё потренироваться: другие классы и кружки',
+    practice(body) {
+      const PAIRS = [['шашки', 'шахматы', 'играют в шашки', 'играют в шахматы'], ['футбол', 'баскетбол', 'занимаются футболом', 'занимаются баскетболом'], ['рисование', 'лепка', 'ходят на рисование', 'ходят на лепку'], ['плавание', 'теннис', 'занимаются плаванием', 'занимаются теннисом'], ['кино', 'театр', 'были в кино', 'были в театре']];
+      const mount = h('div'), f = h('p', { class: 'fb' });
+      const gen = () => {
+        const P = pick(PAIRS);
+        const oa = rnd(0, 12), ob = rnd(0, 12), both = rnd(1, 12), none = rnd(1, 8);
+        const L = { total: oa + ob + both + none, none, a: oa + both, b: ob + both, both, nameA: P[0], nameB: P[1] };
+        const kinds = [
+          { q: 'Сколько человек участвуют и в «' + P[0] + '», и в «' + P[1] + '»?', ans: both, how: `${L.total} − ${none} = ${L.total - none} участвуют хоть в чём-то; ${L.a} + ${L.b} − ${L.total - none} = ${both}.` },
+          { q: 'Сколько человек участвуют только в «' + P[0] + '» (но не в «' + P[1] + '»)?', ans: oa, how: `Сначала «обе»: ${L.a} + ${L.b} − ${L.total - none} = ${both}. Тогда только «${P[0]}»: ${L.a} − ${both} = ${oa}.` },
+          { q: 'Сколько человек участвуют ровно в одном из двух занятий?', ans: oa + ob, how: `«Обе»: ${L.a} + ${L.b} − ${L.total - none} = ${both}. Ровно в одном: ${L.a} + ${L.b} − 2·${both} = ${oa + ob}.` },
+          { q: 'Сколько человек не участвуют ни в «' + P[0] + '», ни в «' + P[1] + '», если всего ' + L.total + ' и в обоих занятиях участвуют ' + both + '?', ans: none, how: `${L.a} + ${L.b} − ${both} = ${L.a + L.b - both} участвуют хоть в чём-то; ${L.total} − ${L.a + L.b - both} = ${none}.`, noneAsked: true }
+        ];
+        const K0 = pick(kinds);
+        const txt = K0.noneAsked
+          ? `В классе ${L.total} учеников. Из них ${L.a} — в «${P[0]}», ${L.b} — в «${P[1]}», а в обоих занятиях участвуют ${both}. ${K0.q.split(', если')[0]}?`
+          : `В классе ${L.total} учеников. ${none} из них не участвуют ни в «${P[0]}», ни в «${P[1]}». В «${P[0]}» участвуют ${L.a}, в «${P[1]}» — ${L.b}. ${K0.q}`;
+        const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Ответ' });
+        const sub = () => {
+          const v = num(inp.value); if (Number.isNaN(v)) { f.className = 'fb bad'; f.textContent = 'Впиши число.'; return; }
+          inp.className = 'field ' + (v === K0.ans ? 'ok' : 'bad'); f.className = 'fb ' + (v === K0.ans ? 'ok' : 'bad');
+          f.textContent = v === K0.ans ? 'Верно! ' + K0.how : 'Не так. Помни: сначала найди, сколько человек участвуют хотя бы в одном занятии (всего минус «ни в чём»), а потом — сколько в пересечении: сумма двух групп минус это число.';
+          if (v === K0.ans) K.burst(f);
+        };
+        onEnter(inp, sub);
+        mount.replaceChildren(h('p', null, txt), h('div', { class: 'answer-row' }, inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить'), h('button', { class: 'btn ghost', type: 'button', onclick: () => { f.className = 'fb info'; f.textContent = K0.how; mount.append(h('div', { class: 'box' }, vennSvg(L))); } }, 'Показать диаграмму и решение')));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другая задача')); gen();
+    }
+  };
+
+  /* ================= Задача 2. Робот чистюля ================= */
+  const TRACK = 30;
+  function simRobot(R, L, len) {
+    const present = Array(len).fill(true); let pos = 0, got = 0, iter = 0; const steps = [];
+    const snap = (line, note, extra) => steps.push(Object.assign({ line, pos, got, iter, note, left: present.slice() }, extra || {}));
+    snap(0, 'Начало: робот стоит на клетке 0, на каждой клетке лежит деталь.');
+    for (let guard = 0; guard < 80; guard++) {
+      if (!present[pos]) { snap(1, `Проверка: на клетке ${pos} детали уже нет — цикл заканчивается.`); snap(6, `Конец. Собрано деталей: ${got}. Цикл выполнился ${iter} ${plural(iter, 'раз', 'раза', 'раз')}.`); return { steps, got, iter, crash: false }; }
+      snap(1, `Проверка: на клетке ${pos} деталь есть — выполняем тело цикла (проход ${iter + 1}).`);
+      present[pos] = false; got++; snap(2, `Собрали деталь с клетки ${pos}. Собрано: ${got}.`);
+      if (pos + R >= len) { pos = len - 1; snap(3, 'Робот выехал за край дорожки. Цикл не заканчивается — деталь снова и снова оказывается впереди.', { crash: true }); return { steps, got, iter, crash: true }; }
+      pos += R; snap(3, `Вправо на ${R}: робот на клетке ${pos}.`);
+      if (present[pos]) { present[pos] = false; got++; snap(4, `Собрали деталь с клетки ${pos}. Собрано: ${got}.`); } else snap(4, `На клетке ${pos} детали нет — собирать нечего.`);
+      if (pos - L < 0) { pos = 0; snap(5, 'Робот выехал за левый край дорожки.', { crash: true }); return { steps, got, iter, crash: true }; }
+      pos -= L; iter++; snap(5, `Влево на ${L}: робот на клетке ${pos}. Проходов цикла: ${iter}.`);
+    }
+    snap(5, 'Цикл не заканчивается.', { crash: true }); return { steps, got, iter, crash: true };
+  }
+  function trackSvg(step, len) {
+    const W = 11.6, X0 = 2;
+    const svg = s('svg', { class: 'trk', viewBox: `0 0 ${X0 * 2 + len * W} 68`, role: 'img', 'aria-label': `Дорожка из ${len} клеток. Робот на клетке ${step.pos}. Деталей на дорожке: ${step.left.filter(Boolean).length}` });
+    for (let i = 0; i < len; i++) {
+      svg.append(s('rect', { class: 'tc' + (i === step.pos ? ' cur' : ''), x: X0 + i * W, y: 26, width: W - 1, height: 22, rx: 2 }));
+      if (step.left[i]) svg.append(s('circle', { class: 'tp', cx: X0 + i * W + (W - 1) / 2, cy: 37, r: 3.4 }));
+      if (i % 5 === 0 || i === len - 1) svg.append(s('text', { class: 'tn', x: X0 + i * W + (W - 1) / 2, y: 62, text: String(i) }));
+    }
+    const rx = X0 + step.pos * W + (W - 1) / 2;
+    svg.append(s('path', { class: 'tr', d: `M${rx - 6} 4 H${rx + 6} L${rx} 20 Z` }));
+    return svg;
+  }
+  const progLines = (R, L) => ['НАЧАЛО', '  ПОКА на клетке, где стоит Робот, есть деталь', '    СОБРАТЬ деталь с клетки, где стоит Робот', `    ПЕРЕМЕСТИТЬСЯ ВПРАВО на ${R} ${plural(R, 'клетку', 'клетки', 'клеток')}`, '    СОБРАТЬ деталь с клетки, где стоит Робот', `    ПЕРЕМЕСТИТЬСЯ ВЛЕВО на ${L} ${plural(L, 'клетку', 'клетки', 'клеток')}`, '  КОНЕЦ ЦИКЛА'];
+  /* строки с индексами: 0 НАЧАЛО, 1 ПОКА, 2 СОБРАТЬ, 3 ВПРАВО, 4 СОБРАТЬ, 5 ВЛЕВО; конец (6) — «КОНЕЦ ЦИКЛА»/«КОНЕЦ» */
+
+  function robotLab(opts) {
+    const st = { R: 12, L: 10 };
+    let sim, k = 0, timer = null;
+    const codeEl = h('pre', { class: 'code', style: { margin: 0 } });
+    const trackBox = h('div', { class: 'box trkbox' });
+    const msg = h('div', { class: 'mz-msg', 'aria-live': 'polite' });
+    const counters = h('p', { class: 'eqbox' });
+    const stop = () => { if (timer) { clearInterval(timer); timer = null; playBtn.textContent = '▶ Запустить'; } };
+    const draw = () => {
+      const stp = sim.steps[k];
+      const lines = progLines(st.R, st.L).concat(['КОНЕЦ']);
+      const hl = stp.line === 6 ? 7 : stp.line === 0 ? 0 : stp.line;
+      codeEl.replaceChildren(...lines.map((t, i) => h('span', { class: 'ln' + (i === hl ? ' on' : '') }, t)));
+      trackBox.replaceChildren(trackSvg(stp, TRACK));
+      msg.className = 'mz-msg' + (stp.crash ? ' bad' : stp.line === 6 ? ' ok' : ''); msg.textContent = `Шаг ${k} из ${sim.steps.length - 1}. ${stp.note}`;
+      counters.textContent = `Собрано деталей: ${stp.got}   ·   проходов цикла: ${stp.iter}`;
+      nextBtn.disabled = k >= sim.steps.length - 1;
+      if (k >= sim.steps.length - 1) stop();
+    };
+    const setup = () => { stop(); sim = simRobot(st.R, st.L, TRACK); k = 0; draw(); opts && opts.onParams && opts.onParams(st.R, st.L, sim); };
+    const nextBtn = h('button', { class: 'btn', type: 'button', onclick: () => { if (k < sim.steps.length - 1) { k++; draw(); } } }, 'Шаг ▸');
+    const playBtn = h('button', { class: 'btn primary', type: 'button', onclick: () => { if (timer) { stop(); return; } if (k >= sim.steps.length - 1) { k = 0; draw(); } playBtn.textContent = '⏸ Пауза'; timer = setInterval(() => { if (k < sim.steps.length - 1) { k++; draw(); } else stop(); }, 380); } }, '▶ Запустить');
+    const endBtn = h('button', { class: 'btn ghost', type: 'button', onclick: () => { stop(); k = sim.steps.length - 1; draw(); } }, 'Сразу до конца');
+    const resetBtn = h('button', { class: 'btn ghost', type: 'button', onclick: () => { stop(); k = 0; draw(); } }, 'Сначала');
+    let lS;
+    const rS = K.stepper(2, 14, 12, v => { st.R = v; if (st.L >= v) { st.L = v - 1; lS.set(st.L); } setup(); });
+    lS = K.stepper(1, 13, 10, v => { if (v >= st.R) { lS.set(st.L); return; } st.L = v; setup(); });
+    setup();
+    return { el: h('div', { class: 'stage' }, h('div', { class: 'sim' }, h('label', null, 'Вправо на (R)', rS), h('label', null, 'Влево на (L)', lS)), codeEl, trackBox, counters, msg, h('div', { class: 'row' }, nextBtn, playBtn, endBtn, resetBtn)), stop, st, get sim() { return sim; } };
+  }
+
+  const t2 = {
+    id: 'robot', num: 2, title: 'Робот чистюля',
+    story: '<p>Робот собирает детали конструктора на клетчатой дорожке, действуя так:</p>' +
+      '<pre class="code" style="padding:8px 14px;margin:0">НАЧАЛО\n  ПОКА на клетке, где стоит Робот, есть деталь\n    СОБРАТЬ деталь с клетки, где стоит Робот\n    ПЕРЕМЕСТИТЬСЯ ВПРАВО на 12 клеток\n    СОБРАТЬ деталь с клетки, где стоит Робот\n    ПЕРЕМЕСТИТЬСЯ ВЛЕВО на 10 клеток\n  КОНЕЦ ЦИКЛА\nКОНЕЦ</pre>' +
+      '<p><b>Сколько деталей конструктора соберёт Робот</b> после выполнения этого алгоритма, если на каждой клетке дорожки лежит одна деталь? Робот стартует с клетки 0.</p>',
+    hints: [
+      'Выпиши по шагам, где окажется робот. Старт — клетка 0, деталь там есть. Собрал её, прыгнул вправо на 12 — на какой он клетке? Есть ли там деталь?',
+      'Один проход цикла: собрал в клетке p, ушёл на p + 12 и собрал там, вернулся на p + 12 − 10 = p + 2. За один проход робот сдвигается на 2 клетки и собирает 2 детали.',
+      'Цикл остановится, когда робот встанет на клетку, где деталь уже собрана. Проходы стартуют с клеток 0, 2, 4, …; а на «правых» клетках робот собирал 12, 14, 16, … Когда старт совпадёт с уже собранной клеткой?',
+      'Шестой проход стартует с клетки 10 (собирает 10 и 22) и возвращается на клетку 12 — а её деталь уже собрана на первом проходе. Значит, проходов 6, по 2 детали за проход.'
+    ],
+    build(play, api) {
+      const chal = [
+        { t: 'Подбери R и L (L меньше R) так, чтобы робот собрал ровно <b>8</b> деталей.', f: (R, L, sim) => !sim.crash && sim.got === 8 },
+        { t: 'Подбери R и L так, чтобы робот <b>выехал за край</b> дорожки (цикл не заканчивается).', f: (R, L, sim) => sim.crash },
+        { t: 'Подбери R и L так, чтобы робот собрал ровно <b>12</b> деталей, но R не равнялось 12.', f: (R, L, sim) => !sim.crash && sim.got === 12 && R !== 12 }
+      ];
+      const chalEls = chal.map(c => h('li', null, h('i', null, '○'), h('span', { html: c.t })));
+      const done = chal.map(() => false);
+      const lab = robotLab({ onParams(R, L, sim) { chal.forEach((c, i) => { if (!done[i] && c.f(R, L, sim)) { done[i] = true; chalEls[i].className = 'ok'; chalEls[i].firstChild.textContent = '✓'; } }); } });
+      const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Сколько деталей соберёт робот' });
+      const sub = () => {
+        const v = num(inp.value);
+        if (Number.isNaN(v)) { api.say('Впиши число.', 'bad'); return; }
+        if (v === 12) { inp.className = 'field ok'; lab.stop(); api.solve('Верно! Робот соберёт 12 деталей.'); return; }
+        inp.className = 'field bad'; api.attempt();
+        const M = {
+          2: '2 детали — это только один проход цикла (до прыжка и после). Но цикл повторяется, пока на клетке есть деталь. Сколько раз он выполнится?',
+          6: '6 — это сколько раз выполнится цикл. А деталей за каждый проход собирается две (до прыжка вправо и после него).',
+          24: 'Не каждая клетка посещается. Робот ходит со сдвигом +2: он стоит на клетках 0, 2, 4, … и прыгает на 12, 14, 16, … — нечётных клеток он не касается вообще.',
+          11: '11 — почти. За один проход собирается две детали, поэтому всего собранных деталей должно быть чётное число. Проверь последний проход: на нём тоже собираются две детали.',
+          13: 'Деталь на клетке 12 собирается на первом проходе (после прыжка), поэтому, когда робот снова встаёт на клетку 12, цикл заканчивается — лишней детали нет.',
+          10: '10 — число клеток при движении влево. Нужно считать собранные детали, а не клетки.'
+        };
+        api.say(M[v] || 'Не сходится. Нажми «Шаг ▸» или «Запустить» на модели выше и проследи: на каких клетках робот собирает детали и когда цикл останавливается.', 'bad');
+      };
+      onEnter(inp, sub);
+      play.append(h('div', { class: 'stage' }, h('p', { class: 'muted small' }, 'Проведи эксперимент на модели: запусти алгоритм, меняй числа R и L. Задача на модели решается, когда выполнены три мини-задания.'), lab.el, h('ul', { class: 'chal' }, chalEls),
+        h('div', { class: 'answer-row' }, h('span', { class: 'lbl' }, 'Ответ для R = 12, L = 10:'), inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить'))));
+    },
+    explain() {
+      return h('div', null,
+        h('p', { html: 'Пройдём цикл по шагам (клетки считаем от 0):' }),
+        h('div', { class: 'hscroll' }, h('table', { class: 'tbl' }, h('thead', null, h('tr', null, ['Проход', 'Старт', 'Собрал', 'Встал после ←'].map(x => h('th', null, x)))),
+          h('tbody', null, ...[0, 1, 2, 3, 4, 5].map(i => h('tr', null, h('td', null, i + 1), h('td', null, 2 * i), h('td', null, `${2 * i} и ${2 * i + 12}`), h('td', null, 2 * i + 2)))))),
+        h('p', { html: 'На седьмой проход цикл бы начался с клетки <b>12</b>, но там деталь уже собрана (на первом проходе) — условие «ПОКА есть деталь» ложно, цикл заканчивается. Проходов 6, в каждом по 2 детали: <b>6 · 2 = 12 деталей</b>.' }),
+        h('p', { html: 'Общая формула: за проход робот сдвигается на <code>d = R − L</code> и собирает 2 детали; цикл заканчивается, когда старт совпадает с клеткой, собранной раньше, то есть после <code>m = R / d</code> проходов. Деталей: <code>2 · R / (R − L)</code> = 2 · 12 / 2 = 12.' }),
+        h('p', { class: 'small muted' }, 'Типичные ошибки: ответить 6 (число проходов вместо деталей) или 2 (один проход); решить, что робот собирает детали со всех клеток; не заметить, что цикл останавливается на уже пустой клетке.'));
+    },
+    practiceTitle: 'Ещё потренироваться: другие длины шагов',
+    practice(body) {
+      const mount = h('div'), f = h('p', { class: 'fb' });
+      const gen = () => {
+        let d, m, R; do { d = pick([1, 2, 3, 4]); m = rnd(2, 7); R = d * m; } while (R > 18 || R < 3);
+        const Lv = R - d, ask = pick(['parts', 'parts', 'passes']);
+        const want = ask === 'parts' ? 2 * m : m;
+        const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Ответ' });
+        const sub = () => {
+          const v = num(inp.value); if (Number.isNaN(v)) { f.className = 'fb bad'; f.textContent = 'Впиши число.'; return; }
+          inp.className = 'field ' + (v === want ? 'ok' : 'bad'); f.className = 'fb ' + (v === want ? 'ok' : 'bad');
+          if (v === want) { f.textContent = `Верно! Сдвиг за проход d = ${R} − ${Lv} = ${d}; проходов ${R} / ${d} = ${m}; деталей 2 · ${m} = ${2 * m}.`; K.burst(f); }
+          else if (ask === 'parts' && v === m) f.textContent = `${m} — число проходов цикла. А деталей за каждый проход собирается две.`;
+          else if (ask === 'passes' && v === 2 * m) f.textContent = `${2 * m} — это число деталей. Нужно число проходов (каждый проход собирает две детали).`;
+          else f.textContent = `Не так. За один проход робот сдвигается на ${R} − ${Lv} = ${d} клеток. Цикл останавливается, когда стартовая клетка уже пуста: это произойдёт после R / d проходов.`;
+        };
+        onEnter(inp, sub);
+        const sim = simRobot(R, Lv, 40);
+        mount.replaceChildren(h('p', null, `Робот стартует с клетки 0 и выполняет тот же алгоритм, но «вправо на ${R}», «влево на ${Lv}». На каждой клетке лежит деталь. ${ask === 'parts' ? 'Сколько деталей соберёт робот?' : 'Сколько раз выполнится тело цикла?'}`),
+          h('div', { class: 'answer-row' }, inp, h('button', { class: 'btn primary', type: 'button', onclick: sub }, 'Проверить'),
+            h('button', { class: 'btn ghost', type: 'button', onclick: () => { f.className = 'fb info'; f.textContent = `Ответ: ${want}.`; mount.append(h('div', { class: 'box' }, trackSvg(sim.steps[sim.steps.length - 1], 40), h('p', { class: 'small muted' }, 'Так выглядит дорожка в конце: пустые клетки — собранные детали.'))); } }, 'Показать дорожку')));
+        f.textContent = '';
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другие числа')); gen();
+    }
+  };
+
+  /* ================= Задача 3. Путешествие друзей ================= */
+  const B18 = 10n ** 18n;
+  const refT = (a, b, c, d, e) => {
+    a = BigInt(a); b = BigInt(b); c = BigInt(c); d = BigInt(d); e = BigInt(e);
+    if (a > d && c > b) return '-1';
+    const mn = (...x) => x.reduce((p, q) => q < p ? q : p), mx = (p, q) => q > p ? q : p;
+    return String(mx(mn(d - a, b, e), mn(b - c, d, e)));
+  };
+  const TESTS = [
+    { v: [5, 3, 10, 7, 8], note: 'пример 1' }, { v: [7, 3, 10, 7, 8], note: 'пример 2: Ваня может поднять Мишку, но груза не остаётся' }, { v: [8, 3, 10, 7, 8], note: 'пример 3: никто никого не поднимет' },
+    { v: [3, 10, 2, 5, 20], note: 'выгоднее, чтобы Мишка нёс Ваню' }, { v: [2, 6, 9, 10, 100], note: 'возможен только способ «Ваня несёт Мишку»' }, { v: [9, 12, 4, 5, 50], note: 'возможен только способ «Мишка несёт Ваню»' },
+    { v: [1, 100, 1, 100, 3], note: 'ограничение даёт чемодан E' }, { v: [1, 5, 1, 5, 1000000], note: 'E = 10⁶ (проверка времени)' },
+    { v: [1, B18, 1, B18, B18], note: 'числа до 10¹⁸' }, { v: [B18, 1, B18, 1, B18], note: 'числа до 10¹⁸, ответ −1' }
+  ];
+  const PTS = 10;
+  const fmt = (v) => v === B18 ? '10¹⁸' : String(v);
+  function runTests(code) {
+    return TESTS.map(t => {
+      const r = PyRun.run(code, t.v.join('\n'));
+      const want = refT(...t.v);
+      const got = r.err ? null : r.out.trim();
+      return { t, want, got, err: r.err, tle: !!(r.err && r.err.kind === 'TimeoutError'), ok: !r.err && got === want };
+    });
+  }
+  function verdictTable(res) {
+    const sc = res.filter(r => r.ok).length * PTS;
+    return h('div', null, h('p', { class: 'score' }, `Баллы: ${sc} из ${res.length * PTS}`),
+      h('div', { class: 'hscroll' }, h('table', { class: 'tbl verd' },
+        h('thead', null, h('tr', null, h('th', { class: 't' }, '№'), h('th', null, 'A B C D E'), h('th', null, 'Ожидалось'), h('th', null, 'Получено'), h('th', null, ''))),
+        h('tbody', null, ...res.map((r, i) => h('tr', null,
+          h('td', { class: 't' }, i + 1),
+          h('td', null, r.t.v.map(fmt).join(' '), h('div', { class: 'muted' }, r.t.note)),
+          h('td', null, r.want),
+          h('td', null, r.err ? (r.tle ? 'Превышено время (1 с)' : PyRun.describe(r.err)) : (r.got === '' ? '(пусто)' : r.got)),
+          h('td', { class: r.ok ? 'v-ok' : 'v-bad' }, r.ok ? '✓' : '✗')))))));
+  }
+  const PARSONS = [
+    { id: 'a', t: 'a = int(input())' }, { id: 'b', t: 'b = int(input())' }, { id: 'c', t: 'c = int(input())' }, { id: 'd', t: 'd = int(input())' }, { id: 'e', t: 'e = int(input())' },
+    { id: 'if', t: 'if a > d and c > b:' }, { id: 'p1', t: '    print(-1)' }, { id: 'el', t: 'else:' }, { id: 'pm', t: '    print(max(min(d - a, b, e), min(b - c, d, e)))' },
+    { id: 'x1', t: 'if a > d or c > b:' }, { id: 'x2', t: '    print(max(min(a - d, b, e), min(b - c, d, e)))' }, { id: 'x3', t: '    print(min(d - a, b, e))' }
+  ];
+  const SOLUTION = 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\ne = int(input())\nif a > d and c > b:\n    print(-1)\nelse:\n    print(max(min(d - a, b, e), min(b - c, d, e)))';
+  const BRUTE = 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\ne = int(input())\nx = e\nfound = 0\nwhile x >= 0 and found == 0:\n    if (a + x <= d and x <= b) or (c + x <= b and x <= d):\n        print(x)\n        found = 1\n    x -= 1\nif found == 0:\n    print(-1)';
+
+  function bars(title, rows, feasible, res) {
+    const MAX = 20;
+    return h('div', { class: 'case ' + (feasible ? 'yes' : 'no') }, h('p', { class: 'sub-h' }, title),
+      ...rows.map(([lab, v, isMin]) => h('div', { class: 'brow' + (isMin && feasible ? ' min' : '') }, h('span', { class: 'bl' }, lab), h('span', { class: 'btr' }, h('span', { class: 'bf' + (v < 0 ? ' neg' : ''), style: { width: Math.max(0, Math.min(MAX, v)) / MAX * 100 + '%' } })), h('span', { class: 'bv' }, v))),
+      h('p', { class: 'bres' }, feasible ? `Можно унести: min = ${res}` : 'Этот способ невозможен: несущий не поднимет партнёра.'));
+  }
+
+  const t3 = {
+    id: 'trip', num: 3, title: 'Путешествие друзей',
+    story: '<p>Кибер-Мишка и робот Ваня решили совершить путешествие. Они идут пешком и несут один чемодан на двоих. Друзья решили, что удобнее, если <b>один из них возьмёт чемодан, а второй понесёт первого</b> с этим чемоданом.</p>' +
+      '<p>Масса Мишки — <b>A</b> кг, он может унести <b>B</b> кг. Масса робота Вани — <b>C</b> кг, он может унести <b>D</b> кг. Масса чемодана с вещами — <b>E</b> кг. Перед началом друзья могут выкинуть из чемодана часть груза любой массы. <b>Какую наибольшую массу груза они смогут унести?</b> Весом пустого чемодана пренебречь.</p>' +
+      '<div class="box small"><p><b>Ввод:</b> пять натуральных чисел A, B, C, D, E — каждое в отдельной строке, все не больше 10¹⁸. <b>Вывод:</b> одно число — наибольшая масса груза в чемодане; если ни один не сможет унести другого, вывести −1. <b>Ограничение по времени:</b> 1 секунда.</p>' +
+      '<div class="hscroll"><table class="tbl iotable"><thead><tr><th>Ввод (A, B, C, D, E)</th><th>Вывод</th></tr></thead><tbody><tr><td>5 · 3 · 10 · 7 · 8</td><td>2</td></tr><tr><td>7 · 3 · 10 · 7 · 8</td><td>0</td></tr><tr><td>8 · 3 · 10 · 7 · 8</td><td>−1</td></tr></tbody></table></div>' +
+      '<p>Пример 1: Ваня (10 кг, несёт 7) берёт Мишку (5 кг, несёт 3) с чемоданом. Ваня может унести 7 − 5 = 2 кг сверху, Мишка — 3 кг, чемодан — 8 кг; значит, 2 кг. Наоборот не выйдет: Мишка не поднимет Ваню (3 &lt; 10).</p></div>',
+    hints: [
+      'Есть всего два способа. Способ 1: Ваня несёт Мишку, а Мишка несёт чемодан. Способ 2: Мишка несёт Ваню, а Ваня несёт чемодан. Рассмотри каждый отдельно.',
+      'Способ 1: Ваня несёт Мишку (вес A) — на груз у него остаётся D − A. Мишка с грузом не больше B, а в чемодане всего E. Груз ограничивают три числа: min(D − A, B, E). Способ работает, только если D ≥ A.',
+      'Способ 2 — «зеркальный»: у Мишки на груз остаётся B − C (если B ≥ C), Ваня несёт груз не больше D, в чемодане E. Груз: min(B − C, D, E). Ответ — наибольшее из двух. Если ни один способ не возможен (A > D и C > B), ответ −1.',
+      'Решение без циклов: считай оба варианта формулой. Перебор массы груза от E вниз до нуля при E = 10¹⁸ выполнится не за секунду — получится частичный балл.'
+    ],
+    build(play, api) {
+      const st = { a: 5, b: 3, c: 10, d: 7, e: 8 };
+      const view = h('div', { class: 'cases' }), res = h('p', { class: 'eqbox big', 'aria-live': 'polite' });
+      const chal = [
+        { t: 'Подбери числа так, чтобы ответ был <b>−1</b>.', f: (v) => v.ans === -1 },
+        { t: 'Подбери числа так, чтобы ответ был <b>0</b> (но не −1).', f: (v) => v.ans === 0 },
+        { t: 'Подбери числа так, чтобы был возможен <b>только способ 2</b> и ответ был больше 0.', f: (v) => !v.f1 && v.f2 && v.ans > 0 }
+      ];
+      const chalEls = chal.map(c => h('li', null, h('i', null, '○'), h('span', { html: c.t })));
+      const done = chal.map(() => false);
+      const redraw = () => {
+        const { a, b, c, d, e } = st;
+        const f1 = d >= a, f2 = b >= c;
+        const r1 = Math.min(d - a, b, e), r2 = Math.min(b - c, d, e);
+        const ans = !f1 && !f2 ? -1 : Math.max(f1 ? r1 : -1, f2 ? r2 : -1);
+        view.replaceChildren(
+          bars('Способ 1: Ваня несёт Мишку с чемоданом', [['D − A', d - a, d - a === r1], ['B', b, b === r1], ['E', e, e === r1]], f1, r1),
+          bars('Способ 2: Мишка несёт Ваню с чемоданом', [['B − C', b - c, b - c === r2], ['D', d, d === r2], ['E', e, e === r2]], f2, r2));
+        res.textContent = `Ответ: ${ans}` + (ans === -1 ? ' (никто никого не поднимет)' : ` = max(${f1 ? r1 : '—'}, ${f2 ? r2 : '—'})`);
+        const v = { ans, f1, f2 };
+        chal.forEach((cc, i) => { if (!done[i] && cc.f(v)) { done[i] = true; chalEls[i].className = 'ok'; chalEls[i].firstChild.textContent = '✓'; } });
+      };
+      const mkS = (label, key, lo, hi) => h('label', null, label, K.stepper(lo, hi, st[key], v => { st[key] = v; redraw(); }));
+      redraw();
+      const s1 = h('div', { class: 'stage' },
+        h('p', { class: 'muted small' }, 'Меняй числа и смотри, сколько груза можно унести каждым способом. Самая короткая полоска (отмечена рамкой) — то, что ограничивает груз. Выполни три мини-задания.'),
+        h('div', { class: 'sim' }, mkS('A — масса Мишки', 'a', 1, 15), mkS('B — Мишка несёт', 'b', 1, 15), mkS('C — масса Вани', 'c', 1, 15), mkS('D — Ваня несёт', 'd', 1, 15), mkS('E — груз в чемодане', 'e', 1, 20)),
+        view, res, h('ul', { class: 'chal' }, chalEls));
+
+      const pool = shuffle(PARSONS.map(x => x.id)); let prog = [];
+      const poolEl = h('div', { class: 'plist' }), progEl = h('div', { class: 'plist' }), pOut = h('div');
+      const byId = Object.fromEntries(PARSONS.map(x => [x.id, x]));
+      const drawP = () => {
+        poolEl.replaceChildren(...pool.filter(id => !prog.includes(id)).map(id => h('button', { class: 'pline', type: 'button', onclick: () => { prog.push(id); drawP(); } }, byId[id].t)));
+        progEl.replaceChildren(...prog.map((id, i) => h('button', { class: 'pline in', type: 'button', title: 'Нажми, чтобы убрать строку', onclick: () => { prog.splice(i, 1); drawP(); } }, h('span', { class: 'pn' }, i + 1), byId[id].t)));
+        if (!prog.length) progEl.append(h('span', { class: 'muted small' }, 'Нажимай строки слева — они появятся здесь по порядку. Отступы уже заданы в самих строках.'));
+      };
+      const checkP = () => {
+        const res = runTests(prog.map(id => byId[id].t).join('\n'));
+        pOut.replaceChildren(verdictTable(res));
+        if (res.every(r => r.ok)) api.solve('Программа собрана верно и проходит все тесты — набрано максимум баллов. Теперь можно написать её самому!');
+        else { api.attempt(); const syn = res.find(r => r.err && !r.tle); api.say(`Пройдено тестов: ${res.filter(r => r.ok).length} из ${res.length}. ` + (syn ? 'Есть ошибка выполнения: обычно это порядок строк (сначала читаем все пять чисел, потом if, потом else) или не хватает строки. ' : '') + 'В куче три лишние строки. Ответ −1, когда A > D И C > B (оба способа невозможны); иначе берём большее из двух значений.', 'bad'); }
+      };
+      const s2 = h('div', { class: 'stage', hidden: true },
+        h('p', { class: 'muted small' }, 'В куче строк есть три лишние. Собери решение: сначала чтение A, B, C, D, E по порядку, затем условие.'),
+        h('div', { class: 'parsons' }, h('div', null, h('p', { class: 'sub-h' }, 'Куча строк'), poolEl), h('div', null, h('p', { class: 'sub-h' }, 'Моя программа'), progEl)),
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: checkP }, 'Проверить на тестах'), h('button', { class: 'btn ghost', type: 'button', onclick: () => { prog = []; drawP(); pOut.replaceChildren(); } }, 'Очистить')), pOut);
+      drawP();
+
+      const ed = h('textarea', { class: 'ed', spellcheck: 'false', autocapitalize: 'off', autocomplete: 'off', 'aria-label': 'Редактор кода Python', rows: 11 });
+      ed.value = 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\ne = int(input())\n# допиши решение\n';
+      let esc = false;
+      ed.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { esc = true; return; }
+        if (e.key === 'Tab' && !esc && !e.shiftKey) { e.preventDefault(); const p = ed.selectionStart; ed.setRangeText('    ', p, ed.selectionEnd, 'end'); } else esc = false;
+      });
+      const stdin = h('textarea', { class: 'field', 'aria-label': 'Входные данные', rows: 5 }); stdin.value = '5\n3\n10\n7\n8';
+      const cons = h('div', { class: 'console', 'aria-live': 'polite' }, 'Здесь появится вывод программы.');
+      const tOut = h('div');
+      const run = () => {
+        const r = PyRun.run(ed.value, stdin.value);
+        cons.className = 'console' + (r.err ? ' err' : '');
+        cons.textContent = (r.out || '') + (r.err ? (r.out ? '\n' : '') + PyRun.describe(r.err) : '');
+        if (!cons.textContent) cons.textContent = '(программа ничего не вывела — нужен print)';
+      };
+      const test = () => {
+        const res = runTests(ed.value);
+        tOut.replaceChildren(verdictTable(res));
+        const okc = res.filter(r => r.ok).length;
+        if (okc === res.length) { api.solve(`Все ${res.length} тестов пройдены — ${okc * PTS} баллов из ${res.length * PTS}. Так держать!`); return; }
+        api.attempt();
+        const bad = res.find(r => !r.ok);
+        const tle = res.filter(r => r.tle).length, wa = res.filter(r => !r.ok && !r.tle && !r.err).length, rte = res.filter(r => r.err && !r.tle).length;
+        let tip = '';
+        if (rte) tip = ' Есть ошибки выполнения — прочитай сообщение в таблице.';
+        else if (tle && !wa) tip = ` Ответы верные, но ${tle} ${plural(tle, 'тест', 'теста', 'тестов')} не успевает за время: перебор массы груза слишком долгий при E до 10¹⁸. Нужна формула без перебора: min(D − A, B, E) и min(B − C, D, E).`;
+        else if (wa) tip = res.some(r => !r.ok && r.want === '-1') ? ' Не забудь случай, когда никто не может унести другого: тогда нужно вывести −1 (A > D и C > B).' : ' Проверь оба способа: Ваня несёт Мишку — min(D − A, B, E), Мишка несёт Ваню — min(B − C, D, E). Способ нельзя использовать, если несущий слабее партнёра.';
+        api.say(`Баллы: ${okc * PTS} из ${res.length * PTS}. Первый неудачный тест: A B C D E = ${bad.t.v.map(fmt).join(' ')} (${bad.t.note}).` + tip, 'bad');
+      };
+      const s3 = h('div', { class: 'stage', hidden: true },
+        h('p', { class: 'muted small' }, 'Напиши программу целиком. Поддерживается основа Python: переменные, арифметика, if/while/for, input, print, int, min, max, abs. Tab вставляет 4 пробела, Esc затем Tab — выйти из поля. Решение с перебором груза даст только часть баллов — как на настоящей олимпиаде.'),
+        ed, h('div', { class: 'io' }, h('div', null, h('p', { class: 'sub-h' }, 'Вход (по числу в строке)'), stdin), h('div', null, h('p', { class: 'sub-h' }, 'Вывод'), cons)),
+        h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: run }, '▶ Запустить'), h('button', { class: 'btn primary', type: 'button', onclick: test }, 'Проверить на тестах')), tOut);
+
+      const stages = [s1, s2, s3];
+      const pills = ['1. Как это работает', '2. Собери программу', '3. Напиши сам'].map((l, i) => h('button', { class: 'pill', type: 'button', 'aria-pressed': i === 0 ? 'true' : 'false', onclick: () => { stages.forEach((x, j) => { x.hidden = j !== i; pills[j].setAttribute('aria-pressed', j === i ? 'true' : 'false'); }); } }, l));
+      play.append(h('div', { class: 'tabs-s' }, pills), ...stages);
+    },
+    explain() {
+      return h('div', null,
+        h('ol', null,
+          h('li', { html: '<b>Способ 1</b> — Ваня несёт Мишку с чемоданом: на груз у Вани остаётся <code>D − A</code>, Мишка может нести <code>B</code>, в чемодане <code>E</code>. Груз: <code>min(D − A, B, E)</code>. Способ возможен, если <code>D ≥ A</code>.' }),
+          h('li', { html: '<b>Способ 2</b> — Мишка несёт Ваню: <code>min(B − C, D, E)</code>, возможен при <code>B ≥ C</code>.' }),
+          h('li', { html: 'Если ни тот ни другой не возможен — то есть <code>A &gt; D</code> и <code>C &gt; B</code> — ответ <b>−1</b>. Иначе ответ — наибольшее из значений. Если способ невозможен, его значение отрицательное, и <code>max</code> его просто «отбросит».' })),
+        h('pre', { class: 'code', style: { padding: '10px 14px', margin: 0 } }, SOLUTION),
+        h('p', { html: 'Решение за одно действие, без циклов — подойдёт для чисел до <code>10¹⁸</code> (в Python целые числа любого размера). Решение «перебором груза» от <code>E</code> вниз до нуля корректно, но делает до <code>10¹⁸</code> шагов и получит превышение времени:' }),
+        h('pre', { class: 'code', style: { padding: '10px 14px', margin: 0 } }, BRUTE),
+        h('p', { class: 'small muted', html: 'Типичные ошибки: забыть случай −1 (вместо него выводится отрицательное число); учитывать только один способ; написать «A − D» вместо «D − A»; решить перебором и получить TL на больших тестах. Хорошее правило: если в условии числа до 10¹⁸, цикл «по значению» не подойдёт.' }));
+    },
+    practiceTitle: 'Ещё потренироваться: считаем руками и ищем ошибку',
+    practice(body) {
+      let cur;
+      const q = h('p', { class: 'mono' }), inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Ответ' }), fb = h('p', { class: 'fb' });
+      const gen = () => { const v = [rnd(1, 15), rnd(1, 15), rnd(1, 15), rnd(1, 15), rnd(1, 20)]; cur = { v, ans: refT(...v) }; q.textContent = `A = ${v[0]}, B = ${v[1]}, C = ${v[2]}, D = ${v[3]}, E = ${v[4]}`; inp.value = ''; inp.className = 'field'; fb.textContent = ''; };
+      const chk = () => {
+        const val = String(inp.value).trim(), [a, b, c, d, e] = cur.v;
+        const ok = val === cur.ans; inp.className = 'field ' + (ok ? 'ok' : 'bad'); fb.className = 'fb ' + (ok ? 'ok' : 'bad');
+        const s1 = d >= a ? `способ 1: min(${d} − ${a}, ${b}, ${e}) = ${Math.min(d - a, b, e)}` : 'способ 1 невозможен (D < A)';
+        const s2 = b >= c ? `способ 2: min(${b} − ${c}, ${d}, ${e}) = ${Math.min(b - c, d, e)}` : 'способ 2 невозможен (B < C)';
+        fb.textContent = ok ? `Верно! ${s1}; ${s2}.` : `Не так. Проверь: ${s1}; ${s2}. Ответ — наибольшее из возможных, а если оба невозможны — −1.`;
+      };
+      onEnter(inp, chk); gen();
+      const BUGS = [
+        { code: 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\ne = int(input())\nprint(max(min(d - a, b, e), min(b - c, d, e)))', opts: ['Нет проверки случая −1: если никто не может унести другого, выводится отрицательное число, но не обязательно −1', 'Надо читать числа в другом порядке', 'Нужно заменить max на min'], right: 0 },
+        { code: 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\ne = int(input())\nif a > d:\n    print(-1)\nelse:\n    print(min(d - a, b, e))', opts: ['Рассмотрен только способ «Ваня несёт Мишку»; способ «Мишка несёт Ваню» забыт', 'Нужно заменить − на +', 'Нужно вывести 0 вместо −1'], right: 0 },
+        { code: BRUTE, opts: ['Ответ неверный на примерах', 'Ответы верные, но перебор груза от E до 0 при E = 10¹⁸ не успевает по времени — нужна формула', 'Нужно заменить «or» на «and»'], right: 1 }
+      ];
+      const bugBox = h('div', { class: 'mini-q' });
+      BUGS.forEach((bg, bi) => {
+        const res = runTests(bg.code);
+        const f = h('p', { class: 'fb' });
+        bugBox.append(h('div', { class: 'box' },
+          h('p', { class: 'sub-h' }, `Программа ${bi + 1}: баллов — ${res.filter(r => r.ok).length * PTS} из ${res.length * PTS}`),
+          h('pre', { class: 'code', style: { padding: '8px 14px', margin: 0 } }, bg.code),
+          h('details', null, h('summary', null, 'Показать результаты тестов'), verdictTable(res)),
+          h('div', { class: 'row' }, bg.opts.map((o, oi) => h('button', { class: 'btn sm', type: 'button', onclick: () => { f.className = 'fb ' + (oi === bg.right ? 'ok' : 'bad'); f.textContent = oi === bg.right ? 'Верно, в этом и дело!' : 'Нет, посмотри, какие тесты не проходят и почему.'; } }, o))), f));
+      });
+      body.append(h('p', { class: 'sub-h' }, 'а) Посчитай ответ вручную'), q, h('div', { class: 'row' }, inp, h('button', { class: 'btn primary', type: 'button', onclick: chk }, 'Проверить'), h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другие числа')), fb,
+        h('p', { class: 'sub-h' }, 'б) Что не так с программой?'), bugBox);
+    }
+  };
+
+  K.App({
+    title: 'Олимпиада KIBERone · неделя 8',
+    sub: 'Старшая группа, 12–14 лет',
+    intro: 'Три задачи: логика множеств (класс спортсменов), алгоритм робота на дорожке и программирование на Python. У каждой есть подсказки (открывай по одной), мгновенная проверка и разбор. Решённые задачи отмечаются звёздочкой на вкладке.',
+    tasks: [t1, t2, t3]
+  });
+})();
+
+</script>
+
+</body></html>
