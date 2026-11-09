@@ -1,0 +1,925 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Неделя 9 для 9–11 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+<style>
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{max-width:68ch}
+.story>*+*{margin-top:10px}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+
+/* Макет: тетрадь в клетку, строгие контуры без теней, акцент бирюзовый и оранжевый. Лаборатория логики для 9–11 лет. */
+:root{
+  --bg:#EAF4F1;--surface:#FFFFFF;--surface2:#F2F9F7;--ink:#0F2F2A;--muted:#44625C;
+  --edge:#0F2F2A;--line:#C6DDD7;--line-strong:#86B3A9;--grid:rgba(15,80,70,.07);
+  --accent:#0B7E6F;--on-accent:#FFFFFF;--accent2:#F26B21;--on-accent2:#1A0A00;
+  --good:#18803C;--good-bg:#DFF4E4;--bad:#BF3520;--bad-bg:#FCE7E1;--star:#F5B21B;
+  --field:#FFFFFF;--hint-bg:#FFF0DB;--hint-edge:#EBA45E;--code-inline:#DDEDE9;--focus:#1B62E0;
+  --s1:#F26B21;--s2:#0B7E6F;--s3:#3C6FD8;--s4:#E5A50A;
+  --sock-b:#2F6FE0;--sock-g:#2EA44F;--sock-r:#D93A30;
+  --card-shadow:none;
+  --radius:10px;--radius-lg:16px;--bw:2px;--bw-thin:1.5px;--lift:0px;--fs:17px;--maxw:900px;
+  --f-display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --f-body:'Onest','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}
+
+body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.top h1{font-size:clamp(1.15rem,4.6vw,1.8rem);font-weight:700}
+.task-head h2{font-size:clamp(1.05rem,3.9vw,1.4rem);font-weight:700}
+.num{border-radius:8px}
+.tab{border-radius:8px}
+.intro{border-color:var(--hint-edge);background:var(--hint-bg)}
+.btn.primary{border-color:var(--accent)}
+.bubble .mascot{display:none}
+
+/* пирамида */
+.pyr{--bs:clamp(40px,11.4vw,60px);display:grid;gap:6px;justify-items:center;padding-block:4px}
+.pr{display:flex;gap:6px;justify-content:center}
+.ball{width:var(--bs);height:var(--bs);border-radius:50%;border:2px dashed var(--line-strong);background:var(--field);text-align:center;font-family:var(--f-mono);font-weight:800;font-size:calc(var(--bs)*.36);padding:0;color:var(--ink);-moz-appearance:textfield}
+.ball::-webkit-outer-spin-button,.ball::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ball.given{background:var(--accent);color:var(--on-accent);border:2px solid var(--accent)}
+.ball.ok{border:2px solid var(--good);background:var(--good-bg);color:var(--good)}
+.ball.bad{border:2px solid var(--bad);background:var(--bad-bg);color:var(--bad)}
+.ball.hl{box-shadow:0 0 0 4px var(--accent2)}
+.ball.goal{box-shadow:0 0 0 4px var(--accent2);border-style:solid;border-color:var(--accent2)}
+.counter{text-align:center;font-weight:700}
+
+/* носки */
+.drawer{display:flex;gap:10px;flex-wrap:wrap}
+.dcol{display:flex;align-items:center;gap:8px;padding:.4em .8em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface);font-weight:700}
+.dcol svg{width:28px;height:28px}
+.sockrow{display:flex;gap:8px;flex-wrap:wrap;min-height:76px;align-items:flex-end}
+.sock{display:grid;justify-items:center;gap:0;font-size:.72rem;font-weight:800;font-family:var(--f-mono);animation:pop .25s}
+.sock svg{width:46px;height:46px}
+.sock.pair svg{filter:drop-shadow(0 0 0 var(--accent2));outline:3px solid var(--accent2);outline-offset:2px;border-radius:8px}
+.cb{color:var(--sock-b)}.cg{color:var(--sock-g)}.cr{color:var(--sock-r)}
+.hist{display:grid;gap:6px}
+.hbar{display:grid;grid-template-columns:7.5em 1fr 4.2em;gap:8px;align-items:center;font-size:.92em}
+.hbar .bar{height:18px;background:var(--surface);border:var(--bw-thin) solid var(--line-strong);border-radius:6px;overflow:hidden}
+.hbar .bar i{display:block;height:100%;background:var(--accent)}
+.hbar.zero .bar i{background:var(--bad)}
+.colbtns{display:flex;gap:8px;flex-wrap:wrap}
+.colbtns .btn{display:flex;align-items:center;gap:8px}
+.colbtns .btn svg{width:26px;height:26px}
+.sub-h{font-family:var(--f-display);font-size:.95rem;font-weight:700}
+
+/* фигуры */
+.shg{display:grid;grid-template-columns:repeat(3,var(--cs)) minmax(5.2em,auto);grid-auto-rows:var(--cs);gap:0;--cs:clamp(54px,15.5vw,82px);border:var(--bw) solid var(--edge);width:max-content;max-width:100%;background:var(--surface);margin-inline:auto}
+.shg>div{display:grid;place-items:center;border:1px solid var(--line-strong);padding:4px;text-align:center;line-height:1.15}
+.shg svg{width:72%;height:72%}
+.shg .sum{font-family:var(--f-mono);font-weight:800;font-size:clamp(.95rem,3.4vw,1.15rem)}
+.shg .sum small{display:block;font-weight:700;font-size:.62em;color:var(--muted)}
+.shg .sum.ok{background:var(--good-bg);color:var(--good)}
+.shg .sum.ok small{color:var(--good)}
+.shg .sum.bad{background:var(--bad-bg)}
+.shg .sum.q{background:var(--hint-bg)}
+.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.box{display:grid;gap:10px}
+.val{display:flex;align-items:center;gap:8px;padding:.4em .6em;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.val svg{width:34px;height:34px;flex:none}
+.trick{display:grid;gap:6px;font-family:var(--f-mono);font-size:.95em}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+
+/* ===== неделя 5 ===== */
+.pg{display:grid;width:max-content;max-width:100%;margin-inline:auto;--cs:clamp(34px,10.4vw,56px);background:var(--surface)}
+.pc{width:var(--cs);height:var(--cs);padding:0;margin:0;border-style:solid;border-color:var(--line-strong);background:var(--surface2);cursor:pointer;display:grid;place-items:center;font-size:calc(var(--cs)*.42);font-weight:800;color:var(--on-accent);border-radius:0;font-family:var(--f-body)}
+.pc:hover{filter:brightness(.95)}
+.pc[data-c="1"]{background:var(--s1)}.pc[data-c="2"]{background:var(--s2)}.pc[data-c="3"]{background:var(--s3)}.pc[data-c="4"]{background:var(--s4)}
+.pc[data-c="3"],.pc[data-c="2"]{color:#fff}
+.pc[data-c="1"],.pc[data-c="4"]{color:#1A0A00}
+.pg.static .pc{cursor:default}.pg.static .pc:hover{filter:none}
+.pvoid{width:var(--cs);height:var(--cs)}
+.pal{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pal .btn{display:flex;gap:6px;align-items:center;min-height:44px}
+.pal .btn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.sw{display:inline-grid;place-items:center;width:1.7em;height:1.7em;border-radius:6px;border:2px solid var(--edge);font-weight:800;font-size:.9em}
+.sw[data-c="1"]{background:var(--s1);color:#1A0A00}.sw[data-c="2"]{background:var(--s2);color:#fff}.sw[data-c="3"]{background:var(--s3);color:#fff}.sw[data-c="4"]{background:var(--s4);color:#1A0A00}
+
+.fcw{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.fcw{grid-template-columns:minmax(0,1fr)}}
+svg.flow{width:100%;height:auto;display:block;max-width:420px;margin-inline:auto}
+svg.flow .nd rect,svg.flow .nd polygon,svg.flow .nd ellipse{fill:var(--surface);stroke:var(--edge);stroke-width:1.8}
+svg.flow .nd text{font-family:var(--f-mono);font-weight:800;font-size:13px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+svg.flow .nd.cur rect,svg.flow .nd.cur polygon,svg.flow .nd.cur ellipse{stroke:var(--accent2);stroke-width:3.6;fill:var(--hint-bg)}
+svg.flow .nd.seen rect,svg.flow .nd.seen polygon,svg.flow .nd.seen ellipse{fill:var(--good-bg);stroke:var(--good)}
+svg.flow .ed{fill:none;stroke:var(--line-strong);stroke-width:1.8}
+svg.flow .lb{font-family:var(--f-mono);font-weight:800;font-size:11px;fill:var(--muted);text-anchor:middle}
+.trace{display:grid;gap:10px}
+.trace table{table-layout:fixed}
+.trace td,.trace th{padding:.3em .3em;font-size:.9em}
+.trace th{font-size:.78em;line-height:1.2}
+.trace td input.field,.trace td select.field{width:100%;min-height:40px;padding:.2em .3em;text-align:center;font-family:var(--f-mono);font-weight:800}
+.trace .ok{border-color:var(--good);background:var(--good-bg)}.trace .bad{border-color:var(--bad);background:var(--bad-bg)}
+.algo{font-family:var(--f-mono);font-size:.92em;display:grid;gap:2px}
+
+.expr{display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center;font-family:var(--f-mono);font-size:clamp(1.05rem,4.4vw,1.5rem);font-weight:800;line-height:1.2;padding:12px;border:var(--bw) dashed var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.expr .op{color:var(--muted)}
+.expr .val{display:inline-grid;place-items:center;min-width:1.6em;height:1.6em;border-radius:6px;background:var(--accent);color:var(--on-accent)}
+.expr .chip{cursor:pointer;font:inherit;border:var(--bw) solid var(--accent2);background:var(--hint-bg);color:var(--ink);border-radius:8px;padding:.1em .45em;min-height:44px;animation:pulse 1.6s infinite}
+.expr .ans{display:inline-flex;gap:4px;align-items:center}
+.expr .ans .btn{min-height:44px;padding:.2em .8em;font-family:var(--f-mono);font-weight:800}
+@keyframes pulse{50%{box-shadow:0 0 0 4px var(--hint-edge)}}
+.hist{display:grid;gap:4px;font-family:var(--f-mono);font-size:.92em;counter-reset:h}
+.hist div::before{counter-increment:h;content:counter(h) ". ";color:var(--muted)}
+.tt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tt table{font-family:var(--f-mono);font-size:.9em}
+.big01{display:flex;gap:10px}.big01 .btn{min-width:64px;font-family:var(--f-mono);font-size:1.3em;font-weight:800}
+.stage{display:grid;gap:12px}
+
+/* ===== неделя 9, 9–11 лет ===== */
+.task,.task>*{min-width:0}
+.stage{display:grid;gap:12px;min-width:0}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.answer-row .lbl{font-family:var(--f-mono);font-weight:800}
+.sub-h{font-family:var(--f-mono);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.field.wide{width:100%;max-width:16em;min-width:0}
+.field.cnt{width:5em}
+.tog{cursor:pointer;font:inherit;font-weight:800;min-height:44px;padding:.2em .85em;border-radius:var(--radius);border:var(--bw-thin) solid var(--line-strong);background:var(--surface);color:var(--ink)}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.mz-msg{margin:0;min-height:2.6em;font-weight:700;padding:.5em .7em;border-radius:var(--radius);background:var(--surface2);border:var(--bw-thin) dashed var(--line-strong);overflow-wrap:anywhere}
+.mz-msg.ok{border-color:var(--good);background:var(--good-bg);border-style:solid}
+.mz-msg.bad{border-color:var(--bad);background:var(--bad-bg);border-style:solid}
+.mono{font-family:var(--f-mono);font-weight:700}
+table.tbl.left td,table.tbl.left th{text-align:left;font-size:.85rem}
+/* планировщик */
+.planner{display:grid;gap:8px}
+.prow{display:grid;gap:6px;padding:8px;border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.pn{font-weight:800}
+.dbs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.dbtn{cursor:pointer;font:inherit;font-weight:800;min-height:44px;padding:0;border-radius:8px;border:var(--bw-thin) solid var(--line-strong);background:var(--surface2);color:var(--ink)}
+.dbtn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.dbtn.na{opacity:.35;text-decoration:line-through}
+/* схема */
+.dagbox{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:4px}
+.dag{display:block;width:100%;height:auto;max-width:560px;margin-inline:auto}
+.dag .de{stroke:var(--edge);stroke-width:2;fill:none}
+.dag polygon.de{fill:var(--edge);stroke:var(--edge);stroke-width:1;stroke-linejoin:round}
+.dag .de.on{stroke:var(--accent2);stroke-width:3.6}
+.dag polygon.de.on{fill:var(--accent2);stroke:var(--accent2)}
+.dag .de.cut{stroke:var(--bad);stroke-dasharray:4 3;opacity:.8}
+.dag polygon.de.cut{fill:var(--bad);stroke:var(--bad)}
+.dag .xm{stroke:var(--bad);stroke-width:2.4;fill:none}
+.dag .dn circle{fill:var(--surface);stroke:var(--edge);stroke-width:2.2}
+.dag .dn.end circle{fill:var(--accent2);stroke:var(--edge)}
+.dag .dn.must circle{fill:var(--accent);stroke:var(--edge);stroke-width:3}
+.dag .dn.must .bd{fill:var(--on-accent)}
+.dag .dn.on circle{stroke:var(--accent2);stroke-width:3.6}
+.dag .lb{text-anchor:middle;font-family:var(--f-mono);font-weight:800;font-size:11.5px;fill:var(--ink);paint-order:stroke;stroke:var(--surface2);stroke-width:3px}
+.dag .bd{text-anchor:middle;dominant-baseline:central;font-family:var(--f-mono);font-weight:800;font-size:12px;fill:var(--ink)}
+/* строки таблицы счёта */
+.cr{display:grid;grid-template-columns:minmax(5.5em,auto) minmax(0,1fr) auto;gap:6px 8px;align-items:center;padding:6px 8px;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.cr .cn{font-family:var(--f-mono);font-weight:800}
+.cr .cn{grid-area:1/1}.cr .field{grid-area:1/2;width:100%}.cr .btn{grid-area:1/3}.cr .cf{grid-area:2/1/3/-1;color:var(--muted)}.cr .rf{grid-row:3}
+.cr .rf{grid-column:1/-1;font-weight:700;overflow-wrap:anywhere}
+.rf.ok{color:var(--good)}.rf.bad{color:var(--bad)}
+/* шахматы */
+.chess{display:block;width:100%;max-width:380px;height:auto;margin-inline:auto}
+.chess .cd{fill:#8FB5AA}.chess .cl{fill:#EAF4F1}
+.chess .ax{font-family:var(--f-mono);font-size:11px;font-weight:800;fill:var(--ink);text-anchor:middle}
+.chess .pth{fill:none;stroke:var(--accent2);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.chess .pt{fill:var(--accent2);stroke:#1A0A00;stroke-width:1}
+.chess .rb{fill:var(--accent);stroke:#04201C;stroke-width:2}
+.chess .st{fill:#fff;stroke:#1A0A00;stroke-width:2}
+.chess .stl{font-family:var(--f-mono);font-size:9px;font-weight:800;fill:#1A0A00;text-anchor:middle}
+.chess .xo{stroke:var(--bad);stroke-width:3.4;fill:none;stroke-linecap:round}
+.cmds{display:flex;flex-wrap:wrap;gap:4px}
+.cm{display:grid;place-items:center;width:30px;height:34px;border:var(--bw-thin) solid var(--line-strong);border-radius:8px;font-family:var(--f-mono);font-weight:800;background:var(--surface)}
+.cm.dn{background:var(--hint-bg);border-color:var(--hint-edge)}
+.cm.cur{background:var(--accent2);color:var(--on-accent2);border-color:var(--edge)}
+.rtab{display:grid;gap:6px}
+.rrow{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border:var(--bw-thin) solid var(--line);border-radius:var(--radius);background:var(--surface);font-weight:700}
+.rrow.okc{border-color:var(--good);background:var(--good-bg)}
+.rrow.outc{border-color:var(--bad);background:var(--bad-bg)}
+.explain>*,.pbody>*,.box>*,.stage>*,.story>*{min-width:0;max-width:100%}
+
+</style>
+<main id="app"></main>
+<script>window.PAGE_ID='w9b';</script>
+<script>
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+
+/* ===== Страница 9–11 лет, неделя 9 ===== */
+(function () {
+  'use strict';
+  const { h, s, rnd, pick, shuffle, onEnter } = K;
+  const num = (str) => { const t = String(str).trim().replace('−', '-'); return /^-?\d+$/.test(t) ? parseInt(t, 10) : NaN; };
+  const pl = K.plural;
+
+  /* ---------- граф со стрелками (SVG) ---------- */
+  function dagSvg(nodes, edges, o) {
+    o = o || {};
+    const W = o.w || 400, H = o.h || 220, R = o.r || 13;
+    const by = {}; nodes.forEach(n => { by[n.id] = n; });
+    const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'dag', role: 'img', 'aria-label': o.label || 'Схема со стрелками' });
+    edges.forEach(([a, b]) => {
+      const A = by[a], B = by[b]; let dx = B.x - A.x, dy = B.y - A.y; const L = Math.hypot(dx, dy); dx /= L; dy /= L;
+      const x1 = A.x + dx * R, y1 = A.y + dy * R, x2 = B.x - dx * (R + 2), y2 = B.y - dy * (R + 2);
+      const key = a + '>' + b, on = o.hlEdges && o.hlEdges.has(key), cut = o.cut && o.cut.has(key);
+      const cls = 'de' + (on ? ' on' : '') + (cut ? ' cut' : '');
+      svg.append(s('line', { x1, y1, x2, y2, class: cls }));
+      const px = -dy, py = dx, ah = 9, aw = 4.5;
+      svg.append(s('polygon', { class: cls + ' ah', points: `${x2 + dx * 2},${y2 + dy * 2} ${x2 - dx * ah + px * aw},${y2 - dy * ah + py * aw} ${x2 - dx * ah - px * aw},${y2 - dy * ah - py * aw}` }));
+      if (cut) { const mx = (x1 + x2) / 2, my = (y1 + y2) / 2; svg.append(s('path', { d: `M${mx - 5} ${my - 5}L${mx + 5} ${my + 5}M${mx + 5} ${my - 5}L${mx - 5} ${my + 5}`, class: 'xm' })); }
+    });
+    nodes.forEach(n => {
+      const on = o.hlNodes && o.hlNodes.has(n.id);
+      const g = s('g', { class: 'dn' + (n.end ? ' end' : '') + (on ? ' on' : '') + (n.must ? ' must' : ''), transform: `translate(${n.x} ${n.y})` });
+      g.append(s('circle', { r: R }));
+      if (o.badge && o.badge[n.id] != null) g.append(s('text', { class: 'bd', y: 1, text: String(o.badge[n.id]) }));
+      else if (n.inside) g.append(s('text', { class: 'bd', y: 1, text: n.inside }));
+      if (n.label) g.append(s('text', { class: 'lb', y: n.lp === 'd' ? R + 13 : -R - 5, text: n.label }));
+      svg.append(g);
+    });
+    return svg;
+  }
+  const norm = (str) => String(str).trim().toLowerCase();
+
+  /* ================= Задача 1. Уфимские каникулы ================= */
+  const DAYS = ['Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  const DACC = ['вторник', 'среду', 'четверг', 'пятницу', 'субботу', 'воскресенье'];
+  const EV = [
+    { id: 'friend', name: 'Встреча с другом', allowed: [2, 3], why: 'друг свободен только в четверг и пятницу' },
+    { id: 'hockey', name: 'Хоккейный матч', allowed: [2], why: 'хоккейный матч проводится только в четверг' },
+    { id: 'museum', name: 'Музей', allowed: [1, 2, 3, 4], why: 'музей работает со среды по субботу' },
+    { id: 'theatre', name: 'Театр', allowed: [1, 3], why: 'спектакли идут в среду и пятницу' }
+  ];
+  const t1 = {
+    id: 'vac', num: 1, title: 'Уфимские каникулы',
+    story: '<p>Ваня приехал на каникулы в Уфу <b>во вторник</b> и планирует пробыть там до воскресенья. Он хочет встретиться с другом, сходить на хоккейный матч, посетить музей и сходить в театр. На каждое мероприятие он хочет посвятить <b>отдельный день</b>.</p><p>Хоккейный матч проводится <b>только в четверг</b>, музей работает <b>со среды по субботу</b>, спектакли в театре идут <b>в среду и пятницу</b>. Друг свободен <b>в четверг и пятницу</b>. Назовите день, когда Ваня сможет встретиться с другом.</p><p class="muted">Составь расписание в «планировщике» (нажимай на день в строке дела), потом ответь на вопрос.</p>',
+    hints: [
+      'Начни с самого «жёсткого» дела — того, у которого возможен только один день. Какое это дело?',
+      'Хоккей — только в четверг. Значит, четверг занят хоккеем, и ничего другого в четверг запланировать нельзя.',
+      'Друг свободен в четверг или в пятницу. Четверг занят хоккеем — остаётся пятница. Но проверь: вдруг пятница нужна театру?',
+      'Театр — среда или пятница; пятница занята другом, значит театр в среду. Музею остаётся день, который никто не занял: суббота. Друг — в пятницу.'
+    ],
+    build(play, api) {
+      const asg = {}; EV.forEach(e => { asg[e.id] = null; });
+      const msg = h('p', { class: 'mz-msg', role: 'status', 'aria-live': 'polite' }, 'Нажми на день в строке дела — оно встанет в расписание.');
+      let showOk = false;
+      const rows = EV.map(e => {
+        const btns = DAYS.map((d, i) => h('button', { class: 'dbtn', type: 'button', 'aria-pressed': 'false', 'aria-label': `${e.name}: ${DACC[i]}`, onclick: () => click(e, i) }, d));
+        return { e, btns, el: h('div', { class: 'prow' }, h('span', { class: 'pn' }, e.name), h('div', { class: 'dbs' }, ...btns)) };
+      });
+      const draw = () => rows.forEach(r => r.btns.forEach((b, i) => { const on = asg[r.e.id] === i; b.setAttribute('aria-pressed', String(on)); b.classList.toggle('na', showOk && !r.e.allowed.includes(i)); }));
+      const click = (e, i) => {
+        if (asg[e.id] === i) { asg[e.id] = null; draw(); msg.className = 'mz-msg'; msg.textContent = 'Дело убрано из расписания.'; return; }
+        if (!e.allowed.includes(i)) { api.attempt(); msg.className = 'mz-msg bad'; msg.textContent = `Так нельзя: ${e.why}, а ${DACC[i]} — не подходит.`; return; }
+        const other = EV.find(x => x !== e && asg[x.id] === i);
+        if (other) { api.attempt(); msg.className = 'mz-msg bad'; msg.textContent = `На ${DACC[i]} уже стоит «${other.name}». На каждое дело нужен отдельный день: сначала убери то, что мешает (нажми на него ещё раз), или выбери другой день.`; return; }
+        asg[e.id] = i; draw(); msg.className = 'mz-msg'; msg.textContent = `«${e.name}» — ${DACC[i]}.`;
+      };
+      const cb = h('input', { type: 'checkbox', id: 'vac-show', onchange: function () { showOk = this.checked; draw(); } });
+      const checkPlan = () => {
+        const empty = EV.filter(e => asg[e.id] == null);
+        if (empty.length) { msg.className = 'mz-msg bad'; msg.textContent = `Поставь в расписание: ${empty.map(e => '«' + e.name + '»').join(', ')}.`; return; }
+        msg.className = 'mz-msg ok'; msg.textContent = `Расписание правильное! Друг — в ${DACC[asg.friend]}. Впиши этот день в ответ ниже.`;
+      };
+      let chosen = null;
+      const chips = DAYS.map((d, i) => h('button', { class: 'tog', type: 'button', 'aria-pressed': 'false', 'aria-label': 'Ответ: ' + DACC[i], onclick: () => { chosen = i; chips.forEach((c, j) => c.setAttribute('aria-pressed', String(j === i))); } }, d));
+      const ansCheck = () => {
+        if (chosen == null) { api.say('Выбери день недели.', 'bad'); return; }
+        if (chosen === 3) { api.solve('Верно! Ваня встретится с другом в пятницу.'); return; }
+        api.attempt();
+        const m = {
+          2: 'Четверг — единственный день хоккея, значит, в четверг Ваня будет на матче. Друга придётся перенести на другой свободный день.',
+          0: 'Друг свободен только в четверг и пятницу, а во вторник встретиться не получится.',
+          1: 'Друг свободен только в четверг и пятницу, а в среду встретиться не получится.',
+          4: 'Друг свободен только в четверг и пятницу, а в субботу встретиться не получится.',
+          5: 'Друг свободен только в четверг и пятницу, а в воскресенье встретиться не получится.'
+        };
+        api.say(m[chosen], 'bad');
+      };
+      play.append(h('div', { class: 'stage' },
+        h('p', { class: 'sub-h' }, 'Планировщик'), h('div', { class: 'planner' }, ...rows.map(r => r.el)), msg,
+        h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: checkPlan }, 'Проверить расписание'), h('label', { class: 'small row', for: 'vac-show' }, cb, 'Показать, когда каждое дело возможно')),
+        h('p', { class: 'sub-h' }, 'В какой день Ваня встретится с другом?'),
+        h('div', { class: 'opts' }, ...chips),
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: ansCheck }, 'Проверить ответ'))));
+    },
+    explain() {
+      return h('div', null,
+        h('ol', null,
+          h('li', { html: '<b>Хоккей</b> — только четверг. Значит, четверг занят.' }),
+          h('li', { html: '<b>Друг</b> свободен в четверг и пятницу. Четверга нет — остаётся <b>пятница</b>.' }),
+          h('li', { html: '<b>Театр</b>: среда или пятница. Пятница занята другом — значит, <b>среда</b>.' }),
+          h('li', { html: '<b>Музей</b> работает со среды по субботу. Среда, четверг и пятница заняты — остаётся <b>суббота</b>.' })),
+        h('p', null, h('b', null, 'Ответ: '), 'пятница.'),
+        h('p', { class: 'small muted' }, 'Метод «вычёркивания»: начинаем с дела, у которого один вариант, занимаем этот день и вычёркиваем его у остальных. Потом снова ищем дело, у которого остался один вариант. Типичная ошибка: ответить «четверг», потому что друг свободен в четверг, и забыть про хоккей.'));
+    },
+    practiceTitle: 'Ещё потренироваться: случайные расписания',
+    practice(body) {
+      const WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+      const ACC = ['понедельник', 'вторник', 'среду', 'четверг', 'пятницу', 'субботу', 'воскресенье'];
+      const GEN = ['понедельника', 'вторника', 'среды', 'четверга', 'пятницы', 'субботы', 'воскресенья'];
+      const from = (i) => (i === 1 || i === 2 ? 'со ' : 'с ') + GEN[i];
+      const EVN = ['Кино', 'Музей', 'Каток', 'Цирк', 'Зоопарк', 'Театр', 'Бассейн', 'Выставка'];
+      const PEOPLE = [['Маша', 'приехала', 'Она'], ['Ваня', 'приехал', 'Он'], ['Лиза', 'приехала', 'Она'], ['Тимур', 'приехал', 'Он']];
+      const phrase = (set) => {
+        const a = [...set].sort((x, y) => x - y);
+        if (a.length === 1) return `только в ${ACC[a[0]]}`;
+        const contig = a.every((v, i) => !i || v === a[i - 1] + 1);
+        if (contig && a.length >= 3) return `${from(a[0])} по ${ACC[a[a.length - 1]]}`;
+        if (a.length === 2) return `в ${ACC[a[0]]} и ${ACC[a[1]]}`;
+        return `в ${a.slice(0, -1).map(i => ACC[i]).join(', ')} и ${ACC[a[a.length - 1]]}`;
+      };
+      const solutions = (evs) => { let n = 0; const used = new Set(); const go = (k) => { if (k === evs.length) { n++; return; } for (const d of evs[k].al) if (!used.has(d)) { used.add(d); go(k + 1); used.delete(d); } }; go(0); return n; };
+      const propagate = (evs) => {
+        const al = evs.map(e => new Set(e.al)), fixed = {}, steps = []; let changed = true;
+        while (changed) { changed = false; for (let i = 0; i < evs.length; i++) if (fixed[i] == null && al[i].size === 1) { const d = [...al[i]][0]; fixed[i] = d; steps.push(`«${evs[i].n}» — только ${ACC[d]}, значит ${ACC[d]} занят(а).`); al.forEach((x, j) => { if (j !== i) x.delete(d); }); changed = true; break; } }
+        return Object.keys(fixed).length === evs.length ? { fixed, steps } : null;
+      };
+      const mk = () => {
+        for (let t = 0; t < 600; t++) {
+          const s0 = rnd(0, 2), win = [0, 1, 2, 3, 4].map(i => s0 + i);
+          const names = shuffle(EVN).slice(0, 4), days = shuffle(win).slice(0, 4);
+          const evs = names.map((n, i) => { const al = new Set([days[i]]); win.forEach(d => { if (d !== days[i] && Math.random() < 0.38) al.add(d); }); return { n, al: [...al], ans: days[i] }; });
+          if (evs.every(e => e.al.length === 1) || solutions(evs) !== 1) continue;
+          const pr = propagate(evs); if (!pr) continue;
+          const cand = evs.filter(e => e.al.length > 1); if (!cand.length) continue;
+          return { evs, win, target: pick(cand), steps: pr.steps };
+        }
+        return null;
+      };
+      const mount = h('div'), f = h('p', { class: 'fb', role: 'status' });
+      const gen = () => {
+        const q = mk(); f.textContent = ''; f.className = 'fb';
+        const [name, verb, he] = pick(PEOPLE);
+        const lines = q.evs.map(e => `«${e.n}» — ${phrase(e.al)}`);
+        let ch = null; const chips = WD.map((d, i) => h('button', { class: 'tog', type: 'button', 'aria-pressed': 'false', 'aria-label': ACC[i], onclick: () => { ch = i; chips.forEach((c, j) => c.setAttribute('aria-pressed', String(j === i))); } }, d));
+        const sol = h('p', { class: 'small muted' });
+        mount.replaceChildren(h('p', null, `${name} ${verb} в город и пробудет ${from(q.win[0])} по ${ACC[q.win[4]]}. ${he} хочет за это время сходить на четыре мероприятия, на каждое — в отдельный день. Известно: ${lines.join('; ')}. В какой день ${name} сможет посетить «${q.target.n}»?`),
+          h('div', { class: 'opts' }, ...chips),
+          h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => {
+            if (ch == null) { f.className = 'fb bad'; f.textContent = 'Выбери день.'; return; }
+            if (ch === q.target.ans) { f.className = 'fb ok'; f.textContent = 'Верно!'; K.burst(f); }
+            else { f.className = 'fb bad'; f.textContent = 'Нет. Найди дело, у которого возможен только один день, и вычеркни этот день у остальных.'; }
+          } }, 'Проверить'), h('button', { class: 'btn ghost', type: 'button', onclick: () => { sol.textContent = q.steps.join(' ') + ` Ответ: «${q.target.n}» — ${ACC[q.target.ans]}.`; } }, 'Показать решение')), sol);
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другое расписание')); gen();
+    }
+  };
+
+  /* ================= Задача 2. От Земли до Луны через пятёрочку ================= */
+  const MN = [
+    { id: 0, x: 24, y: 105, inside: '', label: 'Земля', lp: 'd', end: true }, { id: 1, x: 104, y: 45, inside: '1' }, { id: 2, x: 104, y: 165, inside: '2' },
+    { id: 3, x: 171, y: 105, inside: '3' }, { id: 4, x: 223, y: 45, inside: '4' }, { id: 5, x: 223, y: 165, inside: '5', must: true },
+    { id: 6, x: 284, y: 105, inside: '6' }, { id: 7, x: 323, y: 165, inside: '7' }, { id: 8, x: 376, y: 105, inside: '', label: 'Луна', lp: 'd', end: true }
+  ];
+  const ME = [[0, 1], [0, 2], [1, 2], [1, 3], [1, 4], [2, 3], [2, 5], [3, 4], [3, 5], [5, 4], [4, 6], [4, 8], [5, 6], [5, 7], [6, 8], [7, 8]];
+  const nm = (id) => id === 0 ? 'Земля' : id === 8 ? 'Луна' : String(id);
+  const reach = (edges, from) => { const seen = new Set([from]); let ch = true; while (ch) { ch = false; edges.forEach(([a, b]) => { if (seen.has(a) && !seen.has(b)) { seen.add(b); ch = true; } }); } return seen; };
+  /* «лишние» стрелки: не лежат ни на одном маршруте через must */
+  function cutSet(edges, S, M) {
+    const down = reach(edges, M); const up = new Set([M]); let ch = true; while (ch) { ch = false; edges.forEach(([a, b]) => { if (up.has(b) && !up.has(a)) { up.add(a); ch = true; } }); }
+    const out = new Set(); edges.forEach(([a, b]) => { const ok = (up.has(a) && up.has(b)) || (down.has(a) && down.has(b)); if (!ok) out.add(a + '>' + b); }); return out;
+  }
+  function waysFrom(edges, order, src, sub) { const c = {}; order.forEach(v => { c[v] = 0; }); c[src] = 1; order.forEach(v => { edges.forEach(([a, b]) => { if (b === v && order.indexOf(a) < order.indexOf(v) && (!sub || (sub.has(a) && sub.has(v)))) c[v] += c[a]; }); }); return c; }
+  const MORD = [0, 1, 2, 3, 5, 4, 6, 7, 8];
+  const A_NODES = [1, 2, 3, 5], B_NODES = [4, 6, 7, 8];
+  const preds = (id, set) => ME.filter(([a, b]) => b === id && set.has(a)).map(e => e[0]);
+  const t2 = {
+    id: 'moon', num: 2, title: 'От Земли до Луны через пятёрочку',
+    story: '<p>Сколькими способами можно долететь с Земли до Луны, двигаясь вдоль стрелок через космические станции, если маршрут проходит через станцию номер <b>5</b>?</p><p class="muted">Считай маршруты по частям: сначала «от Земли до станции 5», потом «от станции 5 до Луны». Вводи числа в таблицы — каждая строка проверяется сразу.</p>',
+    hints: [
+      'Все маршруты должны пройти через станцию 5, поэтому задачу можно разрезать на две части: от Земли до 5 и от 5 до Луны.',
+      'Считай способы «добраться до станции»: число способов в станции равно сумме чисел у тех станций, откуда в неё идут стрелки. У станции 1 одна стрелка — из Земли: 1 способ.',
+      'Стрелки 1 → 4 и 3 → 4 нам не нужны: из станции 4 в пятёрку попасть нельзя (стрелка 5 → 4 идёт в другую сторону). Они ведут мимо пятёрки.',
+      'Способов до станции 5 — 5, от 5 до Луны — 4. Части идут одна за другой, поэтому способы не складывают, а перемножают: 5 · 4.'
+    ],
+    build(play, api) {
+      const doneA = new Set(), doneB = new Set(); let hlE = new Set(), hlN = new Set(), showCut = false;
+      const gbox = h('div', { class: 'dagbox' });
+      const cut = cutSet(ME, 0, 5);
+      const drawG = () => gbox.replaceChildren(dagSvg(MN, ME, { hlEdges: hlE, hlNodes: hlN, cut: showCut ? cut : null, label: 'Схема станций: Земля, станции 1–7, Луна' }));
+      drawG();
+      const tableA = [], tableB = [];
+      const mkRows = (nodes, set, src, store, doneSet, onAll, label) => {
+        const vals = waysFrom(ME, MORD, src, set);
+        return nodes.map(id => {
+          const ps = preds(id, set);
+          const inp = h('input', { class: 'field cnt', type: 'number', inputmode: 'numeric', 'aria-label': `Способов до ${id === 8 ? 'Луны' : 'станции ' + id}` });
+          const f = h('span', { class: 'rf small' });
+          const chk = () => {
+            const v = num(inp.value); if (isNaN(v)) { f.className = 'rf small bad'; f.textContent = 'Впиши число.'; return; }
+            hlN = new Set([id, ...ps]); hlE = new Set(ps.map(p => p + '>' + id)); drawG();
+            const gn = (p) => p === 0 ? 'Земли' : p === 8 ? 'Луны' : 'станции ' + p; const expl = ps.map(p => `${gn(p)} — ${vals[p]}`).join(' и ');
+            if (v === vals[id]) { inp.className = 'field cnt ok'; inp.readOnly = true; f.className = 'rf small ok'; f.textContent = '✓ ' + ps.map(p => vals[p]).join(' + ') + ' = ' + v; doneSet.add(id); if (doneSet.size === nodes.length) onAll(); return; }
+            api.attempt(); inp.className = 'field cnt bad'; f.className = 'rf small bad';
+            f.textContent = ps.length === 1 ? `В эту точку идёт одна стрелка — из ${gn(ps[0])} (там ${vals[ps[0]]}). Сколько способов будет здесь?` : `Стрелки идут из ${ps.map(gn).join(' и ')}. Сложи числа у них: ${expl.replace(/ — /g, ' = ')}.`;
+          };
+          onEnter(inp, chk);
+          const who = id === 8 ? 'Луна' : 'Станция ' + id;
+          return h('div', { class: 'cr' }, h('span', { class: 'cn' }, who), h('span', { class: 'cf small' }, 'стрелки идут из: ' + ps.map(p => p === 0 ? 'Земли' : 'ст. ' + p).join(', ')), inp, h('button', { class: 'btn sm', type: 'button', onclick: chk }, 'ОК'), f);
+        });
+      };
+      const bBox = h('div', { class: 'stage', hidden: true });
+      const aBox = h('div', { class: 'stage' });
+      const finalBox = h('div', { class: 'stage', hidden: true });
+      aBox.append(h('p', { class: 'sub-h' }, 'Шаг 1. Сколько способов добраться от Земли до каждой станции (до станции 5)'), ...mkRows(A_NODES, new Set([0, 1, 2, 3, 5]), 0, tableA, doneA, () => { bBox.hidden = false; api.say('Первая часть готова: до станции 5 — 5 способов. Теперь вторая часть.', 'ok'); }, 'A'));
+      bBox.append(h('p', { class: 'sub-h' }, 'Шаг 2. Теперь стартуем со станции 5 (там 1 способ). Сколько способов добраться до остальных?'), ...mkRows(B_NODES, new Set([5, 4, 6, 7, 8]), 5, tableB, doneB, () => { finalBox.hidden = false; api.say('Обе части готовы: 5 способов до станции 5 и 4 способа от неё до Луны.', 'ok'); }, 'B'));
+      const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Всего способов' });
+      const fin = () => {
+        const v = num(inp.value); if (isNaN(v)) { api.say('Впиши число способов.', 'bad'); return; }
+        if (v === 20) { inp.className = 'field ok'; api.solve('Верно! 5 · 4 = 20 способов.'); return; }
+        api.attempt(); inp.className = 'field bad';
+        api.say(v === 9 ? '9 = 5 + 4: ты сложил(а) две части. Но каждый из 5 путей до станции 5 можно продолжить любым из 4 путей до Луны — части надо умножать.' : v === 28 ? '28 — это все маршруты от Земли до Луны, в том числе мимо пятёрки. Нужны только те, что проходят через станцию 5.' : v === 5 || v === 4 ? 'Это только одна из двух частей. Всего способов — произведение числа способов в первой и во второй части.' : 'Нет. Первая часть даёт 5 способов, вторая — 4. Как их объединить: сложить или умножить?', 'bad');
+      };
+      onEnter(inp, fin);
+      finalBox.append(h('p', { class: 'sub-h' }, 'Шаг 3. Сколько способов всего?'), h('div', { class: 'answer-row' }, h('span', { class: 'lbl' }, '5 · 4 ='), inp, h('button', { class: 'btn primary', type: 'button', onclick: fin }, 'Проверить')));
+      const tgl = h('input', { type: 'checkbox', id: 'cut-show', onchange: function () { showCut = this.checked; drawG(); } });
+      play.append(h('div', { class: 'stage' }, gbox, h('label', { class: 'small row', for: 'cut-show' }, tgl, 'Показать стрелки, которые идут мимо станции 5'), aBox, bBox, finalBox));
+    },
+    explain() {
+      return h('div', null,
+        h('p', null, h('b', null, 'Часть 1: от Земли до 5. '), 'Станция 1: 1. Станция 2: из Земли (1) и из 1 (1) = 2. Станция 3: из 1 (1) и из 2 (2) = 3. Станция 5: из 2 (2) и из 3 (3) = 5.'),
+        h('p', null, h('b', null, 'Часть 2: от 5 до Луны. '), 'Станция 5: 1. Станция 4: из 5 (1) = 1. Станция 6: из 4 (1) и из 5 (1) = 2. Станция 7: из 5 = 1. Луна: 1 + 2 + 1 = 4.'),
+        h('p', null, h('b', null, 'Всего: '), '5 · 4 = 20 способов.'),
+        h('p', { class: 'small muted' }, 'В оригинальном решении считают иначе, «от Луны»: через 4 — 5 способов, через 6 — 10, через 7 — 5; 5 + 10 + 5 = 20. Получается то же самое. Стрелки 1 → 4 и 3 → 4 идут мимо пятёрки, из станции 4 нельзя вернуться в 5, поэтому такие маршруты не считаем. Если считать все маршруты подряд, получится 28 — это типичная ошибка.'));
+    },
+    practiceTitle: 'Ещё потренироваться: другие схемы',
+    practice(body) {
+      const mount = h('div'), f = h('p', { class: 'fb', role: 'status' });
+      const mkGraph = () => {
+        for (let t = 0; t < 500; t++) {
+          /* уровни: 0 старт | 1,2 | 3,4 | 5,6 | 7 финиш */
+          const lv = [[0], [1, 2], [3, 4], [5, 6], [7]]; const edges = [];
+          for (let i = 0; i < lv.length - 1; i++) lv[i + 1].forEach(b => { const k = lv[i].length === 1 ? 1 : rnd(1, 2); shuffle(lv[i]).slice(0, k).forEach(a => edges.push([a, b])); });
+          lv[1].concat(lv[2]).concat(lv[3]).forEach(a => { if (!edges.some(e => e[0] === a)) edges.push([a, pick(lv[lv.findIndex(l => l.includes(a)) + 1])]); });
+          for (let k = 0; k < 2; k++) { const li = rnd(1, 2), a = pick(lv[li]), b = pick(lv[li + 2]); if (!edges.some(e => e[0] === a && e[1] === b)) edges.push([a, b]); }
+          const pos = { 0: [24, 110], 7: [376, 110], 1: [100, 55], 2: [100, 165], 3: [190, 55], 4: [190, 165], 5: [280, 55], 6: [280, 165] };
+          const nodes = Object.keys(pos).map(k => ({ id: +k, x: pos[k][0], y: pos[k][1], inside: (+k === 0 || +k === 7) ? '' : String(k), label: +k === 0 ? 'Земля' : +k === 7 ? 'Луна' : '', lp: 'd', end: +k === 0 || +k === 7 }));
+          const dist = (p, a, b) => { const dx = b.x - a.x, dy = b.y - a.y, L2 = dx * dx + dy * dy; let u = ((p.x - a.x) * dx + (p.y - a.y) * dy) / L2; u = Math.max(0, Math.min(1, u)); return Math.hypot(p.x - (a.x + u * dx), p.y - (a.y + u * dy)); };
+          if (edges.some(([a, b]) => nodes.some(p => p.id !== a && p.id !== b && dist(p, nodes[a], nodes[b]) < 20))) continue;
+          const must = pick([3, 4, 5, 6]); const ord = [0, 1, 2, 3, 4, 5, 6, 7];
+          const A = waysFrom(edges, ord, 0, null)[must]; const sub = reach(edges, must);
+          const Bv = waysFrom(edges, ord, must, sub)[7];
+          const upSet = new Set([must]); let ch = true; while (ch) { ch = false; edges.forEach(([a, b]) => { if (upSet.has(b) && !upSet.has(a)) { upSet.add(a); ch = true; } }); }
+          const ansV = A * Bv; if (ansV < 4 || ansV > 60 || A < 2 || Bv < 2) continue;
+          nodes.forEach(n => { n.must = n.id === must; });
+          return { nodes, edges, must, A, B: Bv, ans: ansV, cut: cutSet(edges, 0, must), all: waysFrom(edges, ord, 0, null)[7] };
+        }
+        return null;
+      };
+      const gen = () => {
+        const g = mkGraph(); f.textContent = ''; f.className = 'fb';
+        const inp = h('input', { class: 'field', type: 'number', inputmode: 'numeric', 'aria-label': 'Число способов' }); const sol = h('div');
+        const chk = () => { const v = num(inp.value); if (isNaN(v)) { f.className = 'fb bad'; f.textContent = 'Впиши число.'; return; }
+          if (v === g.ans) { f.className = 'fb ok'; f.textContent = 'Верно!'; K.burst(f); }
+          else { f.className = 'fb bad'; f.textContent = v === g.all ? 'Это все маршруты от Земли до Луны. А нужны только те, что проходят через станцию ' + g.must + '.' : v === g.A + g.B ? 'Две части маршрута надо не складывать, а умножать.' : 'Нет. Посчитай отдельно «от Земли до станции ' + g.must + '» и «от станции ' + g.must + ' до Луны», потом перемножь.'; } };
+        onEnter(inp, chk);
+        mount.replaceChildren(h('div', { class: 'dagbox' }, dagSvg(g.nodes, g.edges, { hlNodes: new Set([g.must]) })),
+          h('p', null, `Сколькими способами можно долететь с Земли до Луны вдоль стрелок, если маршрут проходит через станцию ${g.must}?`),
+          h('div', { class: 'answer-row' }, inp, h('button', { class: 'btn primary', type: 'button', onclick: chk }, 'Проверить'),
+            h('button', { class: 'btn ghost', type: 'button', onclick: () => { sol.replaceChildren(h('p', { class: 'small muted' }, `Земля → станция ${g.must}: ${g.A} ${pl(g.A, 'способ', 'способа', 'способов')}; станция ${g.must} → Луна: ${g.B} ${pl(g.B, 'способ', 'способа', 'способов')}. Всего ${g.A} · ${g.B} = ${g.ans}. (Все маршруты без условия: ${g.all}.)`), dagSvg(g.nodes, g.edges, { cut: g.cut, hlNodes: new Set([g.must]) }), h('p', { class: 'small muted' }, 'Красным показаны стрелки, которые идут мимо станции — по ним маршрут не подходит.')); } }, 'Показать решение')), sol);
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другая схема')); gen();
+    }
+  };
+
+  /* ================= Задача 3. Шахматный робот ================= */
+  const FACE = [{ k: 'up', sym: '↑', name: 'вверх', v: [0, 1] }, { k: 'right', sym: '→', name: 'вправо', v: [1, 0] }, { k: 'down', sym: '↓', name: 'вниз', v: [0, -1] }, { k: 'left', sym: '←', name: 'влево', v: [-1, 0] }];
+  const LET = 'ABCDEFGH';
+  const cellName = (c, r) => LET[c] + (r + 1);
+  /* команды: 1 — вперёд, 2 — влево, 3 — вправо (шаг в сторону, без поворота) */
+  function simRobot(start, cmds, face) {
+    let [c, r] = start; const [fx, fy] = face.v; const path = [[c, r]];
+    for (let i = 0; i < cmds.length; i++) {
+      const k = cmds[i]; const d = k === '1' ? [fx, fy] : k === '2' ? [-fy, fx] : [fy, -fx];
+      c += d[0]; r += d[1]; path.push([c, r]);
+      if (c < 0 || c > 7 || r < 0 || r > 7) return { path, out: i + 1, end: null };
+    }
+    return { path, out: null, end: [c, r] };
+  }
+  const CELL = 33, PAD = 22;
+  function boardSvg(start, res, steps) {
+    const N = 8, S = N * CELL, W = S + PAD * 2;
+    const X = (c) => PAD + c * CELL + CELL / 2, Y = (r) => PAD + (N - 1 - r) * CELL + CELL / 2;
+    const svg = s('svg', { viewBox: `0 0 ${W} ${W}`, class: 'chess', role: 'img', 'aria-label': 'Шахматная доска 8 на 8 с путём робота' });
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) svg.append(s('rect', { x: PAD + c * CELL, y: PAD + (N - 1 - r) * CELL, width: CELL, height: CELL, class: (c + r) % 2 === 0 ? 'cd' : 'cl' }));
+    for (let i = 0; i < N; i++) { svg.append(s('text', { x: X(i), y: W - 5, class: 'ax', text: LET[i] })); svg.append(s('text', { x: 9, y: Y(i) + 4, class: 'ax', text: String(i + 1) })); }
+    if (res) {
+      const pts = res.path.slice(0, steps + 1);
+      const clip = (p, i) => { let [c, r] = p; if (i === 0) return [X(c), Y(r)]; const [pc, pr] = pts[i - 1]; if (c < 0 || c > 7 || r < 0 || r > 7) { return [X(pc) + (c - pc) * CELL * 0.62, Y(pr) - (r - pr) * CELL * 0.62]; } return [X(c), Y(r)]; };
+      const xy = pts.map(clip);
+      if (xy.length > 1) svg.append(s('polyline', { points: xy.map(p => p.join(',')).join(' '), class: 'pth' }));
+      pts.forEach((p, i) => { const inb = p[0] >= 0 && p[0] <= 7 && p[1] >= 0 && p[1] <= 7; if (i === 0) return; if (inb) svg.append(s('circle', { cx: xy[i][0], cy: xy[i][1], r: i === pts.length - 1 ? 9 : 4, class: i === pts.length - 1 ? 'rb' : 'pt' })); else { const [x, y] = xy[i]; svg.append(s('path', { d: `M${x - 6} ${y - 6}L${x + 6} ${y + 6}M${x + 6} ${y - 6}L${x - 6} ${y + 6}`, class: 'xo' })); } });
+      svg.append(s('circle', { cx: X(start[0]), cy: Y(start[1]), r: 7, class: 'st' }));
+      svg.append(s('text', { x: X(start[0]), y: Y(start[1]) + 3.5, class: 'stl', text: 'С' }));
+    } else {
+      svg.append(s('circle', { cx: X(start[0]), cy: Y(start[1]), r: 9, class: 'rb' }));
+    }
+    return svg;
+  }
+  const parseCells = (str) => {
+    const map = { 'А': 'A', 'В': 'B', 'С': 'C', 'Д': 'D', 'Е': 'E', 'Н': 'H', 'Г': 'G', 'Ф': 'F' };
+    const t = String(str).toUpperCase().replace(/[АВСДЕНГФ]/g, ch => map[ch]);
+    const m = t.match(/[A-H]\s*[1-8]/g) || []; return [...new Set(m.map(x => x.replace(/\s/g, '')))].sort();
+  };
+  const MAIN = { start: [3, 5], cmds: '123123221133' };
+  const t3 = {
+    id: 'robot', num: 3, title: 'Шахматный робот',
+    story: '<p>Робот умеет выполнять три команды: <b>1</b> — вперёд на один шаг, <b>2</b> — влево на один шаг, <b>3</b> — вправо на один шаг (это шаги в сторону, робот не поворачивается). В начале пути он стоит на шахматной доске в клетке <b>D6</b>. Направление его взгляда <b>неизвестно</b>.</p><p>В каких клетках может оказаться робот, выполнив последовательность команд <b class="mono">123123221133</b>? Ответ объясните.</p><p class="muted">Выбери, куда смотрит робот, и запусти программу. Если робот выходит за доску, программа считается невыполнимой.</p>',
+    hints: [
+      'Робот может смотреть в одну из четырёх сторон: вверх, вправо, вниз или влево. Для каждой надо выполнить всю программу — это четыре «прогона».',
+      'Нарисуй путь по командам. Если смотришь вверх, то «1» — вверх, «2» — шаг влево, «3» — шаг вправо. Когда робот смотрит вправо, «вперёд» уже вправо, а «влево» — вверх.',
+      'Если на каком-то шаге робот вышел за край доски, этот вариант не подходит — клетки в ответ не пишем.',
+      'Два направления из четырёх выводят робота за доску. Оставшиеся два дают две клетки: одна справа от начала, другая внизу.'
+    ],
+    build(play, api) {
+      let fi = 0, steps = 0, res = simRobot(MAIN.start, MAIN.cmds, FACE[0]); const done = {};
+      const gb = h('div', { class: 'dagbox' }), msg = h('p', { class: 'mz-msg', role: 'status', 'aria-live': 'polite' }, '');
+      const cmdRow = h('div', { class: 'cmds', role: 'img', 'aria-label': 'Команды: ' + MAIN.cmds.split('').join(' ') });
+      const tbl = h('div', { class: 'rtab' });
+      const fb = FACE.map((f, i) => h('button', { class: 'tog', type: 'button', 'aria-pressed': String(i === 0), 'aria-label': 'Смотрит ' + f.name, onclick: () => setFace(i) }, f.sym + ' ' + f.name));
+      const draw = () => {
+        gb.replaceChildren(boardSvg(MAIN.start, res, steps));
+        cmdRow.replaceChildren(...MAIN.cmds.split('').map((c, i) => h('span', { class: 'cm' + (i < steps ? ' dn' : '') + (i === steps - 1 ? ' cur' : '') }, c)));
+        fb.forEach((b, i) => b.setAttribute('aria-pressed', String(i === fi)));
+        tbl.replaceChildren(...FACE.map((f, i) => h('div', { class: 'rrow' + (done[i] ? (done[i].end ? ' okc' : ' outc') : '') }, h('span', null, f.sym + ' ' + f.name), h('span', { class: 'mono' }, done[i] ? (done[i].end ? cellName(...done[i].end) : 'за доской (шаг ' + done[i].out + ')') : '?'))));
+      };
+      const setFace = (i) => { fi = i; steps = 0; res = simRobot(MAIN.start, MAIN.cmds, FACE[i]); msg.className = 'mz-msg'; msg.textContent = `Робот смотрит ${FACE[i].name}. Нажми «Шаг» или «Сразу до конца».`; draw(); };
+      const report = () => {
+        const k = steps; const c = MAIN.cmds[k - 1]; const p = res.path[k];
+        const what = c === '1' ? 'вперёд' : c === '2' ? 'влево' : 'вправо';
+        if (res.out != null && k >= res.out) { msg.className = 'mz-msg bad'; msg.textContent = `Шаг ${k}, команда ${c} (${what}): робот выходит за доску! Это направление не подходит.`; done[fi] = res; }
+        else if (k === MAIN.cmds.length) { msg.className = 'mz-msg ok'; msg.textContent = `Программа выполнена. Робот в клетке ${cellName(...res.end)}.`; done[fi] = res; }
+        else { msg.className = 'mz-msg'; msg.textContent = `Шаг ${k}, команда ${c} (${what}): клетка ${cellName(...p)}.`; }
+      };
+      const stepOnce = () => { const lim = res.out != null ? res.out : MAIN.cmds.length; if (steps >= lim) return; steps++; report(); draw(); };
+      const toEnd = () => { steps = res.out != null ? res.out : MAIN.cmds.length; report(); draw(); };
+      const inp = h('input', { class: 'field wide', type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', 'aria-label': 'Клетки через запятую' });
+      const check = () => {
+        const got = parseCells(inp.value);
+        if (!got.length) { api.attempt(); api.say('Впиши клетки, например: A1, B2 (буква и цифра).', 'bad'); return; }
+        const want = ['D2', 'H6'];
+        if (got.join() === want.join()) { api.solve('Верно! Робот может оказаться в H6 (если смотрел вправо) или в D2 (если смотрел вниз). Вверх и влево — выход за доску.'); return; }
+        api.attempt();
+        const extra = got.filter(x => !want.includes(x)), miss = want.filter(x => !got.includes(x));
+        if (!extra.length && miss.length) api.say(got.length === 1 ? `Клетка ${got[0]} верная, но направление взгляда неизвестно: надо проверить все четыре. Есть ещё одна клетка.` : 'Не все клетки найдены. Проверь все четыре направления.', 'bad');
+        else if (extra.length) api.say(`${extra[0]} — не конечная клетка ни при одном направлении. Запусти программу для каждого из четырёх направлений и посмотри на итоги в таблице. Если робот вышел за доску, клетку не пишем.`, 'bad');
+      };
+      onEnter(inp, check);
+      setFace(0); msg.textContent = 'Выбери направление взгляда робота и запусти программу.';
+      play.append(h('div', { class: 'stage' },
+        h('div', { class: 'row' }, h('span', { class: 'lbl' }, 'Старт: D6'), h('span', { class: 'mono small' }, 'Программа:')), cmdRow,
+        h('p', { class: 'sub-h' }, 'Куда смотрит робот?'), h('div', { class: 'opts' }, ...fb),
+        gb, msg,
+        h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: stepOnce }, 'Шаг ▸'), h('button', { class: 'btn', type: 'button', onclick: toEnd }, 'Сразу до конца'), h('button', { class: 'btn ghost', type: 'button', onclick: () => setFace(fi) }, 'Сначала')),
+        h('p', { class: 'sub-h' }, 'Итоги по направлениям'), tbl,
+        h('p', { class: 'sub-h' }, 'Ответ: в каких клетках может оказаться робот?'),
+        h('div', { class: 'answer-row' }, inp, h('button', { class: 'btn primary', type: 'button', onclick: check }, 'Проверить'))));
+    },
+    explain() {
+      const rows = FACE.map(f => { const r = simRobot(MAIN.start, MAIN.cmds, f); return [f, r]; });
+      return h('div', null,
+        h('div', { class: 'hscroll' }, h('table', { class: 'tbl left' }, h('thead', null, h('tr', null, h('th', null, 'Смотрит'), h('th', null, 'Что происходит'), h('th', null, 'Итог'))),
+          h('tbody', null, ...rows.map(([f, r]) => h('tr', null, h('td', null, f.sym + ' ' + f.name), h('td', null, r.path.slice(1, (r.out || 12) + 1).map((p, i) => (p[0] < 0 || p[0] > 7 || p[1] < 0 || p[1] > 7) ? 'за доской' : cellName(...p)).join(' → ')), h('td', null, r.end ? cellName(...r.end) : 'выход за доску на шаге ' + r.out)))))),
+        h('p', null, h('b', null, 'Ответ: '), 'H6 или D2.'),
+        h('p', { class: 'small muted' }, 'Идея: направление неизвестно, поэтому нужно разобрать каждый из четырёх случаев отдельно. «Влево» и «вправо» считаем относительно взгляда робота, поэтому у разных направлений они направлены по-разному. Если в какой-то момент робот выходит за доску — этот случай не подходит. Типичные ошибки: проверить только одно направление или считать «влево» всегда «налево на доске».'));
+    },
+    practiceTitle: 'Ещё потренироваться: другие программы',
+    practice(body) {
+      const mount = h('div'), f = h('p', { class: 'fb', role: 'status' });
+      const gen = () => {
+        let q;
+        for (let t = 0; t < 500; t++) {
+          const len = rnd(7, 11), cmds = Array.from({ length: len }, () => String(rnd(1, 3))).join(''), start = [rnd(1, 6), rnd(1, 6)];
+          const rs = FACE.map(fc => simRobot(start, cmds, fc)); const ok = rs.filter(r => r.end);
+          if (ok.length >= 2 && ok.length <= 3) { const set = [...new Set(ok.map(r => cellName(...r.end)))].sort(); q = { start, cmds, rs, set }; break; }
+        }
+        if (!q) { const rs = FACE.map(fc => simRobot(MAIN.start, MAIN.cmds, fc)); q = { start: MAIN.start, cmds: MAIN.cmds, rs, set: ['D2', 'H6'] }; }
+        f.textContent = ''; f.className = 'fb';
+        const inp = h('input', { class: 'field wide', type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', 'aria-label': 'Клетки' }); const sol = h('div');
+        const chk = () => { const got = parseCells(inp.value); if (!got.length) { f.className = 'fb bad'; f.textContent = 'Впиши клетки, например: B2, C3.'; return; }
+          if (got.join() === q.set.join()) { f.className = 'fb ok'; f.textContent = 'Верно!'; K.burst(f); }
+          else { f.className = 'fb bad'; f.textContent = 'Нет. Разбери четыре направления взгляда по очереди; если робот выходит за доску — такой случай не подходит.'; } };
+        onEnter(inp, chk);
+        mount.replaceChildren(h('p', null, `Робот стоит в клетке ${cellName(...q.start)}, направление взгляда неизвестно. Команды: 1 — вперёд, 2 — влево, 3 — вправо (на один шаг). В каких клетках он может оказаться после программы `, h('b', { class: 'mono' }, q.cmds), '? Впиши клетки через запятую.'),
+          h('div', { class: 'answer-row' }, inp, h('button', { class: 'btn primary', type: 'button', onclick: chk }, 'Проверить'),
+            h('button', { class: 'btn ghost', type: 'button', onclick: () => { sol.replaceChildren(h('p', { class: 'small muted' }, FACE.map((fc, i) => `${fc.sym} ${q.rs[i].end ? cellName(...q.rs[i].end) : 'выход за доску на шаге ' + q.rs[i].out}`).join('; ') + '. Ответ: ' + q.set.join(', ') + '.')); } }, 'Показать решение')), sol);
+      };
+      body.append(mount, f, h('button', { class: 'btn ghost', type: 'button', onclick: gen }, 'Другая программа')); gen();
+    }
+  };
+
+  K.App({
+    title: 'Олимпиада KIBERone · неделя 9',
+    sub: 'Средняя группа, 9–11 лет',
+    intro: 'Три задачи: расписание каникул в Уфе, маршруты от Земли до Луны и шахматный робот. У каждой есть подсказки (открывай по одной), мгновенная проверка и разбор. Решённые задачи отмечаются звёздочкой на вкладке.',
+    tasks: [t1, t2, t3]
+  });
+})();
+
+</script>
+
+</body></html>
