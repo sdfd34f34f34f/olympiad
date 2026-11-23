@@ -1,0 +1,1149 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Экспресс 15 минут · 9–11 лет</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+<style>
+
+/* ===== общий каркас: все цвета берутся из токенов страницы ===== */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs);line-height:1.5;padding-inline:16px;padding-block:20px 72px}
+.wrap{max-width:var(--maxw);margin-inline:auto;display:grid;gap:20px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.18;margin:0;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:16px;align-items:center}
+.top .mascot{flex:none;width:76px;height:auto}
+.top h1{font-size:clamp(1.4rem,5.4vw,2.2rem)}
+.top .sub{color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;display:flex;align-items:center;gap:8px;padding:.55em 1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);font-weight:700;min-height:44px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tab .star{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.55}
+.tab.done .star{fill:var(--star);stroke:var(--edge);opacity:1}
+
+.task{background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius-lg);padding:clamp(14px,3.6vw,26px);display:grid;gap:18px;box-shadow:var(--card-shadow);min-width:0}
+.task-head{display:flex;gap:12px;align-items:center}
+.task-head h2{font-size:clamp(1.25rem,4.6vw,1.7rem);flex:1;min-width:0}
+.num{flex:none;display:grid;place-items:center;width:2.2em;height:2.2em;border-radius:50%;background:var(--accent2);color:var(--on-accent2);font-family:var(--f-display);font-weight:800}
+.badge-done{display:none;font-weight:800;color:var(--good);border:var(--bw) solid var(--good);border-radius:999px;padding:.1em .7em;font-size:.85em}
+.task.solved .badge-done{display:inline-block}
+.story{max-width:68ch}
+.story>*+*{margin-top:10px}
+.story b{font-weight:800}
+.play{display:grid;gap:14px;min-width:0}
+.box{background:var(--surface2);border:var(--bw-thin) solid var(--line);border-radius:var(--radius);padding:clamp(12px,3vw,18px);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88em}
+.mono{font-family:var(--f-mono)}
+
+.btn{cursor:pointer;font-weight:700;padding:.6em 1.1em;border-radius:var(--radius);border:var(--bw) solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 var(--lift) 0 var(--edge);transition:transform .08s,box-shadow .08s,background .15s;min-height:44px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(var(--lift));box-shadow:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{box-shadow:none;border-style:dashed}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{min-height:38px;padding:.35em .8em;font-size:.92em}
+.field{border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--field);padding:.5em .7em;min-height:44px;min-width:0}
+input.field[type=number]{width:7em;font-weight:800;font-family:var(--f-mono)}
+textarea.field{width:100%;resize:vertical;min-height:84px}
+.field.ok,.cell.ok{border-color:var(--good);background:var(--good-bg)}
+.field.bad,.cell.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+.fb{min-height:1.6em;font-weight:700}
+.fb:empty{min-height:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb.info{color:var(--ink)}
+.fb::first-letter{text-transform:uppercase}
+
+.helpers{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hints{display:grid;gap:10px}
+.bubble{display:flex;gap:10px;align-items:flex-start;animation:pop .25s ease-out}
+.bubble .mascot{flex:none;width:44px;height:auto}
+.bubble .say{background:var(--hint-bg);border:var(--bw-thin) solid var(--hint-edge);border-radius:var(--radius);padding:.55em .9em;position:relative;min-width:0}
+.bubble .say b{font-family:var(--f-display)}
+.explain{border:var(--bw) solid var(--good);background:var(--good-bg);border-radius:var(--radius);padding:clamp(12px,3vw,20px);display:grid;gap:10px;animation:pop .3s ease-out}
+.explain h3{font-size:1.1rem}
+.explain ol,.explain ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.explain code,.story code,.hints code{font-family:var(--f-mono);font-size:.92em;background:var(--code-inline);padding:.05em .35em;border-radius:6px}
+
+details.practice{border:var(--bw-thin) dashed var(--line-strong);border-radius:var(--radius);padding:.2em 1em}
+details.practice>summary{cursor:pointer;font-weight:800;padding:.7em 0;min-height:44px;list-style-position:inside}
+details.practice[open]>summary{border-bottom:var(--bw-thin) dashed var(--line-strong);margin-bottom:12px}
+details.practice .pbody{display:grid;gap:14px;padding-bottom:14px}
+
+.next{justify-self:start}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.confetti{position:fixed;z-index:50;pointer-events:none;width:10px;height:14px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.confetti{display:none}}
+
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:var(--bw) solid var(--edge);background:var(--surface);cursor:pointer;font-weight:800;font-size:1.2em;line-height:1;padding:0}
+.stepper button:hover{background:var(--surface2)}
+.stepper output{min-width:2.6em;text-align:center;font-family:var(--f-mono);font-weight:800;font-size:1.2em}
+
+.hscroll{overflow-x:auto;max-width:100%}
+table.tbl{border-collapse:collapse;width:100%}
+table.tbl th,table.tbl td{border:var(--bw-thin) solid var(--line-strong);padding:.4em .6em;text-align:center}
+table.tbl th{background:var(--surface2)}
+
+
+/* Макет: тетрадь в клетку, строгие контуры без теней, акцент бирюзовый и оранжевый. Лаборатория логики для 9–11 лет. */
+:root{
+  --bg:#EAF4F1;--surface:#FFFFFF;--surface2:#F2F9F7;--ink:#0F2F2A;--muted:#44625C;
+  --edge:#0F2F2A;--line:#C6DDD7;--line-strong:#86B3A9;--grid:rgba(15,80,70,.07);
+  --accent:#0B7E6F;--on-accent:#FFFFFF;--accent2:#F26B21;--on-accent2:#1A0A00;
+  --good:#18803C;--good-bg:#DFF4E4;--bad:#BF3520;--bad-bg:#FCE7E1;--star:#F5B21B;
+  --field:#FFFFFF;--hint-bg:#FFF0DB;--hint-edge:#EBA45E;--code-inline:#DDEDE9;--focus:#1B62E0;
+  --s1:#F26B21;--s2:#0B7E6F;--s3:#3C6FD8;--s4:#E5A50A;
+  --sock-b:#2F6FE0;--sock-g:#2EA44F;--sock-r:#D93A30;
+  --card-shadow:none;
+  --radius:10px;--radius-lg:16px;--bw:2px;--bw-thin:1.5px;--lift:0px;--fs:17px;--maxw:900px;
+  --f-display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --f-body:'Onest','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1B19;--surface:#112826;--surface2:#16322F;--ink:#E4F3EF;--muted:#93B6AE;
+  --edge:#6FCDBC;--line:#244843;--line-strong:#3F7A70;--grid:rgba(120,220,200,.06);
+  --accent:#2BC4AD;--on-accent:#04201C;--accent2:#FF8A4C;--on-accent2:#1A0A00;
+  --good:#63DC8B;--good-bg:#12351F;--bad:#FF917D;--bad-bg:#44201A;--star:#F5B21B;
+  --field:#0A1B19;--hint-bg:#3A2A14;--hint-edge:#B87A3C;--code-inline:#1F4A44;--focus:#7DB2FF;
+  --s1:#FF8A4C;--s2:#2BC4AD;--s3:#7FA3FF;--s4:#F2BC2D;
+  --sock-b:#5B93FF;--sock-g:#4CC56C;--sock-r:#FF6A5E;color-scheme:dark}
+
+body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.top h1{font-size:clamp(1.15rem,4.6vw,1.8rem);font-weight:700}
+.task-head h2{font-size:clamp(1.05rem,3.9vw,1.4rem);font-weight:700}
+.num{border-radius:8px}
+.tab{border-radius:8px}
+.intro{border-color:var(--hint-edge);background:var(--hint-bg)}
+.btn.primary{border-color:var(--accent)}
+.bubble .mascot{display:none}
+
+
+/* ===== банк задач: общая часть ===== */
+.practice-wrap{display:grid;gap:14px;min-width:0}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:8px}
+.chip{cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left;min-height:48px;padding:.4em .7em;border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--surface);font-weight:700;font-size:.9em;line-height:1.15}
+.chip .cn{flex:none;display:grid;place-items:center;width:1.8em;height:1.8em;border-radius:50%;background:var(--surface2);border:var(--bw-thin) solid var(--line-strong);font-family:var(--f-mono);font-size:.85em}
+.chip .ct{min-width:0;overflow-wrap:anywhere}
+.chip[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
+.chip[aria-selected="true"] .cn{background:var(--accent2);color:var(--on-accent2);border-color:var(--accent2)}
+.chip.done .cn{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.chip.done .cn::after{content:"✓"}
+.chip.done .cn{font-size:0}
+.chip.done .cn::after{font-size:.95rem}
+.chip.done[aria-selected="true"] .cn{background:var(--accent2);color:var(--on-accent2)}
+.ansrow{align-items:flex-start}
+.ansrow.col{flex-direction:column;align-items:flex-start}
+.ansrow.col .inw{width:100%;max-width:420px}
+.inw{min-width:0;max-width:100%}
+.inw .row{gap:12px}
+.lab{display:flex;gap:8px;align-items:center}
+.field.fnum{width:7.5em;font-weight:800;font-family:var(--f-mono)}
+.field,input.field,textarea.field{color:var(--ink);caret-color:var(--ink);-webkit-text-fill-color:var(--ink)}
+.field::placeholder{color:var(--muted);opacity:1;-webkit-text-fill-color:var(--muted)}
+.field:-webkit-autofill{-webkit-text-fill-color:var(--ink);box-shadow:0 0 0 100px var(--field) inset}
+.tf-opt{color:var(--ink)}
+.field.txt{width:min(18em,100%)}
+.badge-cnt{font-weight:800;font-size:.85em;color:var(--good);border:var(--bw-thin) solid var(--good);border-radius:999px;padding:.1em .7em;white-space:nowrap}
+.badge-cnt:empty{display:none}
+.sub-h{font-family:var(--f-mono);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.task-head h2{overflow-wrap:anywhere}
+.story table{border-collapse:collapse;max-width:100%}
+.story table th,.story table td{border:var(--bw-thin) solid var(--line-strong);padding:.3em .55em;text-align:center}
+.story svg{max-width:100%;height:auto}
+.story .pre{font-family:var(--f-mono);white-space:pre-wrap;background:var(--code-inline);border-radius:var(--radius);padding:.6em .8em;display:block;overflow-x:auto}
+.story ul,.story ol{margin:.2em 0;padding-left:1.3em}
+.story .cl{margin:.2em 0;padding-left:1.3em}
+.story .big{font-size:1.5em;line-height:1.3;letter-spacing:.08em}
+.story .gridw{overflow-x:auto;max-width:100%}
+.story .gr{display:inline-grid;gap:3px}
+.story .gc{display:grid;place-items:center;width:clamp(30px,9.4vw,46px);height:clamp(30px,9.4vw,46px);border:var(--bw-thin) solid var(--line-strong);border-radius:6px;background:var(--surface);font-weight:800;font-family:var(--f-mono)}
+.story .gc.w{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.story .gc.s{background:var(--accent2);color:var(--on-accent2)}
+.story .gc.e{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.story .gc.q{background:var(--hint-bg);border-color:var(--hint-edge)}
+.explain p{margin:0}
+.explain code{font-family:var(--f-mono)}
+
+/* ===== пробный вариант ===== */
+.variant{display:grid;gap:16px;min-width:0}
+.rules{margin:0;padding-left:1.2em;display:grid;gap:8px;max-width:68ch}
+.tf-test,.tf-res{display:grid;gap:14px;min-width:0}
+.tf-bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between;background:var(--surface);border:var(--bw) solid var(--edge);border-radius:var(--radius);padding:6px 12px}
+.tf-clock{font-weight:800;font-size:1.15em;white-space:nowrap;font-family:var(--f-mono)}
+.tf-bar.warn{border-color:var(--bad)}
+.tf-bar.warn .tf-clock{color:var(--bad)}
+.tf-prog{color:var(--muted);font-weight:700;font-size:.9em}
+.tf-dots{display:flex;gap:6px;flex-wrap:wrap}
+.tf-dot{cursor:pointer;min-width:44px;min-height:44px;border-radius:var(--radius);border:var(--bw-thin) solid var(--line-strong);background:var(--surface);font-weight:800;font-family:var(--f-mono)}
+.tf-dot.ans{background:var(--hint-bg);border-color:var(--edge)}
+.tf-dot.ans::after{content:"✓";font-size:.7em;margin-left:2px}
+.tf-dot[aria-current="step"]{background:var(--accent);color:var(--on-accent);border-color:var(--edge)}
+.tf-card{scroll-margin-top:80px}
+.tf-pts{flex:none;font-weight:800;font-size:.85em;color:var(--muted);border:var(--bw-thin) solid var(--line-strong);border-radius:999px;padding:.1em .7em;white-space:nowrap}
+.tf-nav{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.tf-confirm p{margin-bottom:10px;font-weight:700}
+.tf-opts{display:grid;gap:8px}
+.tf-opt{cursor:pointer;text-align:left;min-height:44px;padding:.55em 1em;border:var(--bw) solid var(--edge);border-radius:var(--radius);background:var(--surface);font-weight:700}
+.tf-opt::before{content:"○ ";font-weight:800}
+.tf-opt[aria-checked="true"]{background:var(--accent);color:var(--on-accent)}
+.tf-opt[aria-checked="true"]::before{content:"● "}
+.tf-score{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.tf-big{font-family:var(--f-display);font-weight:800;font-size:clamp(2rem,9vw,3.2rem);line-height:1.05}
+.tf-skills{display:grid;gap:12px}
+.tf-skill{display:grid;grid-template-columns:minmax(8em,12em) 1fr auto;gap:6px 12px;align-items:center}
+.tf-sn{font-weight:800}
+.tf-sv{font-weight:700;font-size:.9em;white-space:nowrap}
+.tf-meter{display:block;height:16px;border:var(--bw-thin) solid var(--edge);border-radius:999px;background:var(--surface2);overflow:hidden}
+.tf-meter i{display:block;height:100%;background:var(--good)}
+.tf-skill.mid .tf-meter i{background:var(--accent2)}
+.tf-skill.lo .tf-meter i{background:var(--bad)}
+@media (max-width:560px){.tf-skill{grid-template-columns:1fr auto}.tf-meter{grid-column:1/-1;order:3}}
+.tf-revs{display:grid;gap:8px}
+.tf-rev{border:var(--bw-thin) solid var(--line-strong);border-radius:var(--radius);background:var(--surface);min-width:0}
+.tf-rev>summary{cursor:pointer;display:grid;grid-template-columns:1.6em 1fr auto;gap:8px;align-items:center;padding:.6em .8em;min-height:44px;list-style:none}
+.tf-rev>summary::-webkit-details-marker{display:none}
+.tf-mk{font-weight:800;text-align:center}
+.tf-rev.ok .tf-mk{color:var(--good)}
+.tf-rev.bad .tf-mk{color:var(--bad)}
+.tf-rt{font-weight:700;min-width:0;overflow-wrap:anywhere}
+.tf-rs{font-size:.85em;color:var(--muted);font-weight:700;white-space:nowrap}
+.tf-revbody{display:grid;gap:10px;padding:0 .8em .8em;min-width:0}
+@media (max-width:420px){.tf-rev>summary{grid-template-columns:1.6em 1fr}.tf-rs{grid-column:2}}
+
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.card .ex{color:var(--muted);font-size:.92em;margin:0}
+.sheet-wrap{display:grid;gap:14px;min-width:0}
+.plan summary{cursor:pointer;font-weight:800;min-height:32px}
+.plan .rules{margin-top:10px}
+
+</style>
+<main id="app"></main>
+<script>window.PAGE_ID='expressb';</script>
+<script>
+/* ===== общее ядро: помощники, оболочка задания, навигация ===== */
+const K = (function () {
+  'use strict';
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(NS, tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.setAttribute('class', v);
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) { if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+    return el;
+  }
+
+  const PAGE = () => window.PAGE_ID || 'p';
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('olymp:' + PAGE() + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('olymp:' + PAGE() + ':' + k, JSON.stringify(v)); } catch (e) { /* хранилище может быть недоступно */ } }
+  };
+
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const onEnter = (el, fn) => el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function burst(anchor) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const cols = ['--accent', '--accent2', '--good', '--star'];
+    for (let i = 0; i < 26; i++) {
+      const c = h('i', { class: 'confetti' });
+      c.style.left = cx + 'px'; c.style.top = cy + 'px';
+      c.style.background = 'var(' + cols[i % cols.length] + ')';
+      document.body.append(c);
+      const ang = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - 60;
+      const anim = c.animate ? c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy + 140}px) rotate(${Math.random() * 540}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)' }) : null;
+      if (anim) anim.onfinish = () => c.remove(); else c.remove();
+    }
+  }
+
+  function mascot(mood) {
+    mood = mood || 'happy';
+    const mouths = { happy: 'M24 42 Q32 49 40 42', think: 'M25 44 H39', wow: 'M32 41 m-3.5 0 a3.5 4.5 0 1 0 7 0 a3.5 4.5 0 1 0 -7 0' };
+    const st = { stroke: 'var(--edge)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+    return s('svg', { viewBox: '0 0 64 62', class: 'mascot', 'aria-hidden': 'true' },
+      s('line', { x1: 32, y1: 4, x2: 32, y2: 13, ...st }),
+      s('circle', { cx: 32, cy: 5, r: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 3, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 53, y: 28, width: 8, height: 15, rx: 4, fill: 'var(--accent2)', ...st, 'stroke-width': 2.4 }),
+      s('rect', { x: 9, y: 13, width: 46, height: 44, rx: 15, fill: 'var(--accent)', ...st }),
+      s('rect', { x: 15, y: 21, width: 34, height: 28, rx: 10, fill: 'var(--surface)', ...st, 'stroke-width': 2.4 }),
+      s('circle', { cx: 25, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('circle', { cx: 39, cy: 32, r: 3.4, fill: 'var(--edge)' }),
+      s('path', { d: mouths[mood], fill: mood === 'wow' ? 'var(--edge)' : 'none', ...st, 'stroke-width': 2.6 })
+    );
+  }
+
+  function stepper(min, max, val, onChange, fmt) {
+    let v = val;
+    const out = h('output', { 'aria-live': 'polite' });
+    const draw = () => { out.textContent = fmt ? fmt(v) : String(v); };
+    const mk = (label, d, sign) => h('button', { type: 'button', 'aria-label': label, onclick: () => { const nv = Math.max(min, Math.min(max, v + d)); if (nv !== v) { v = nv; draw(); onChange(v); } } }, sign);
+    draw();
+    const el = h('span', { class: 'stepper' }, mk('меньше', -1, '−'), out, mk('больше', 1, '+'));
+    el.get = () => v; el.set = (n) => { v = n; draw(); };
+    return el;
+  }
+
+  /* ---------- оболочка задания ---------- */
+  const app = { tasks: [], tabs: [], show: null };
+
+  function Task(cfg) {
+    const st = { solved: false, attempts: 0, hints: 0, shown: false };
+    const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+    const play = h('div', { class: 'play' });
+    const hintsBox = h('div', { class: 'hints' });
+    const explainBox = h('div');
+    const nextBox = h('div');
+    const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+    const revealBtn = h('button', { class: 'btn sm ghost', type: 'button' }, 'Показать разбор');
+    revealBtn.hidden = true;
+    const hints = cfg.hints || [];
+    const upd = () => {
+      hintBtn.textContent = st.hints < hints.length ? `Подсказка (${st.hints}/${hints.length})` : 'Подсказки закончились';
+      hintBtn.disabled = st.hints >= hints.length;
+      hintBtn.hidden = !hints.length;
+      revealBtn.hidden = st.solved || st.shown || !(st.hints >= 2 || st.attempts >= 3);
+    };
+    hintBtn.onclick = () => {
+      if (st.hints >= hints.length) return;
+      const t = hints[st.hints++];
+      hintsBox.append(h('div', { class: 'bubble' }, mascot(cfg.moodHint || 'think'), h('div', { class: 'say', html: `<b>Подсказка ${st.hints}.</b> ` + t })));
+      upd();
+    };
+    revealBtn.onclick = () => { showExplain(); st.shown = true; upd(); };
+
+    const root = h('section', { class: 'task', id: 'task-' + cfg.id, hidden: true, 'aria-labelledby': 'h-' + cfg.id },
+      h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, cfg.num), h('h2', { id: 'h-' + cfg.id }, cfg.title), h('span', { class: 'badge-done' }, 'Решено')),
+      typeof cfg.story === 'string' ? h('div', { class: 'story', html: cfg.story }) : h('div', { class: 'story' }, cfg.story),
+      play, fb,
+      h('div', { class: 'helpers' }, hintBtn, revealBtn),
+      hintsBox, explainBox, nextBox
+    );
+
+    function showExplain() {
+      if (explainBox.firstChild) return;
+      const body = typeof cfg.explain === 'function' ? cfg.explain(api) : h('div', { html: cfg.explain });
+      explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), body));
+    }
+
+    const api = {
+      el: root, play, st, id: cfg.id,
+      say(msg, kind) { fb.className = 'fb ' + (kind || 'info'); fb.textContent = msg; },
+      attempt() { st.attempts++; upd(); },
+      isSolved: () => st.solved,
+      solve(msg, anchor) {
+        if (msg) api.say(msg, 'ok');
+        if (st.solved) return;
+        st.solved = true; root.classList.add('solved');
+        Store.set('done:' + cfg.id, true);
+        app.markDone(cfg.id);
+        burst(anchor || fb);
+        showExplain(); upd();
+        const nxt = app.nextOf(cfg.id);
+        if (nxt) nextBox.append(h('button', { class: 'btn primary next', type: 'button', onclick: () => { app.show(nxt); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, 'Дальше: ' + nxt.title + ' →'));
+        else nextBox.append(h('p', { class: 'fb ok' }, cfg.finale || 'Все задачи решены. Отличная работа!'));
+      }
+    };
+    upd();
+    cfg.build(play, api);
+    if (cfg.practice) {
+      const body = h('div', { class: 'pbody' });
+      const det = h('details', { class: 'practice' }, h('summary', null, cfg.practiceTitle || 'Ещё потренироваться'), body);
+      let built = false;
+      det.addEventListener('toggle', () => { if (det.open && !built) { built = true; cfg.practice(body); } });
+      root.insertBefore(det, nextBox);
+    }
+    return { id: cfg.id, title: cfg.title, num: cfg.num, el: root, api };
+  }
+
+  function App(cfg) {
+    const root = $('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Задачи' });
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null,
+      tabsEl
+    );
+    root.append(wrap);
+    const star = () => s('svg', { class: 'star', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z', 'stroke-linejoin': 'round' }));
+    const tasks = cfg.tasks.map(t => Task(t));
+    app.tasks = tasks;
+    tasks.forEach((t, i) => {
+      const tab = h('button', { class: 'tab' + (Store.get('done:' + t.id, false) ? ' done' : ''), role: 'tab', type: 'button', 'aria-selected': 'false', 'aria-controls': 'task-' + t.id, onclick: () => show(t) }, star(), 'Задача ' + t.num);
+      t.tab = tab; tabsEl.append(tab); wrap.append(t.el);
+    });
+    function show(t) {
+      tasks.forEach(x => { const on = x === t; x.el.hidden = !on; x.tab.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      Store.set('tab', t.id);
+    }
+    app.show = show;
+    app.markDone = (id) => { const t = tasks.find(x => x.id === id); if (t) t.tab.classList.add('done'); };
+    app.nextOf = (id) => { const i = tasks.findIndex(x => x.id === id); return tasks[i + 1] || null; };
+    const saved = Store.get('tab', null);
+    show(tasks.find(t => t.id === saved) || tasks[0]);
+    return wrap;
+  }
+
+  return { $, $$, h, s, Store, rnd, pick, shuffle, onEnter, plural, sleep, burst, mascot, stepper, Task, App };
+})();
+
+/* ===== Банк задач: генераторы, тренировка, пробные варианты ===== */
+/* Генератор задачи: def = {id, title, topic, pts, make(R) -> item}
+   item = {html, input:'num'|'text'|'choice'|'nums', ans, alts?, opts?, labels?, canon?, wrong?(v), hints[], explain, ph?}
+   R — генератор случайных чисел с seed (R.int, R.pick, R.shuffle, R.chance). */
+const BankLib = (function () {
+  'use strict';
+  function RNG(seed) {
+    let a = seed >>> 0;
+    const next = () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    return {
+      next,
+      int: (lo, hi) => lo + Math.floor(next() * (hi - lo + 1)),
+      pick: (arr) => arr[Math.floor(next() * arr.length)],
+      chance: (p) => next() < p,
+      shuffle(arr) { const b = arr.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(next() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
+    };
+  }
+  const norm = (v) => String(v == null ? '' : v).trim().toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ');
+  const toInt = (str) => { const t = String(str == null ? '' : str).trim().replace(/[−–—]/g, '-').replace(/\s+/g, ''); return /^-?\d+$/.test(t) ? parseInt(t, 10) : NaN; };
+  const esc = (t) => String(t).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const plural = (n, one, few, many) => { const m10 = Math.abs(n) % 10, m100 = Math.abs(n) % 100; if (m10 === 1 && m100 !== 11) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few; return many; };
+
+  /* проверка ответа: {ok, empty, msg} */
+  function judge(item, raw) {
+    const k = item.input;
+    if (k === 'choice') {
+      if (raw == null || raw === '') return { ok: false, empty: true, msg: 'Выбери один из вариантов.' };
+      const ok = raw === item.ans; return { ok, msg: ok ? '' : (item.wrong ? item.wrong(raw) : '') };
+    }
+    if (k === 'nums') {
+      const arr = Array.isArray(raw) ? raw.map(toInt) : [];
+      if (!arr.length || arr.some(x => Number.isNaN(x))) return { ok: false, empty: true, msg: 'Впиши все числа.' };
+      const ok = arr.length === item.ans.length && arr.every((x, i) => x === item.ans[i]);
+      return { ok, msg: ok ? '' : (item.wrong ? item.wrong(arr) : '') };
+    }
+    if (k === 'num') {
+      const v = toInt(raw);
+      if (Number.isNaN(v)) return { ok: false, empty: true, msg: 'Впиши целое число.' };
+      const ok = v === item.ans; return { ok, msg: ok ? '' : (item.wrong ? item.wrong(v) : '') };
+    }
+    const canon = item.canon || norm;
+    if (!String(raw == null ? '' : raw).trim()) return { ok: false, empty: true, msg: 'Впиши ответ.' };
+    const c = canon(raw);
+    const ok = [item.ans].concat(item.alts || []).some(a => canon(a) === c);
+    return { ok, msg: ok ? '' : (item.wrong ? item.wrong(raw) : '') };
+  }
+  function showAns(item) {
+    if (item.input === 'choice') return item.opts[item.ans];
+    if (item.input === 'nums') return item.ans.map((v, i) => (item.labels ? item.labels[i] + ' = ' : '') + v).join(', ');
+    return String(item.ans);
+  }
+
+  /* ---------- интерфейс ---------- */
+  const { h, Store, burst } = K;
+
+  function inputWidget(item, init, onChange, onSubmit) {
+    let val = init;
+    const root = h('div', { class: 'inw' });
+    const api = { el: root, get: () => val, lock() { root.querySelectorAll('input,button').forEach(e => { e.disabled = true; }); } };
+    if (item.input === 'choice') {
+      const btns = item.opts.map((o, i) => h('button', { class: 'tf-opt', type: 'button', role: 'radio', 'aria-checked': 'false', html: o, onclick: () => { val = i; paint(); onChange && onChange(val); } }));
+      const paint = () => btns.forEach((b, i) => b.setAttribute('aria-checked', val === i ? 'true' : 'false'));
+      paint(); root.append(h('div', { class: 'tf-opts', role: 'radiogroup', 'aria-label': 'Варианты ответа' }, btns));
+      api.mark = () => {};
+    } else if (item.input === 'nums') {
+      const arr = Array.isArray(init) ? init.slice() : item.labels.map(() => '');
+      val = arr;
+      const ins = item.labels.map((lb, i) => {
+        const inp = h('input', { class: 'field fnum', type: 'text', inputmode: 'numeric', autocomplete: 'off', 'aria-label': lb, value: arr[i] });
+        inp.addEventListener('input', () => { val = ins.map(x => x.value); onChange && onChange(val); });
+        inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); onSubmit && onSubmit(); } });
+        return inp;
+      });
+      root.append(h('div', { class: 'row' }, item.labels.map((lb, i) => h('label', { class: 'lab' }, h('b', null, lb + ' ='), ins[i]))));
+      api.mark = (st) => ins.forEach(x => { x.classList.toggle('ok', st === 'ok'); x.classList.toggle('bad', st === 'bad'); });
+    } else {
+      const inp = h('input', { class: 'field ' + (item.input === 'num' ? 'fnum' : 'txt'), type: 'text', inputmode: item.input === 'num' ? 'numeric' : 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': 'Ответ', placeholder: item.ph || '', value: init == null ? '' : init });
+      val = inp.value;
+      inp.addEventListener('input', () => { val = inp.value; onChange && onChange(val); });
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); onSubmit && onSubmit(); } });
+      root.append(inp);
+      api.mark = (st) => { inp.classList.toggle('ok', st === 'ok'); inp.classList.toggle('bad', st === 'bad'); };
+    }
+    return api;
+  }
+
+  const stmt = (item) => h('div', { class: 'story', html: item.html });
+
+  /* ---------- тренировка ---------- */
+  function Practice(defs, ctx) {
+    const root = h('div', { class: 'practice-wrap' });
+    const chips = h('div', { class: 'chips', role: 'tablist', 'aria-label': 'Темы' });
+    const panel = h('section', { class: 'task' });
+    root.append(h('p', { class: 'muted small' }, 'Выбери тему. Каждый раз задача новая: числа и картинки меняются. Подсказки идут по ступенькам, а после решения появится разбор.'), chips, panel);
+    let cur = null, curItem = null, seedN = Math.floor(Math.random() * 1e6);
+    const chipEls = {};
+    defs.forEach((d, i) => {
+      const b = h('button', { class: 'chip' + (Store.get('n:' + d.id, 0) ? ' done' : ''), type: 'button', role: 'tab', 'aria-selected': 'false', onclick: () => open(d) },
+        h('span', { class: 'cn' }, String(i + 1)), h('span', { class: 'ct' }, d.title));
+      chipEls[d.id] = b; chips.append(b);
+    });
+    function open(d) {
+      cur = d;
+      defs.forEach(x => chipEls[x.id].setAttribute('aria-selected', x === d ? 'true' : 'false'));
+      Store.set('tab', d.id);
+      fresh();
+    }
+    function fresh() {
+      const d = cur; seedN += 7919;
+      const item = d.make(RNG(seedN)); curItem = item;
+      let attempts = 0, hintN = 0, solved = false;
+      const hints = item.hints || [];
+      const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+      const hintsBox = h('div', { class: 'hints' }), explainBox = h('div'), nextBox = h('div', { class: 'row' });
+      const hintBtn = h('button', { class: 'btn sm', type: 'button' });
+      const revealBtn = h('button', { class: 'btn sm ghost', type: 'button', hidden: true }, 'Показать разбор');
+      const count = Store.get('n:' + d.id, 0);
+      const badge = h('span', { class: 'badge-cnt' }, count ? 'Решено: ' + count : '');
+      const upd = () => {
+        hintBtn.hidden = !hints.length;
+        hintBtn.textContent = hintN < hints.length ? `Подсказка (${hintN}/${hints.length})` : 'Подсказки закончились';
+        hintBtn.disabled = hintN >= hints.length;
+        revealBtn.hidden = solved || !!explainBox.firstChild || !(attempts >= 2 || hintN >= 3);
+      };
+      hintBtn.onclick = () => { if (hintN >= hints.length) return; hintN++; hintsBox.append(h('div', { class: 'bubble' }, K.mascot('think'), h('div', { class: 'say', html: `<b>Подсказка ${hintN}.</b> ` + hints[hintN - 1] }))); upd(); };
+      const showExplain = () => { if (explainBox.firstChild) return; explainBox.append(h('div', { class: 'explain' }, h('h3', null, 'Разбор'), h('div', { html: item.explain }), h('p', { class: 'fb ok' }, 'Ответ: ' + showAns(item)))); upd(); };
+      revealBtn.onclick = showExplain;
+      const check = () => {
+        if (solved) return;
+        const r = judge(item, w.get());
+        if (r.empty) { fb.className = 'fb bad'; fb.textContent = r.msg; return; }
+        if (r.ok) {
+          solved = true; w.mark('ok'); w.lock(); fb.className = 'fb ok'; fb.textContent = 'Верно!';
+          Store.set('n:' + d.id, Store.get('n:' + d.id, 0) + 1); badge.textContent = 'Решено: ' + Store.get('n:' + d.id, 0); chipEls[d.id].classList.add('done');
+          burst(fb); showExplain();
+          nextBox.replaceChildren(h('button', { class: 'btn primary', type: 'button', onclick: fresh }, 'Следующий вариант →'));
+        } else {
+          attempts++; w.mark('bad'); fb.className = 'fb bad'; fb.textContent = r.msg || 'Пока нет. Проверь решение ещё раз или возьми подсказку.';
+        }
+        upd();
+      };
+      const w = inputWidget(item, null, () => { w.mark(''); }, check);
+      const checkBtn = h('button', { class: 'btn primary', type: 'button', onclick: check }, 'Проверить');
+      panel.replaceChildren(
+        h('div', { class: 'task-head' }, h('h2', null, d.title), badge),
+        stmt(item), h('div', { class: 'row ansrow' + (item.input === 'choice' ? ' col' : '') }, w.el, checkBtn), fb,
+        h('div', { class: 'helpers' }, hintBtn, revealBtn, h('button', { class: 'btn sm ghost', type: 'button', onclick: fresh }, '↻ Другой вариант')),
+        hintsBox, explainBox, nextBox);
+      upd();
+    }
+    const saved = Store.get('tab', null);
+    open(defs.find(d => d.id === saved) || defs[0]);
+    return { el: root, open, defs, item: () => curItem };
+  }
+
+  /* ---------- пробный вариант ---------- */
+  function Variant(cfg, ctx) {
+    /* cfg: {id, title, minutes, picks:[{def, seed, pts}]} */
+    const items = cfg.picks.map(p => Object.assign({ def: p.def, pts: p.pts || p.def.pts || 1 }, p.def.make(RNG(p.seed))));
+    const total = items.reduce((a, x) => a + x.pts, 0);
+    const key = 'v:' + cfg.id;
+    const root = h('div', { class: 'variant' });
+    let st = Store.get(key, null);
+    let timer = null, idx = 0;
+    const left = () => Math.max(0, cfg.minutes * 60 - Math.floor((Date.now() - st.t0) / 1000));
+    const fmt = (s) => { const m = Math.floor(s / 60), r = s % 60; return String(m).padStart(2, '0') + ':' + String(r).padStart(2, '0'); };
+    const save = () => Store.set(key, st);
+
+    function start() { st = { t0: Date.now(), ans: {}, fin: false }; save(); render(); }
+    function finish() { if (timer) { clearInterval(timer); timer = null; } st.fin = true; st.tEnd = Date.now(); const sc = scoreOf(); const best = Store.get('best:' + cfg.id, 0); if (sc.points > best) Store.set('best:' + cfg.id, sc.points); save(); render(); window.scrollTo({ top: 0 }); }
+    function scoreOf() {
+      let points = 0; const per = items.map((it, i) => { const raw = st.ans[i]; const r = (raw == null || raw === '' || (Array.isArray(raw) && raw.every(x => x === ''))) ? { ok: false } : judge(it, raw); if (r.ok) points += it.pts; return r.ok; });
+      return { points, per };
+    }
+
+    function render() {
+      root.replaceChildren();
+      if (!st) return root.append(startScreen());
+      if (st.fin) return root.append(resultScreen());
+      if (left() <= 0) { finish(); return; }
+      root.append(runScreen());
+    }
+
+    function startScreen() {
+      const best = Store.get('best:' + cfg.id, null);
+      return h('section', { class: 'task' },
+        h('h2', null, cfg.title),
+        h('ul', { class: 'rules' },
+          h('li', null, `Задач: ${items.length}, максимум баллов: ${total}.`),
+          h('li', null, `Время: ${cfg.minutes} минут. Таймер включится после нажатия кнопки; когда время выйдет, вариант завершится сам.`),
+          h('li', null, 'Подсказок нет, как на настоящей олимпиаде. Ответы можно менять и возвращаться к любой задаче.'),
+          h('li', null, 'Результат и разбор каждой задачи появятся после завершения.')),
+        best != null ? h('p', { class: 'muted' }, `Лучший результат: ${best} из ${total}.`) : null,
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: start }, 'Начать вариант')));
+    }
+
+    function runScreen() {
+      const clock = h('span', { class: 'tf-clock', role: 'timer', 'aria-label': 'Осталось времени' });
+      const prog = h('span', { class: 'tf-prog' });
+      const bar = h('div', { class: 'tf-bar' }, clock, prog, h('button', { class: 'btn sm', type: 'button', onclick: askFinish }, 'Завершить'));
+      const dots = h('div', { class: 'tf-dots', role: 'group', 'aria-label': 'Номера задач' });
+      const card = h('section', { class: 'task tf-card' });
+      const conf = h('div');
+      const answered = (i) => { const v = st.ans[i]; return !(v == null || v === '' || (Array.isArray(v) && v.every(x => x === ''))); };
+      function paintDots() {
+        dots.replaceChildren(...items.map((_, i) => h('button', { class: 'tf-dot' + (answered(i) ? ' ans' : ''), type: 'button', 'aria-label': 'Задача ' + (i + 1) + (answered(i) ? ', есть ответ' : ''), 'aria-current': i === idx ? 'step' : null, onclick: () => go(i) }, String(i + 1))));
+        prog.textContent = `Отвечено: ${items.filter((_, i) => answered(i)).length} из ${items.length}`;
+      }
+      function go(i) {
+        idx = i; const it = items[i];
+        const w = inputWidget(it, st.ans[i], (v) => { st.ans[i] = v; save(); paintDots(); });
+        card.replaceChildren(
+          h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, String(i + 1)), h('h2', null, it.def.title), h('span', { class: 'tf-pts' }, it.pts + ' ' + plural(it.pts, 'балл', 'балла', 'баллов'))),
+          stmt(it), w.el,
+          h('div', { class: 'tf-nav' }, h('button', { class: 'btn', type: 'button', disabled: i === 0, onclick: () => go(i - 1) }, '← Назад'),
+            i < items.length - 1 ? h('button', { class: 'btn primary', type: 'button', onclick: () => go(i + 1) }, 'Дальше →') : h('button', { class: 'btn primary', type: 'button', onclick: askFinish }, 'Завершить')));
+        paintDots();
+      }
+      function askFinish() {
+        const un = items.filter((_, i) => !answered(i)).length;
+        conf.replaceChildren(h('div', { class: 'box tf-confirm' }, h('p', null, un ? `Не отвечено задач: ${un}. Завершить вариант?` : 'Все задачи с ответами. Завершить вариант?'),
+          h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: finish }, 'Да, завершить'), h('button', { class: 'btn ghost', type: 'button', onclick: () => conf.replaceChildren() }, 'Вернуться'))));
+      }
+      const tick = () => { const s = left(); clock.textContent = '⏱ ' + fmt(s); bar.classList.toggle('warn', s <= 300); if (s <= 0) finish(); };
+      tick(); if (timer) clearInterval(timer); timer = setInterval(tick, 1000);
+      go(Math.min(idx, items.length - 1));
+      return h('div', { class: 'tf-test' }, bar, dots, conf, card);
+    }
+
+    function resultScreen() {
+      const sc = scoreOf(); const pct = sc.points / total;
+      const level = pct >= .85 ? ['Отлично!', 'Ты уверенно решаешь задачи такого уровня.'] : pct >= .6 ? ['Хорошо!', 'Основа есть, осталось подтянуть несколько тем.'] : pct >= .35 ? ['Неплохо.', 'Разбери ошибки ниже и потренируйся в слабых темах.'] : ['Начало положено.', 'Не расстраивайся: разбери задачи ниже и потренируйся по темам.'];
+      const topics = {};
+      items.forEach((it, i) => { const t = it.def.topic; topics[t] = topics[t] || { got: 0, max: 0 }; topics[t].max += it.pts; if (sc.per[i]) topics[t].got += it.pts; });
+      const weak = [...new Set(items.filter((_, i) => !sc.per[i]).map(it => it.def))];
+      const used = st.tEnd ? Math.round((st.tEnd - st.t0) / 60000) : null;
+      return h('div', { class: 'tf-res' },
+        h('section', { class: 'task' },
+          h('div', { class: 'tf-score' }, h('div', { class: 'tf-big' }, `${sc.points} / ${total}`), h('div', null, h('h2', null, level[0]), h('p', null, level[1]), used != null ? h('p', { class: 'muted small' }, `Потрачено времени: ${used} мин.`) : null)),
+          h('div', { class: 'tf-skills' }, Object.keys(topics).map(t => { const v = topics[t], r = v.got / v.max; return h('div', { class: 'tf-skill ' + (r >= .75 ? 'hi' : r >= .4 ? 'mid' : 'lo') }, h('span', { class: 'tf-sn' }, t), h('span', { class: 'tf-meter' }, h('i', { style: { width: Math.round(r * 100) + '%' } })), h('span', { class: 'tf-sv' }, `${v.got} из ${v.max}`)); })),
+          weak.length ? h('div', null, h('p', { class: 'sub-h' }, 'Потренируй'), h('div', { class: 'row' }, weak.map(d => h('button', { class: 'btn sm', type: 'button', onclick: () => ctx.goPractice(d.id) }, d.title)))) : h('p', { class: 'fb ok' }, 'Ни одной ошибки!')),
+        h('div', { class: 'tf-revs' }, items.map((it, i) => {
+          const ok = sc.per[i], raw = st.ans[i];
+          let mine = '—';
+          if (raw != null && raw !== '') { if (it.input === 'choice') mine = it.opts[raw]; else if (Array.isArray(raw)) mine = raw.join(', '); else mine = String(raw); }
+          return h('details', { class: 'tf-rev ' + (ok ? 'ok' : 'bad') }, h('summary', null, h('span', { class: 'tf-mk' }, ok ? '✓' : '✗'), h('span', { class: 'tf-rt' }, `${i + 1}. ${it.def.title}`), h('span', { class: 'tf-rs' }, (ok ? it.pts : 0) + ' из ' + it.pts)),
+            h('div', { class: 'tf-revbody' }, stmt(it), h('p', null, h('b', null, 'Твой ответ: '), h('span', { html: mine })), h('p', null, h('b', null, 'Верный ответ: '), h('span', { html: showAns(it) })), h('div', { class: 'explain' }, h('h3', null, 'Разбор'), h('div', { html: it.explain }))));
+        })),
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => { st = null; Store.set(key, null); idx = 0; render(); window.scrollTo({ top: 0 }); } }, 'Пройти ещё раз')));
+    }
+    render();
+    return { el: root, total, items, stop() { if (timer) { clearInterval(timer); timer = null; } }, render };
+  }
+
+  /* ---------- страница ---------- */
+  function App(cfg) {
+    const root = K.$('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Разделы' });
+    const body = h('div');
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, K.mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      cfg.intro ? h('div', { class: 'box intro', html: cfg.intro }) : null, tabsEl, body);
+    root.append(wrap);
+    const ctx = { goPractice(id) { show('practice'); practice.open(cfg.defs.find(d => d.id === id)); window.scrollTo({ top: 0 }); } };
+    const practice = Practice(cfg.defs, ctx);
+    const variants = cfg.variants.map(v => Variant(v, ctx));
+    const pages = [{ id: 'practice', label: 'Тренировка', el: practice.el }].concat(cfg.variants.map((v, i) => ({ id: v.id, label: 'Пробный вариант ' + (i + 1), el: variants[i].el })));
+    const tabEls = {};
+    pages.forEach(p => { const b = h('button', { class: 'tab', role: 'tab', type: 'button', 'aria-selected': 'false', onclick: () => show(p.id) }, p.label); tabEls[p.id] = b; tabsEl.append(b); body.append(p.el); });
+    function show(id) { pages.forEach(p => { p.el.hidden = p.id !== id; tabEls[p.id].setAttribute('aria-selected', p.id === id ? 'true' : 'false'); }); Store.set('page', id); }
+    const sp = Store.get('page', 'practice'); show(pages.some(p => p.id === sp) ? sp : 'practice');
+    return { show, practice, variants };
+  }
+
+  return { RNG, norm, toInt, esc, plural, judge, showAns, App, Variant, Practice };
+})();
+
+
+
+/* ===== Экспресс-подготовка: 15 минут ===== */
+const ExpressLib = (function () {
+  'use strict';
+  const { h, Store } = K;
+  function App(cfg) {
+    const root = K.$('#app');
+    const tabsEl = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Этапы' });
+    const body = h('div');
+    const plan = h('details', { class: 'box plan' }, h('summary', null, 'План на 15 минут (для учителя)'),
+      h('ol', { class: 'rules' }, cfg.plan.map(t => h('li', { html: t }))));
+    const wrap = h('div', { class: 'wrap' },
+      h('header', { class: 'top' }, K.mascot('happy'), h('div', null, h('h1', null, cfg.title), h('p', { class: 'sub' }, cfg.sub))),
+      h('div', { class: 'box intro', html: cfg.intro }), plan, tabsEl, body);
+    root.append(wrap);
+
+    /* 1. шпаргалка с таймером на 3 минуты */
+    const clock = h('span', { class: 'tf-clock', role: 'timer', 'aria-label': 'Таймер шпаргалки' }, '⏱ 03:00');
+    let tm = null, left = 180;
+    const fmt = (s) => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    const startBtn = h('button', { class: 'btn sm', type: 'button', onclick: () => {
+      if (tm) { clearInterval(tm); tm = null; left = 180; clock.textContent = '⏱ 03:00'; startBtn.textContent = 'Запустить таймер'; return; }
+      startBtn.textContent = 'Сбросить';
+      tm = setInterval(() => { left--; clock.textContent = '⏱ ' + fmt(Math.max(0, left)); if (left <= 0) { clearInterval(tm); tm = null; left = 180; startBtn.textContent = 'Запустить таймер'; clock.textContent = '⏱ время вышло — к спринту!'; } }, 1000);
+    } }, 'Запустить таймер');
+    const sheet = h('div', { class: 'sheet-wrap' },
+      h('div', { class: 'tf-bar', style: { position: 'static' } }, h('span', { class: 'tf-prog' }, 'Прочитай приёмы: ' + cfg.cards.length), clock, startBtn),
+      h('div', { class: 'cards' }, cfg.cards.map((c, i) => h('section', { class: 'task card' },
+        h('div', { class: 'task-head' }, h('span', { class: 'num', 'aria-hidden': 'true' }, String(i + 1)), h('h2', null, c.t)),
+        h('p', { html: c.p }), c.ex ? h('p', { class: 'ex', html: c.ex }) : null))),
+      h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => show('sprint') }, 'К спринту →')));
+
+    const ctx = { goPractice(id) { show('dobor'); practice.open(cfg.defs.find(d => d.id === id)); window.scrollTo({ top: 0 }); } };
+    const variant = BankLib.Variant(cfg.sprint, ctx);
+    const practice = BankLib.Practice(cfg.defs, ctx);
+    const pages = [
+      { id: 'sheet', label: '1 · Шпаргалка · 3 мин', el: sheet },
+      { id: 'sprint', label: '2 · Спринт · 10 мин', el: variant.el },
+      { id: 'dobor', label: '3 · Добор · 2 мин', el: practice.el }];
+    const tabEls = {};
+    pages.forEach(p => { const b = h('button', { class: 'tab', role: 'tab', type: 'button', 'aria-selected': 'false', onclick: () => show(p.id) }, p.label); tabEls[p.id] = b; tabsEl.append(b); body.append(p.el); });
+    function show(id) { pages.forEach(p => { p.el.hidden = p.id !== id; tabEls[p.id].setAttribute('aria-selected', p.id === id ? 'true' : 'false'); }); Store.set('xpage', id); window.scrollTo({ top: 0 }); }
+    const sp = Store.get('xpage', 'sheet'); show(pages.some(p => p.id === sp) ? sp : 'sheet');
+    return { show, practice, variant, cfg };
+  }
+  return { App };
+})();
+
+
+/* ===== Банк 9–11 лет: генераторы задач ===== */
+const DEFS_B = (function () {
+  'use strict';
+  const { esc, plural: pl } = BankLib;
+  const P = (t) => `<p>${t}</p>`;
+  let uid = 0;
+  function permsN(n) { const out = []; (function rec(a, rest) { if (!rest.length) { out.push(a); return; } rest.forEach((x, i) => rec(a.concat(x), rest.filter((_, j) => j !== i))); })([], Array.from({ length: n }, (_, i) => i)); return out; }
+  const pyr = (rows) => `<div class="gridw" role="img" aria-label="Числовая пирамида">${rows.map(r => `<div style="display:flex;gap:4px;justify-content:center;margin:3px 0">${r.map(v => `<span class="gc${v === '?' ? ' q' : ''}" style="width:auto;min-width:3.2em;padding:0 .4em">${v}</span>`).join('')}</div>`).join('')}</div>`;
+
+  /* ---------- 1. Круги Эйлера ---------- */
+  const VEN = [
+    ['В классе', 'ходят на шахматы', 'ходят на шашки', 'человек'],
+    ['В доме', 'держат кошек', 'держат собак', 'семей'],
+    ['В лагере', 'любят футбол', 'любят волейбол', 'детей'],
+    ['В кружке', 'программируют на Python', 'рисуют в Scratch', 'ребят']
+  ];
+  const D_VENN = {
+    id: 'venn', title: 'Круги Эйлера', topic: 'Логика', pts: 2,
+    make(R) {
+      const [where, A, B, unit] = R.pick(VEN);
+      const both = R.int(3, 14), onlyA = R.int(4, 25), onlyB = R.int(4, 25), none = R.int(2, 9);
+      const a = onlyA + both, b = onlyB + both, all = onlyA + onlyB + both, T = all + none;
+      const v = R.int(0, 3);
+      let html, ans, expl, hints;
+      if (v === 0) { html = P(`${where} ${a} ${unit} ${A}, ${b} ${B}, причём ${both} занимаются и тем, и другим. Каждый занимается хотя бы одним из двух. Сколько всего ${unit}?`); ans = all; expl = P(`Сложим ${a} + ${b} = ${a + b}: тех, кто занимается обоим, посчитали дважды. Вычтем их один раз: ${a + b} − ${both} = <b>${all}</b>.`); hints = ['Нарисуй два пересекающихся круга. Общая часть — те, кто делает и то, и другое.', 'Если просто сложить числа в двух кругах, общая часть посчитается два раза.', 'Поэтому общую часть нужно один раз вычесть.', `${a} + ${b} − ${both} = ?`]; }
+      else if (v === 1) { html = P(`${where} ${all} ${unit}, и каждый занимается хотя бы одним из двух. ${a} ${A}, а ${b} ${B}. Сколько ${unit} занимаются <b>и тем, и другим</b>?`); ans = both; expl = P(`Если сложить ${a} + ${b} = ${a + b}, общая часть посчитается дважды. Всего же ${unit} ${all}, значит общих: ${a + b} − ${all} = <b>${both}</b>.`); hints = ['Нарисуй два круга и обозначь общую часть неизвестным числом.', `Если сложить числа в обоих кругах, получим на столько больше общего числа ${unit}, на сколько общая часть посчитана дважды.`, `Сумма ${a} + ${b} больше общего числа на размер общей части.`, `${a} + ${b} − ${all} = ?`]; }
+      else if (v === 2) { html = P(`${where} ${T} ${unit}. ${a} ${A}, ${b} ${B}, ${both} занимаются и тем, и другим. Сколько ${unit} <b>не занимаются ни тем, ни другим</b>?`); ans = none; expl = P(`Занимаются хотя бы чем-то: ${a} + ${b} − ${both} = ${all}. Не занимаются: ${T} − ${all} = <b>${none}</b>.`); hints = ['Сначала узнай, сколько ребят занимаются хотя бы чем-то одним.', 'Для этого сложи два круга и вычти общую часть.', `Получилось ${all}.`, `Вычти это из всего числа: ${T} − ${all}.`]; }
+      else { html = P(`${where} ${a} ${unit} ${A}, ${b} ${B}, и ${both} делают и то, и другое. Сколько ${unit} ${B} <b>только</b> (но не ${A})?`); ans = onlyB; expl = P(`Из ${b}, кто ${B}, ${both} делают ещё и другое. Только ${B}: ${b} − ${both} = <b>${onlyB}</b>.`); hints = ['Нарисуй круги: нас интересует только часть второго круга без пересечения.', `Во втором круге всего ${b}.`, `Из них ${both} находятся в общей части.`, `${b} − ${both} = ?`]; }
+      return { input: 'num', ans, html, hints, explain: expl };
+    }
+  };
+
+  /* ---------- 2. Лабиринт со стенами ---------- */
+  const DIRS = [[0, -1, 'Н'], [0, 1, 'В'], [-1, 0, 'Л'], [1, 0, 'П']];
+  function makeMaze(R, W, H) {
+    /* Vw[r][c]: стена слева от клетки (c=0..W); Hw[r][c]: стена сверху от клетки (r=0..H) */
+    const Vw = Array.from({ length: H }, () => Array(W + 1).fill(true)), Hw = Array.from({ length: H + 1 }, () => Array(W).fill(true));
+    const seen = Array.from({ length: H }, () => Array(W).fill(false)); const st = [[0, 0]]; seen[0][0] = true;
+    while (st.length) {
+      const [x, y] = st[st.length - 1]; const nb = R.shuffle([[1, 0], [-1, 0], [0, 1], [0, -1]]).filter(([dx, dy]) => { const nx = x + dx, ny = y + dy; return nx >= 0 && ny >= 0 && nx < W && ny < H && !seen[ny][nx]; });
+      if (!nb.length) { st.pop(); continue; }
+      const [dx, dy] = nb[0], nx = x + dx, ny = y + dy; seen[ny][nx] = true;
+      if (dx === 1) Vw[y][x + 1] = false; else if (dx === -1) Vw[y][x] = false; else if (dy === 1) Hw[y + 1][x] = false; else Hw[y][x] = false;
+      st.push([nx, ny]);
+    }
+    return { W, H, Vw, Hw };
+  }
+  function openMove(M, x, y, dx, dy) { if (dx === 1) return !M.Vw[y][x + 1]; if (dx === -1) return !M.Vw[y][x]; if (dy === 1) return !M.Hw[y + 1][x]; return !M.Hw[y][x]; }
+  function mazeDist(M, s) { const d = Array.from({ length: M.H }, () => Array(M.W).fill(-1)); d[s[1]][s[0]] = 0; const q = [s]; while (q.length) { const [x, y] = q.shift(); for (const [dx, dy] of DIRS) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= M.W || ny >= M.H || d[ny][nx] >= 0 || !openMove(M, x, y, dx, dy)) continue; d[ny][nx] = d[y][x] + 1; q.push([nx, ny]); } } return d; }
+  function mazeSvg(M, s, ex) {
+    const C = 42, pad = 8, top = 24, w = M.W * C + 2 * pad, h = M.H * C + 2 * pad + top;
+    let g = '';
+    for (let r = 0; r <= M.H; r++) for (let c = 0; c < M.W; c++) if (M.Hw[r][c]) g += `<line x1="${pad + c * C}" y1="${pad + r * C}" x2="${pad + (c + 1) * C}" y2="${pad + r * C}"/>`;
+    for (let r = 0; r < M.H; r++) for (let c = 0; c <= M.W; c++) if (M.Vw[r][c]) g += `<line x1="${pad + c * C}" y1="${pad + r * C}" x2="${pad + c * C}" y2="${pad + (r + 1) * C}"/>`;
+    return `<svg viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="Лабиринт, робот и выход" style="max-width:100%;height:auto"><text x="${pad + ex[0] * C + C / 2}" y="14" text-anchor="middle" font-size="13" fill="currentColor" font-weight="800">ВЫХОД ↑</text><g transform="translate(0,${top})"><g stroke="currentColor" stroke-width="3" stroke-linecap="round">${g}</g><text x="${pad + s[0] * C + C / 2}" y="${pad + s[1] * C + C / 2 + 7}" text-anchor="middle" font-size="22">🤖</text></g></svg>`;
+  }
+  const D_MAZE = {
+    id: 'maze', title: 'Робот в лабиринте', topic: 'Алгоритмы', pts: 2,
+    make(R) {
+      for (let g = 0; g < 300; g++) {
+        const M = makeMaze(R, 5, 5);
+        for (let k = 0; k < 4; k++) { const r = R.int(1, 4), c = R.int(0, 3); M.Vw[r][c + 1] = false; }
+        const s = [R.int(0, 4), R.int(0, 4)]; const d = mazeDist(M, s);
+        /* выход: дыра в верхней стене над клеткой верхнего ряда */
+        const ec = R.int(0, 4); if (ec === s[0] && s[1] === 0) continue; M.Hw[0][ec] = false;
+        const d2 = mazeDist(M, s); const ans = d2[0][ec] + 1;
+        if (ans < 8 || ans > 14) { continue; }
+        return {
+          input: 'num', ans,
+          html: P('Робот 🤖 стоит в клетке лабиринта. За одну команду он смещается на одну клетку вверх, вниз, влево или вправо. Если он упирается в стену, он ломается, а выйти из лабиринта нужно через щель в верхней стене (там, где написано «ВЫХОД»). Какое <b>наименьшее число команд</b> нужно, чтобы вывести робота из лабиринта? Последняя команда — это шаг наружу.') + `<div class="gridw">${mazeSvg(M, s, [ec, 0])}</div>`,
+          wrong: (v) => v < ans ? 'Так коротко не получится: на пути стены. Проверь, нет ли у тебя шага сквозь стену.' : 'Выйти по такой программе можно, но есть путь короче.',
+          hints: ['Сначала найди глазами выход и подумай, с какой стороны к нему можно подойти.', 'Подпиши в клетках, за сколько команд робот сюда доберётся: у старта 0, у соседних доступных клеток 1 и так далее.', 'Волна дойдёт до клетки под выходом. Последняя команда — шаг наружу.', 'Ответ: число в клетке под выходом плюс одна команда.'],
+          explain: P(`Подписывая клетки числами (сколько команд до них), получаем: до клетки под выходом ${ans - 1} команд, и ещё одна команда нужна, чтобы выйти наружу. Всего <b>${ans}</b>.`)
+        };
+      }
+      throw new Error('maze');
+    }
+  };
+
+  /* ---------- 3. Дом: имена и профессии ---------- */
+  const NM = [['Мария', 'Марии', 'Марией'], ['Максим', 'Максима', 'Максимом'], ['Вика', 'Вики', 'Викой'], ['Никита', 'Никиты', 'Никитой'], ['Аня', 'Ани', 'Аней'], ['Игорь', 'Игоря', 'Игорем'], ['Олег', 'Олега', 'Олегом'], ['Лена', 'Лены', 'Леной']];
+  const PR = [['программист', 'программиста', 'программистом'], ['дизайнер', 'дизайнера', 'дизайнером'], ['врач', 'врача', 'врачом'], ['кондитер', 'кондитера', 'кондитером'], ['учитель', 'учителя', 'учителем'], ['повар', 'повара', 'поваром'], ['художник', 'художника', 'художником'], ['пилот', 'пилота', 'пилотом']];
+  const fl = (e, A) => (e.t === 'n' ? A.n[e.i] : A.p[e.i]);
+  function evalClue(c, A) { const a = fl(c.a, A), b = fl(c.b, A); switch (c.k) { case 'above': return a > b; case 'below': return a < b; case 'adj': return Math.abs(a - b) === 1; case 'nadj': return Math.abs(a - b) !== 1; case 'not': return a !== b; case 'is': return a === b; } }
+  const P4 = permsN(4).map(p => p.map(x => x + 1));
+  function countSol(clues, cap) { let cnt = 0; for (const n of P4) for (const p of P4) { const A = { n, p }; if (clues.every(c => evalClue(c, A))) { cnt++; if (cnt >= cap) return cnt; } } return cnt; }
+  const D_HOUSE = {
+    id: 'house', title: 'Дом с профессиями', topic: 'Логика', pts: 3,
+    make(R) {
+      for (let g = 0; g < 200; g++) {
+        const names = R.shuffle(NM).slice(0, 4), profs = R.shuffle(PR).slice(0, 4);
+        const A = { n: R.shuffle([1, 2, 3, 4]), p: R.shuffle([1, 2, 3, 4]) };
+        const pool = [];
+        const ents = [0, 1, 2, 3].map(i => ({ t: 'p', i })).concat([0, 1, 2, 3].map(i => ({ t: 'n', i })));
+        for (const a of ents) for (const b of ents) { if (a === b || (a.t === b.t && a.i === b.i)) continue;
+          for (const k of ['above', 'adj', 'nadj', 'not', 'is']) { if (k === 'is' && !(a.t === 'n' && b.t === 'p')) continue; if ((k === 'not') && !(a.t === 'n' && b.t === 'p')) continue; if ((k === 'adj' || k === 'nadj') && (a.t === b.t && a.i > b.i)) continue; const c = { k, a, b }; if (evalClue(c, A)) pool.push(c); } }
+        const clues = []; let cnt = 576, guard = 0;
+        while (cnt > 1 && guard++ < 80) { const c = R.pick(pool); if (clues.includes(c)) continue; const n2 = countSol(clues.concat(c), 600); if (n2 < cnt) { clues.push(c); cnt = n2; } if (clues.length > 9) break; }
+        if (cnt !== 1 || clues.length < 5 || clues.length > 9) continue;
+        const D = (e, cs) => (e.t === 'n' ? names[e.i][cs] : profs[e.i][cs]);
+        const text = (c) => { switch (c.k) { case 'above': return `${D(c.a, 0)} живёт выше ${D(c.b, 1)}`; case 'adj': return `${D(c.a, 0)} живёт рядом с ${D(c.b, 2)}`; case 'nadj': return `${D(c.a, 0)} живёт не рядом с ${D(c.b, 2)}`; case 'not': return `${D(c.a, 0)} не ${D(c.b, 0)}`; case 'is': return `${D(c.a, 0)} — ${D(c.b, 0)}`; } };
+        const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+        const q = R.int(0, 3), fq = A.p[q], who = A.n.indexOf(fq);
+        const floorOf = (ii) => A.n[ii];
+        const byFloor = [1, 2, 3, 4].map(f => `${f} этаж — ${names[A.n.indexOf(f)][0]}, ${profs[A.p.indexOf(f)][0]}`);
+        return {
+          input: 'choice', opts: names.map(n => n[0]), ans: who,
+          html: P(`В четырёхэтажном доме на каждом этаже живёт один человек: ${names.map(n => n[0]).join(', ')}. Их профессии: ${profs.map(p => p[0]).join(', ')} (у каждого своя). Известно:`) + `<ol class="cl">${clues.map(c => `<li>${cap(text(c))}.</li>`).join('')}</ol>` + P(`Кто из них <b>${profs[q][0]}</b>?`),
+          hints: ['Нарисуй дом из четырёх этажей, рядом запиши профессии: сначала разберись с ними.', 'Условия про профессии («выше», «рядом», «не рядом») позволяют найти порядок профессий по этажам.', 'Когда профессии расставлены, условия с именами укажут, кто на каком этаже.', 'Проверь получившийся дом по всем условиям.'],
+          explain: P('Единственный подходящий порядок этажей: ') + `<ul class="cl">${byFloor.map(t => `<li>${t}</li>`).join('')}</ul>` + P(`${cap(profs[q][0])} — <b>${names[who][0]}</b>.`)
+        };
+      }
+      throw new Error('house');
+    }
+  };
+
+  /* ---------- 4. Расписание на неделе ---------- */
+  const D_SCHED = {
+    id: 'sched', title: 'Расписание недели', topic: 'Логика', pts: 2,
+    make(R) {
+      const days = ['вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+      const evs = R.shuffle(['встреча с другом', 'хоккейный матч', 'музей', 'театр', 'кино', 'бассейн', 'концерт']).slice(0, 5);
+      const pos = R.shuffle([0, 1, 2, 3, 4]); /* pos[e] = день события e */
+      const pool = [];
+      for (let a = 0; a < 5; a++) {
+        pool.push({ t: `${evs[a]} — в ${days[pos[a]] === 'вторник' ? 'о вторник' : days[pos[a]]}`.replace('в о вторник', 'во вторник'), f: (p) => p[a] === pos[a], w: 1 });
+        for (let b = 0; b < 5; b++) if (a !== b) {
+          if (pos[a] < pos[b]) pool.push({ t: `${evs[a]} будет раньше, чем ${evs[b]}`, f: (p) => p[a] < p[b] });
+          if (pos[b] - pos[a] === 1) pool.push({ t: `${evs[b]} — на следующий день после ${evs[a]}`, f: (p) => p[b] - p[a] === 1 });
+          if (Math.abs(pos[a] - pos[b]) > 1 && a < b) pool.push({ t: `${evs[a]} и ${evs[b]} не в соседние дни`, f: (p) => Math.abs(p[a] - p[b]) > 1 });
+        }
+      }
+      let sols = permsN(5), clues = [], guard = 0;
+      while (sols.length > 1 && guard++ < 120) { const c = R.pick(pool); if (clues.includes(c)) continue; const n2 = sols.filter(c.f); if (n2.length < sols.length) { clues.push(c); sols = n2; } }
+      if (sols.length !== 1) throw new Error('sched not unique');
+      const q = R.int(0, 4);
+      const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+      return {
+        input: 'choice', opts: days.map(d => d), ans: pos[q],
+        html: P(`На неделе с вторника по субботу нужно сделать пять дел: ${evs.join(', ')}. Каждое дело — в свой день, по одному в день. Известно:`) + `<ol class="cl">${clues.map(c => `<li>${cap(c.t)}.</li>`).join('')}</ol>` + P(`В какой день будет «<b>${evs[q]}</b>»?`),
+        hints: ['Нарисуй таблицу: дела по горизонтали, дни по вертикали.', 'Начни с условий, где день названы прямо, и с «на следующий день».', 'Условия «раньше» и «не в соседние дни» вычёркивают неподходящие клетки таблицы.', 'Когда расставишь четыре дела, пятое встанет на оставшийся день.'],
+        explain: P('Подходящее расписание: ') + `<ul class="cl">${days.map((d, i) => `<li>${d} — ${evs[pos.indexOf(i)]}</li>`).join('')}</ul>` + P(`«${evs[q]}» будет в день: <b>${days[pos[q]]}</b>.`)
+      };
+    }
+  };
+
+  /* ---------- 5. Числовая пирамида ---------- */
+  const D_PYR = {
+    id: 'pyramid', title: 'Числовая пирамида', topic: 'Числа', pts: 2,
+    make(R) {
+      const c = R.int(1, 12), base = [0, 1, 2, 3].map(() => R.int(20, 300));
+      const r1 = [0, 1, 2].map(i => base[i] + base[i + 1] - c), r2 = [0, 1].map(i => r1[i] + r1[i + 1] - c), top = r2[0] + r2[1] - c;
+      return {
+        input: 'nums', labels: ['Y', 'X'], ans: [r2[1], top],
+        html: P('В пирамиде числа связаны одним и тем же правилом: каждое число зависит от двух чисел под ним. Найди правило и числа <b>Y</b> и <b>X</b>.') + pyr([['X'.replace('X', '?')], [r2[0], 'Y'], r1, base]).replace('>?<', '>X<').replace('>Y<', '>Y<'),
+        hints: ['Возьми любое число, не стоящее в нижнем ряду, и два числа под ним.', `Сложи нижние: ${base[0]} + ${base[1]} = ${base[0] + base[1]}, а сверху стоит ${r1[0]}. Что изменилось?`, `Сумма на ${c} больше числа сверху: правило «сумма двух нижних минус ${c}».`, 'Сначала найди Y по правилу из двух чисел под ним, затем X.'],
+        explain: P(`Правило: число сверху = сумма двух нижних − ${c}.`) + P(`Y = ${r1[1]} + ${r1[2]} − ${c} = <b>${r2[1]}</b>. X = ${r2[0]} + ${r2[1]} − ${c} = <b>${top}</b>.`),
+        wrong: (a) => a[0] === r1[1] + r1[2] ? `Для Y ты забыл вычесть ${c}.` : ''
+      };
+    }
+  };
+
+  /* ---------- 6. Чёрный ящик (шифр по примерам) ---------- */
+  const AL = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+  const shiftA = (w, k) => w.split('').map(c => AL[(AL.indexOf(c) + k) % 33]).join('');
+  const encBB = (w) => (AL.indexOf(w[0]) + 1) + shiftA(w, 1).toLowerCase() + w.length;
+  const WBB = ['РОВ', 'ВЕТЕР', 'СИЛА', 'КОСМОС', 'ПЛАНЕТА', 'СЕТЬ', 'ЭКРАН', 'ПОЧТА', 'ФАЙЛ', 'ЗВЕЗДА', 'ЛУНА', 'ТРОН'];
+  const D_BB = {
+    id: 'blackbox', title: 'Чёрный ящик: шифр', topic: 'Информатика', pts: 3,
+    make(R) {
+      const ws = R.shuffle(WBB); const ex = ws.slice(0, 3), target = ws[3];
+      return {
+        input: 'text', ans: encBB(target), alts: [], ph: 'ответ из цифр и букв', canon: (s) => BankLib.norm(s).replace(/\s/g, ''),
+        html: P('Чёрный ящик превращает слова в код. Вот три примера:') + `<ul class="cl">${ex.map(w => `<li>${w.toLowerCase()} → <b>${encBB(w)}</b></li>`).join('')}</ul>` + P(`Какой код ящик выдаст для слова «<b>${target.toLowerCase()}</b>»? Алфавит: ${AL.split('').join(' ')} (33 буквы, с «ё»).`),
+        hints: ['Посмотри на начало кода: число. Сравни его с первой буквой слова.', 'Число — номер первой буквы слова в алфавите. Потом идут буквы.', 'Буквы кода получаются из букв слова: каждая заменена на следующую по алфавиту.', 'В конце кода стоит число букв в слове.'],
+        explain: P(`Правило: 1) номер первой буквы в алфавите; 2) каждая буква слова заменена на следующую по алфавиту; 3) число букв в слове.`) + P(`Для «${target.toLowerCase()}»: ${AL.indexOf(target[0]) + 1}, затем ${shiftA(target, 1).toLowerCase()}, затем ${target.length}. Код: <b>${encBB(target)}</b>.`)
+      };
+    }
+  };
+
+  /* ---------- 7. Встречные поезда ---------- */
+  const D_TRAINS = {
+    id: 'trains', title: 'Встречные поезда', topic: 'Логика', pts: 2,
+    make(R) {
+      const d = R.pick([1, 1, 2, 3]), m = R.int(4, 9), T = d * m, ans = 2 * m;
+      return {
+        input: 'num', ans,
+        html: P(`Поезд идёт из города А в город Б ровно <b>${T}</b> ${pl(T, 'сутки', 'суток', 'суток')}. Навстречу ему из Б в А поезда отправляются каждые <b>${d}</b> ${pl(d, 'сутки', 'суток', 'суток')}, они идут столько же суток, но выходят в другое время суток, чем наш поезд (в момент отправления и прибытия мы поезд на вокзале не встречаем). Сколько встречных поездов увидит пассажир нашего поезда за всю дорогу?`),
+        hints: ['Встречные поезда бывают двух видов: те, что уже в пути, когда мы выехали, и те, что выедут за время нашей поездки.', `Поезда, уже идущие в пути, вышли за последние ${T} суток.`, `Поезда, что выйдут за время нашей поездки, выйдут за ближайшие ${T} суток.`, `Сколько поездов выходит за ${T} суток, если один выходит каждые ${d}?`],
+        explain: P(`Уже в пути в момент отправления: ${T} : ${d} = ${m} поездов. Выедут за время поездки: ещё ${m}. Всего ${m} + ${m} = <b>${ans}</b>.`)
+      };
+    }
+  };
+
+  /* ---------- 8. Пути по стрелкам ---------- */
+  function dagSvg(layers, edges, lab) {
+    const id = 'ah' + (++uid); const colW = 78, rowH = 54, pad = 28;
+    const maxN = Math.max(...layers.map(l => l.length)), W = pad * 2 + colW * (layers.length - 1) + 40, Hh = pad * 2 + rowH * (maxN - 1) + 30;
+    const pos = {}; layers.forEach((l, i) => l.forEach((n, j) => { pos[n] = [pad + 20 + i * colW, Hh / 2 + (j - (l.length - 1) / 2) * rowH]; }));
+    const ed = edges.map(([a, b]) => { const [x1, y1] = pos[a], [x2, y2] = pos[b]; const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); const r = 15; return `<line x1="${x1 + dx / L * r}" y1="${y1 + dy / L * r}" x2="${x2 - dx / L * (r + 3)}" y2="${y2 - dy / L * (r + 3)}" stroke="currentColor" stroke-width="2" marker-end="url(#${id})"/>`; }).join('');
+    const nd = Object.keys(pos).map(n => `<circle cx="${pos[n][0]}" cy="${pos[n][1]}" r="15" style="fill:var(--surface)" stroke="currentColor" stroke-width="2"/><text x="${pos[n][0]}" y="${pos[n][1] + 5}" text-anchor="middle" font-size="${lab[n].length > 2 ? 9 : 14}" font-weight="800" fill="currentColor">${lab[n]}</text>`).join('');
+    return `<svg viewBox="0 0 ${W} ${Hh}" width="${W}" role="img" aria-label="Схема маршрутов со стрелками" style="max-width:100%;height:auto"><defs><marker id="${id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>${ed}${nd}</svg>`;
+  }
+  const D_PATHS = {
+    id: 'paths', title: 'Маршруты через станцию', topic: 'Комбинаторика', pts: 3,
+    make(R) {
+      for (let g = 0; g < 400; g++) {
+        const sizes = [R.int(2, 3), R.int(2, 3), R.int(2, 3)]; let nid = 1; const layers = [['S']];
+        sizes.forEach(s => { const l = []; for (let i = 0; i < s; i++) l.push('n' + (nid++)); layers.push(l); }); layers.push(['T']);
+        const edges = [];
+        for (let i = 0; i < layers.length - 1; i++) { for (const a of layers[i]) for (const b of layers[i + 1]) if (R.chance(.62)) edges.push([a, b]); }
+        const outs = {}, ins = {}; edges.forEach(([a, b]) => { (outs[a] = outs[a] || []).push(b); (ins[b] = ins[b] || []).push(a); });
+        if (layers.slice(0, -1).some(l => l.some(n => !outs[n])) || layers.slice(1).some(l => l.some(n => !ins[n]))) continue;
+        const from = {}, to = {}; from.S = 1; for (let i = 1; i < layers.length; i++) layers[i].forEach(n => { from[n] = (ins[n] || []).reduce((a, p) => a + from[p], 0); });
+        to.T = 1; for (let i = layers.length - 2; i >= 0; i--) layers[i].forEach(n => { to[n] = (outs[n] || []).reduce((a, p) => a + to[p], 0); });
+        const total = from.T; const mids = layers.slice(1, -1).flat(); const X = R.pick(mids); const ans = from[X] * to[X];
+        if (total < 6 || total > 40 || ans < 3 || ans === total) continue;
+        const lab = { S: 'Земля', T: 'Луна' }; mids.forEach((n, i) => { lab[n] = String(i + 1); });
+        return {
+          input: 'num', ans, html: P(`Космический корабль летит с Земли на Луну по стрелкам через станции. Сколько существует маршрутов, которые проходят через станцию <b>${lab[X]}</b>?`) + `<div class="gridw">${dagSvg(layers, edges, lab)}</div>`,
+          wrong: (v) => v === total ? 'Это число всех маршрутов. Нужны только те, что проходят через указанную станцию.' : '',
+          hints: ['Маршрут через станцию состоит из двух частей: от Земли до станции и от станции до Луны.', 'Посчитай отдельно, сколькими способами можно добраться до этой станции.', 'Затем посчитай, сколькими способами можно долететь от неё до Луны.', 'Эти числа нужно перемножить: к каждому пути «до» подходит любой путь «после».'],
+          explain: P(`До станции ${lab[X]} можно добраться ${from[X]} ${pl(from[X], 'способом', 'способами', 'способами')}, от неё до Луны — ${to[X]}. Перемножаем: ${from[X]} × ${to[X]} = <b>${ans}</b>.`)
+        };
+      }
+      throw new Error('paths');
+    }
+  };
+
+  /* ---------- 9. Числа из цифр ---------- */
+  const D_DIGITS = {
+    id: 'digits', title: 'Числа из цифр', topic: 'Комбинаторика', pts: 2,
+    make(R) {
+      const k = R.int(4, 5); const set = R.shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, k).sort((a, b) => a - b); if (!set.includes(0) && R.chance(.7)) set[0] = 0, set.sort((a, b) => a - b);
+      const set2 = Array.from(new Set(set));
+      const cond = R.pick(['all', 'even', 'five']);
+      let cnt = 0;
+      for (const a of set2) for (const b of set2) for (const c of set2) { if (a === 0 || a === b || a === c || b === c) continue; const n = a * 100 + b * 10 + c; if (cond === 'even' && n % 2) continue; if (cond === 'five' && n % 5) continue; cnt++; }
+      if (cnt === 0) return D_DIGITS.make(R);
+      const cw = { all: '', even: ' Число должно быть <b>чётным</b>.', five: ' Число должно <b>делиться на 5</b>.' }[cond];
+      return {
+        input: 'num', ans: cnt, html: P(`Из цифр <b>${set2.join(', ')}</b> составляют трёхзначные числа. Цифры в числе <b>не повторяются</b>.${cw} Сколько таких чисел?`),
+        hints: ['Выбирай цифры по порядку: сотни, десятки, единицы.', 'На первом месте не может стоять 0. Следи, какие цифры уже использованы.', cond === 'all' ? 'Перемножь число вариантов для каждого разряда.' : 'Условие про последнюю цифру удобно разобрать в первую очередь: выбери её, а потом остальные разряды.', 'Если запутался, перечисли числа по группам, начиная с первой цифры.'],
+        explain: P(`Подсчёт перебором по разрядам с учётом запретов даёт <b>${cnt}</b> чисел.`)
+      };
+    }
+  };
+
+  /* ---------- 10. Трассировка ---------- */
+  const D_TRACE = {
+    id: 'trace', title: 'Что выведет алгоритм', topic: 'Алгоритмы', pts: 2,
+    make(R) {
+      const t = R.int(0, 2);
+      if (t === 0) {
+        const n = R.int(6, 10), a = R.int(2, 5), b = R.int(1, 4); let s = 0; for (let i = 1; i <= n; i++) { if (i % 2 === 0) s += i * a; else s -= b; }
+        return { input: 'num', ans: s, html: P('Алгоритм:') + `<span class="pre">s := 0\nдля i от 1 до ${n}:\n    если i чётное:\n        s := s + i * ${a}\n    иначе:\n        s := s − ${b}</span>` + P('Чему равно <b>s</b> в конце?'), hints: ['Выпиши значения i по очереди и для каждого определи: чётное оно или нет.', 'Для чётных i прибавляй i, умноженное на число, для нечётных — вычитай.', 'Веди таблицу: i, действие, новое s.', 'Не забудь, что s сначала равно 0.'], explain: P('Идём по i = 1, 2, …, ' + n + ': чётные прибавляют, нечётные вычитают. Итог: <b>' + s + '</b>.') };
+      }
+      if (t === 1) {
+        let a = R.int(30, 70), b = R.int(3, 8), cnt = 0; const a0 = a, b0 = b; while (a > b) { a -= b; b += 1; cnt++; }
+        return { input: 'nums', labels: ['a', 'b'], ans: [a, b], html: P('Алгоритм:') + `<span class="pre">a := ${a0}\nb := ${b0}\nпока a > b:\n    a := a − b\n    b := b + 1</span>` + P('Чему равны <b>a</b> и <b>b</b>, когда цикл закончится?'), hints: ['Цикл повторяется, пока a больше b. Проверяй условие перед каждым повтором.', 'На каждом шаге из a вычитают текущее b, а потом b увеличивают.', 'Записывай значения a и b после каждого повтора.', 'Остановись, когда a станет не больше b.'], explain: P(`Цикл выполнится ${cnt} ${pl(cnt, 'раз', 'раза', 'раз')}. В конце a = <b>${a}</b>, b = <b>${b}</b>.`) };
+      }
+      const N = R.int(40, 300), c = R.int(1, 3), m = R.int(2, 3); let k = R.int(1, 3), steps = 0; const k0 = k; while (k < N) { k = k * m + c; steps++; }
+      return { input: 'nums', labels: ['k', 'шагов'], ans: [k, steps], html: P('Алгоритм:') + `<span class="pre">k := ${k0}\nшагов := 0\nпока k < ${N}:\n    k := k * ${m} + ${c}\n    шагов := шагов + 1</span>` + P('Чему равны <b>k</b> и число <b>шагов</b> после цикла?'), hints: ['Пока k меньше границы, цикл повторяется.', 'Каждый повтор: умножить k, прибавить число, увеличить счётчик.', 'Выписывай значения k после каждого повтора.', 'Остановись, когда k станет не меньше границы.'], explain: P(`После цикла k = <b>${k}</b>, шагов <b>${steps}</b>.`) };
+    }
+  };
+
+  /* ---------- 11. Лесенка ---------- */
+  const D_STAIRS = {
+    id: 'stairs', title: 'Лесенка', topic: 'Комбинаторика', pts: 3,
+    make(R) {
+      const n = R.int(6, 10), v = R.int(0, 2); const steps = v === 1 ? [1, 2, 3] : [1, 2]; const bad = v === 2 ? R.int(3, n - 2) : -1;
+      const w = Array(n + 1).fill(0); w[0] = 1; for (let i = 1; i <= n; i++) { if (i === bad) { w[i] = 0; continue; } for (const s of steps) if (i - s >= 0) w[i] += w[i - s]; }
+      const ans = w[n];
+      return {
+        input: 'num', ans, html: P(`Кузнечик поднимается по лесенке из <b>${n}</b> ступенек. За один прыжок он поднимается на ${steps.join(' или ')} ${pl(steps[steps.length - 1], 'ступеньку', 'ступеньки', 'ступенек')} (с земли он начинает с «нулевой» ступеньки).` + (bad > 0 ? ` Ступенька номер <b>${bad}</b> сломана: на неё прыгать нельзя.` : '') + ' Сколькими способами он может оказаться на верхней ступеньке?'),
+        hints: ['Считай способы по ступенькам снизу вверх: на земле 1 способ.', `Количество способов добраться до ступеньки равно сумме способов для ступенек, с которых можно на неё прыгнуть.`, bad > 0 ? 'Для сломанной ступеньки способов 0: на неё не попасть.' : 'Выпиши в ряд числа способов для 0, 1, 2, 3, … ступенек.', 'Продолжай ряд до нужной ступеньки.'],
+        explain: P(`Число способов по ступенькам 0…${n}: ${w.join(', ')}.`) + P(`Ответ: <b>${ans}</b>.`)
+      };
+    }
+  };
+
+  /* ---------- 12. Двоичная система ---------- */
+  const D_BIN = {
+    id: 'binary', title: 'Двоичная система', topic: 'Информатика', pts: 2,
+    make(R) {
+      const t = R.int(0, 3);
+      if (t === 0) { const n = R.int(9, 63); const b = n.toString(2); return { input: 'num', ans: n, html: P(`Переведи двоичное число <b>${b}</b> в десятичную систему.`), hints: ['Каждая цифра двоичного числа умножается на степень двойки: справа налево 1, 2, 4, 8, 16, …', 'Выпиши степени двойки под цифрами числа.', 'Складывай степени только там, где стоит 1.', 'Проверь сумму ещё раз.'], explain: P(`${b.split('').map((d, i) => d === '1' ? Math.pow(2, b.length - 1 - i) : null).filter(x => x != null).join(' + ')} = <b>${n}</b>.`) }; }
+      if (t === 1) { const n = R.int(10, 63); const b = n.toString(2); return { input: 'text', ans: b, ph: 'двоичное число', canon: (s) => String(s).replace(/\s/g, ''), html: P(`Запиши число <b>${n}</b> в двоичной системе.`), hints: ['Раздели число на 2 и запиши остаток. Потом раздели частное на 2.', 'Повторяй, пока частное не станет 0.', 'Остатки, прочитанные снизу вверх, и есть двоичное число.', 'Проверь: переведи ответ обратно в десятичную систему.'], explain: P(`Деление на 2 с остатками, прочитанными снизу вверх, даёт <b>${b}</b>.`) }; }
+      if (t === 2) { const k = R.int(3, 7); return { input: 'num', ans: Math.pow(2, k), html: P(`Сколько разных чисел (в том числе с ведущими нулями) можно записать, используя ровно <b>${k}</b> двоичных ${pl(k, 'разряд', 'разряда', 'разрядов')}?`), hints: ['Один разряд — 2 варианта: 0 или 1.', 'Два разряда — 4 варианта: 00, 01, 10, 11.', 'Каждый новый разряд удваивает число вариантов.', `Удвой ${k} ${pl(k, 'раз', 'раза', 'раз')} подряд, начиная с 1.`], explain: P(`Число вариантов 2^${k} = <b>${Math.pow(2, k)}</b>.`) }; }
+      const N = R.pick([8, 16, 32, 64, 100, 20, 50]); const q = Math.ceil(Math.log2(N));
+      return { input: 'num', ans: q, html: P(`Загадано число от 1 до <b>${N}</b>. Каждым вопросом ты можешь спросить «Число больше k?» (ответ «да» или «нет»). Какого <b>наименьшего</b> числа вопросов хватит, чтобы точно угадать число при самой невезучей ситуации?`), hints: ['Хорошая стратегия: каждым вопросом делить варианты пополам.', `После одного вопроса останется не больше половины чисел.`, 'Сколько раз можно делить пополам, пока не останется одно число?', `Найди наименьшее k, при котором 2^k ≥ ${N}.`], explain: P(`2^${q} = ${Math.pow(2, q)} ≥ ${N}, а 2^${q - 1} = ${Math.pow(2, q - 1)} < ${N}. Нужно <b>${q}</b> ${pl(q, 'вопрос', 'вопроса', 'вопросов')}.`) };
+    }
+  };
+
+  /* ---------- 13. Числовые ряды ---------- */
+  const D_SEQ2 = {
+    id: 'seq2', title: 'Сложный ряд', topic: 'Числа', pts: 2,
+    make(R) {
+      const kind = R.pick(['fibm', 'dbl', 'alt', 'sq']);
+      let t = [], rule, hints;
+      if (kind === 'fibm') { const c = R.int(1, 4); t = [R.int(3, 9), R.int(4, 12)]; for (let i = 0; i < 5; i++) t.push(t[i] + t[i + 1] - c); rule = `каждое число — сумма двух предыдущих минус ${c}`; hints = ['Сложи первые два числа ряда и сравни с третьим.', 'Сумма двух предыдущих чисел немного больше следующего. На сколько?', `Правило: сумма двух предыдущих минус ${c}.`, 'Примени правило к двум последним числам.']; }
+      else if (kind === 'dbl') { const d = R.int(1, 4); t = [R.int(1, 5)]; for (let i = 0; i < 6; i++) t.push(t[i] * 2 + d); rule = `каждое число = предыдущее × 2 + ${d}`; hints = ['Разности чисел растут быстро, так что правило с умножением.', 'Попробуй умножить первое число на 2 и сравнить со вторым.', `Не хватает ${d}: правило «× 2 + ${d}».`, 'Примени правило к последнему числу.']; }
+      else if (kind === 'alt') { const a = R.int(2, 5), b = R.int(2, 4); t = [R.int(1, 6)]; for (let i = 0; i < 6; i++) t.push(i % 2 === 0 ? t[i] + a : t[i] * b); rule = `по очереди: + ${a}, затем × ${b}`; hints = ['Правило чередуется.', `Первый шаг: прибавили ${a}. Второй: умножили.`, 'Определи, какой шаг был последним, и сделай следующий.', 'Выполни нужное действие над последним числом.']; }
+      else { const a = R.int(1, 4); t = []; for (let i = 1; i <= 7; i++) t.push(i * i + a); rule = `числа вида n² + ${a}: ${a + 1}, ${4 + a}, …`; hints = ['Посмотри на разности: они растут.', 'Разности нечётные: 3, 5, 7, … Подсказка: это квадраты.', `Числа — это квадраты 1, 4, 9, 16, … плюс ${a}.`, 'Найди, какой по счёту квадрат нужен, и прибавь число.']; }
+      const shown = t.slice(0, 6), ans = t[6];
+      return { input: 'num', ans, html: P('Продолжи ряд чисел:') + `<p class="big"><b>${shown.join(', ')}, ?</b></p>`, hints, explain: P(`Правило: ${rule}.`) + P(`Ряд: ${t.join(', ')}. Ответ: <b>${ans}</b>.`) };
+    }
+  };
+
+  /* ---------- 14. Магический квадрат ---------- */
+  const LOSHU = [[2, 7, 6], [9, 5, 1], [4, 3, 8]];
+  const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  const D_MAGIC = {
+    id: 'magic', title: 'Магический квадрат', topic: 'Числа', pts: 2,
+    make(R) {
+      const m = R.int(1, 4), a = R.int(0, 12); const S = 15 * m + 3 * a; const vals = LOSHU.flat().map(v => v * m + a);
+      for (let g = 0; g < 400; g++) {
+        const hid = new Set(R.shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]).slice(0, R.int(4, 5)));
+        const known = vals.map((v, i) => hid.has(i) ? null : v); let ch = true;
+        while (ch) { ch = false; for (const L of LINES) { const un = L.filter(i => known[i] == null); if (un.length === 1) { known[un[0]] = S - L.filter(i => i !== un[0]).reduce((x, i) => x + known[i], 0); ch = true; } } }
+        if (known.some(x => x == null)) continue;
+        const q = [...hid][0]; const shown = vals.map((v, i) => i === q ? '?' : hid.has(i) ? '·' : v);
+        const grid = `<div class="gridw"><div class="gr" style="grid-template-columns:repeat(3,auto)">${shown.map(v => `<div class="gc${v === '?' ? ' q' : ''}" style="width:clamp(44px,13vw,64px);height:clamp(44px,13vw,64px)">${v === '·' ? '' : v}</div>`).join('')}</div></div>`;
+        return {
+          input: 'num', ans: vals[q], html: P(`В квадрате сумма чисел в каждой строке, в каждом столбце и на каждой диагонали равна <b>${S}</b>. Пустые клетки нужно заполнить, а в клетке со знаком «?» — найти число.`) + grid,
+          hints: ['Найди строку, столбец или диагональ, где пустая только одна клетка.', `Эта клетка равна ${S} минус сумма двух других чисел линии.`, 'Заполни такие клетки и ищи новые линии с одной пустой клеткой.', 'Продолжай, пока не дойдёшь до клетки «?».'],
+          explain: P(`Заполняя по очереди клетки, до которых «не хватает» одного числа в линии, получаем все числа. В клетке «?» стоит <b>${vals[q]}</b>.`)
+        };
+      }
+      throw new Error('magic');
+    }
+  };
+
+  /* ---------- 15. Квадраты и прямоугольники на сетке ---------- */
+  const D_SQ = {
+    id: 'squares', title: 'Фигуры на сетке', topic: 'Комбинаторика', pts: 2,
+    make(R) {
+      const n = R.int(3, 5), m = R.int(3, 5), rect = R.chance(.4);
+      let cnt = 0;
+      if (rect) { for (let x1 = 0; x1 <= m; x1++) for (let x2 = x1 + 1; x2 <= m; x2++) for (let y1 = 0; y1 <= n; y1++) for (let y2 = y1 + 1; y2 <= n; y2++) cnt++; }
+      else { for (let k = 1; k <= Math.min(n, m); k++) cnt += (n - k + 1) * (m - k + 1); }
+      const grid = `<div class="gridw"><div class="gr" style="grid-template-columns:repeat(${m},auto)">${Array.from({ length: n * m }, () => '<div class="gc"></div>').join('')}</div></div>`;
+      return {
+        input: 'num', ans: cnt, html: P(`Прямоугольник ${n} × ${m} клеток разграфлен на единичные клетки. Сколько на нём ${rect ? '<b>прямоугольников</b> (квадраты тоже считаются прямоугольниками)' : '<b>квадратов</b> любого размера'}? Стороны фигур идут по линиям сетки.`) + grid,
+        hints: rect ? ['Прямоугольник определяется двумя вертикальными и двумя горизонтальными линиями сетки.', `Вертикальных линий ${m + 1}, горизонтальных ${n + 1}.`, 'Выбери любые две вертикальные и любые две горизонтальные линии.', `Число способов выбрать 2 линии из ${m + 1}: ${(m + 1) * m / 2}; из ${n + 1}: ${(n + 1) * n / 2}.`] : ['Считай квадраты по размеру: сначала 1 × 1, потом 2 × 2 и так далее.', 'Квадраты 1 × 1 — это просто все клетки.', 'Для квадрата k × k считай, сколько позиций у его левого верхнего угла.', `Позиций (${n} − k + 1) × (${m} − k + 1). Сложи по всем k.`],
+        explain: rect ? P(`Выбираем две вертикальные линии из ${m + 1} и две горизонтальные из ${n + 1}: ${(m + 1) * m / 2} × ${(n + 1) * n / 2} = <b>${cnt}</b>.`) : P(`Размер 1: ${n * m}; ${Array.from({ length: Math.min(n, m) - 1 }, (_, i) => `размер ${i + 2}: ${(n - i - 1) * (m - i - 1)}`).join('; ')}. Всего <b>${cnt}</b>.`)
+      };
+    }
+  };
+
+  return [D_VENN, D_MAZE, D_HOUSE, D_SCHED, D_PYR, D_BB, D_TRAINS, D_PATHS, D_DIGITS, D_TRACE, D_STAIRS, D_BIN, D_SEQ2, D_MAGIC, D_SQ];
+})();
+const IDS_B = {
+  v1: [['venn', 1], ['maze', 2], ['pyramid', 3], ['blackbox', 4], ['trains', 5], ['paths', 6], ['digits', 7], ['trace', 8], ['house', 9], ['binary', 10], ['seq2', 11], ['squares', 12]],
+  v2: [['sched', 21], ['venn', 22], ['maze', 23], ['magic', 24], ['blackbox', 25], ['stairs', 26], ['pyramid', 27], ['trace', 28], ['digits', 29], ['trains', 30], ['house', 31], ['squares', 32]]
+};
+
+
+
+(function () {
+  const defs = DEFS_B, byId = {}; defs.forEach(d => { byId[d.id] = d; });
+  const X = {"cards": [{"t": "Круги Эйлера", "p": "«Хотя бы одним» = А + Б − <b>оба</b> (общих посчитали дважды). «Только А» = А − оба. «Ни тем, ни другим» = всего − хотя бы одним.", "ex": "Заполняй круги с пересечения — оно в обоих кругах."}, {"t": "Числовая пирамида", "p": "Найди полностью заполненный блок «два нижних → верхнее» и выведи правило (сумма, сумма минус число…). Дальше применяй правило ко всем блокам.", "ex": "Неизвестное внизу находи «в обратную сторону»: вычитанием."}, {"t": "Что выведет алгоритм", "p": "Заведи таблицу: шаг, значения переменных. После каждого повтора цикла обнови строку. Условие цикла проверяй <b>до</b> каждого повтора.", "ex": "Не считай в уме «целиком» — только пошагово."}, {"t": "Двоичная система", "p": "Двоичное → десятичное: цифры умножай на 1, 2, 4, 8, 16… справа налево. Десятичное → двоичное: дели на 2 и пиши остатки в обратном порядке.", "ex": "k двоичных разрядов — 2^k разных чисел."}, {"t": "Числа из цифр", "p": "Выбирай цифры по разрядам: сотни, десятки, единицы. На первом месте не стоит 0; следи за уже использованными цифрами. Варианты по разрядам <b>умножаются</b>.", "ex": "Условие про последнюю цифру удобно выбрать первым."}, {"t": "Сложный ряд", "p": "Если соседние разности растут — смотри на разности разностей, умножение или квадраты. Попробуй «сумма двух предыдущих ± число».", "ex": "Проверь найденное правило на всём ряду."}], "plan": ["<b>0–3 мин.</b> Шпаргалка: прочитайте приёмы вслух по очереди и запустите таймер на вкладке «Шпаргалка». Для каждого приёма — один вопрос классу.", "<b>3–13 мин.</b> Спринт на вкладке «Спринт»: ребята решают сами, подсказок нет. Таймер включается по кнопке «Начать вариант», на 10 минутах вариант завершится сам.", "<b>13–15 мин.</b> Добор: результат покажет слабые темы — нажмите на них и разберите по подсказкам на вкладке «Добор». Лучше одну тему хорошо, чем пять поверхностно."]};
+  const ids = [["venn", 101], ["pyramid", 102], ["trace", 103], ["binary", 104], ["digits", 105], ["seq2", 106]];
+  const used = []; ids.forEach(([i]) => { if (used.indexOf(byId[i]) < 0) used.push(byId[i]); });
+  window.__x = ExpressLib.App({
+    title: 'Экспресс-подготовка', sub: '9–11 лет · подготовка к олимпиаде 29 ноября',
+    intro: '<p><b>15 минут:</b> 3 минуты — шпаргалка с приёмами, 10 минут — мини-вариант из 6 задач с автопроверкой, 2 минуты — добор слабых тем. Задачи из занятий предыдущих недель.</p>',
+    plan: X.plan, cards: X.cards, defs: used,
+    sprint: { id: 'sprint', title: 'Спринт: 6 задач', minutes: 10, picks: ids.map(([i, seed]) => ({ def: byId[i], seed })) }
+  });
+})();
+
+</script>
+
+</body></html>
